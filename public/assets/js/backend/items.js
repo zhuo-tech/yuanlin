@@ -30,7 +30,7 @@ define(['jquery', 'bootstrap', 'backend', 'table', 'form'], function ($, undefin
                         {field: 'id', title: __('Id')},
                         {field: 'user_id', title: __('User_id')},
                         {field: 'item_type', title: __('Item_type')},
-                        {field: 'name', title: __('Name'), operate: 'LIKE'},
+                        {field: 'name', title:"名称", operate: 'LIKE'},
                         {field: 'location', title: __('Location'), operate: 'LIKE'},
                         {field: 'areas', title: __('Areas'), operate: 'LIKE'},
                         {field: 'item_cate_id', title: __('Item_cate_id')},
@@ -40,8 +40,8 @@ define(['jquery', 'bootstrap', 'backend', 'table', 'form'], function ($, undefin
                         {field: 'programme_design', title: __('Programme_design'), operate: 'LIKE'},
                         {field: 'designer', title: __('Designer'), operate: 'LIKE'},
                         {field: 'construction', title: __('Construction'), operate: 'LIKE'},
-                        {field: 'create_time', title: __('Create_time'), operate:'RANGE', addclass:'datetimerange', autocomplete:false, formatter: Table.api.formatter.datetime},
-                        {field: 'update_time', title: __('Update_time'), operate:'RANGE', addclass:'datetimerange', autocomplete:false, formatter: Table.api.formatter.datetime},
+                        {field: 'create_time', title: __('Create_time'), visible:false,operate:'RANGE', addclass:'datetimerange', autocomplete:false, formatter: Table.api.formatter.datetime},
+                        {field: 'update_time', title: __('Update_time'), visible:false,operate:'RANGE', addclass:'datetimerange', autocomplete:false, formatter: Table.api.formatter.datetime},
                         {field: 'operate', title: __('Operate'), table: table, events: Table.api.events.operate, formatter: Table.api.formatter.operate}
                     ]
                 ]
