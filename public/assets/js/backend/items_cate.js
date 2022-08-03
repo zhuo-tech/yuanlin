@@ -26,7 +26,7 @@ define(['jquery', 'bootstrap', 'backend', 'table', 'form'], function ($, undefin
                     [
                         {checkbox: true},
                         {field: 'id', title: __('Id')},
-                        {field: 'pid', title: __('Pid')},
+                        {field: 'pid', title: "父类型"},
                         {field: 'name', title: __('Name'), operate: 'LIKE'},
                         {field: 'label', title: __('Label'), operate: 'LIKE'},
                         {field: 'create_time', visible:false, title: __('Create_time'), operate:'RANGE', addclass:'datetimerange', autocomplete:false, formatter: Table.api.formatter.datetime},
