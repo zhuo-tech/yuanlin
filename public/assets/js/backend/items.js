@@ -1,5 +1,13 @@
 define(['jquery', 'bootstrap', 'backend', 'table', 'form'], function ($, undefined, Backend, Table, Form) {
 
+
+    $("#c-location").on("cp:updated", function() {
+        var citypicker = $(this).data("citypicker");
+        var code = citypicker.getCode("district") || citypicker.getCode("city") || citypicker.getCode("province");
+        $("#code").val(code);
+        console.log(code);
+    });
+
     var Controller = {
         index: function () {
             // 初始化表格参数配置
