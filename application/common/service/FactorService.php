@@ -12,7 +12,6 @@ class FactorService {
         if (empty($function)) {
             return [];
         }
-        
         return static::$function($param, $sysOption);
     }
 
