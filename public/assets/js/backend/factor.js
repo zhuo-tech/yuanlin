@@ -5,13 +5,13 @@ define(['jquery', 'bootstrap', 'backend', 'table', 'form'], function ($, undefin
             // 初始化表格参数配置
             Table.api.init({
                 extend: {
-                    index_url: 'download/index' + location.search,
-                    add_url: 'download/add',
-                    edit_url: 'download/edit',
-                    del_url: 'download/del',
-                    multi_url: 'download/multi',
-                    import_url: 'download/import',
-                    table: 'download',
+                    index_url: 'factor/index' + location.search,
+                    add_url: 'factor/add',
+                    edit_url: 'factor/edit',
+                    del_url: 'factor/del',
+                    multi_url: 'factor/multi',
+                    import_url: 'factor/import',
+                    table: 'factor',
                 }
             });
 
@@ -27,9 +27,12 @@ define(['jquery', 'bootstrap', 'backend', 'table', 'form'], function ($, undefin
                         {checkbox: true},
                         {field: 'id', title: __('Id')},
                         {field: 'name', title: __('Name'), operate: 'LIKE'},
-                        {field: 'download_cate_id', title: __('Download_cate_id')},
-                        {field: 'link', title: __('Link'), operate: 'LIKE'},
-                        {field: 'create_time',visible:false, title: __('Create_time'), operate:'RANGE', addclass:'datetimerange', autocomplete:false, formatter: Table.api.formatter.datetime},
+                        {field: 'pid', title: __('Pid')},
+                        {field: 'status', title: __('Status')},
+                        {field: 'create_time', visible:false,title: __('Create_time'), operate:'RANGE', addclass:'datetimerange', autocomplete:false, formatter: Table.api.formatter.datetime},
+                        {field: 'update_time',visible:false, title: __('Update_time'), operate:'RANGE', addclass:'datetimerange', autocomplete:false, formatter: Table.api.formatter.datetime},
+                        {field: 'create_by',visible:false, title: __('Create_by')},
+                        {field: 'update_by', visible:false,title: __('Update_by')},
                         {field: 'operate', title: __('Operate'), table: table, events: Table.api.events.operate, formatter: Table.api.formatter.operate}
                     ]
                 ]

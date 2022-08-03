@@ -1,0 +1,104 @@
+<form id="edit-form" class="form-horizontal" role="form" data-toggle="validator" method="POST" action="">
+
+    <div class="form-group">
+        <label class="control-label col-xs-12 col-sm-2">{:__('Factor_id')}:</label>
+        <div class="col-xs-12 col-sm-8">
+            <input id="c-factor_id" data-rule="required" data-source="factor/index" class="form-control selectpage" name="row[factor_id]" type="text" value="{$row.factor_id|htmlentities}">
+        </div>
+    </div>
+    <div class="form-group">
+        <label class="control-label col-xs-12 col-sm-2">{:__('Max')}:</label>
+        <div class="col-xs-12 col-sm-8">
+            <input id="c-max" data-rule="required" class="form-control" name="row[max]" type="text" value="{$row.max|htmlentities}">
+        </div>
+    </div>
+    <div class="form-group">
+        <label class="control-label col-xs-12 col-sm-2">{:__('Min')}:</label>
+        <div class="col-xs-12 col-sm-8">
+            <input id="c-min" data-rule="required" class="form-control" name="row[min]" type="text" value="{$row.min|htmlentities}">
+        </div>
+    </div>
+    <div class="form-group">
+        <label class="control-label col-xs-12 col-sm-2">{:__('National_stand')}:</label>
+        <div class="col-xs-12 col-sm-8">
+            <input id="c-national_stand" data-rule="required" class="form-control" name="row[national_stand]" type="text" value="{$row.national_stand|htmlentities}">
+        </div>
+    </div>
+    <div class="form-group">
+        <label class="control-label col-xs-12 col-sm-2">{:__('Input_mode')}:</label>
+        <div class="col-xs-12 col-sm-8">
+            <input id="c-input_mode" data-rule="required" class="form-control" name="row[input_mode]" type="text" value="{$row.input_mode|htmlentities}">
+        </div>
+    </div>
+    <div class="form-group">
+        <label class="control-label col-xs-12 col-sm-2">{:__('Option')}:</label>
+        <div class="col-xs-12 col-sm-8">
+
+            <dl class="fieldlist" data-name="row[option]" data-template="testtpl">
+
+                <dd>
+                    <ins>名称</ins>
+                    <ins>参数</ins>
+
+                </dd>
+                <dd>
+                    <a href="javascript:;" class="btn btn-sm btn-success btn-append"><i class="fa fa-plus"></i> 追加</a>
+                </dd>
+                <textarea name="row[option]" class="form-control hide" cols="30" rows="5">{$row.option|htmlentities}</textarea>
+            </dl>
+        </div>
+    </div>
+    <div class="form-group">
+        <label class="control-label col-xs-12 col-sm-2">{:__('Method')}:</label>
+        <div class="col-xs-12 col-sm-8">
+            <input id="c-method" data-rule="required" class="form-control" name="row[method]" type="text" value="{$row.method|htmlentities}">
+        </div>
+    </div>
+    <div class="form-group">
+        <label class="control-label col-xs-12 col-sm-2">{:__('Meaning')}:</label>
+        <div class="col-xs-12 col-sm-8">
+            <textarea name="row[meaning]" class="form-control" cols="30" rows="5" > {$row.meaning|htmlentities}</textarea>
+        </div>
+    </div>
+    <div class="form-group">
+        <label class="control-label col-xs-12 col-sm-2">{:__('Calc_method')}:</label>
+        <div class="col-xs-12 col-sm-8">
+            <textarea id="c-calc_method" data-rule="required" class="form-control " rows="5" name="row[calc_method]" cols="50">{$row.calc_method|htmlentities}</textarea>
+        </div>
+    </div>
+    <div class="form-group">
+        <label class="control-label col-xs-12 col-sm-2">{:__('Source')}:</label>
+        <div class="col-xs-12 col-sm-8">
+            <input id="c-source" data-rule="required" class="form-control" name="row[source]" type="text" value="{$row.source|htmlentities}">
+        </div>
+    </div>
+    <div class="form-group">
+        <label class="control-label col-xs-12 col-sm-2">{:__('Link')}:</label>
+        <div class="col-xs-12 col-sm-8">
+            <input id="c-link" data-rule="required" class="form-control" name="row[link]" type="text" value="{$row.link|htmlentities}">
+        </div>
+    </div>
+    <div class="form-group">
+        <label class="control-label col-xs-12 col-sm-2">{:__('Status')}:</label>
+        <div class="col-xs-12 col-sm-8">
+            <input id="c-status" data-rule="required" class="form-control" name="row[status]" type="number" value="{$row.status|htmlentities}">
+        </div>
+    </div>
+
+    <div class="form-group layer-footer">
+        <label class="control-label col-xs-12 col-sm-2"></label>
+        <div class="col-xs-12 col-sm-8">
+            <button type="submit" class="btn btn-primary btn-embossed disabled">{:__('OK')}</button>
+            <button type="reset" class="btn btn-default btn-embossed">{:__('Reset')}</button>
+        </div>
+    </div>
+</form>
+
+
+<script type="text/html" id="testtpl">
+    <dd class="form-inline">
+        <input type="text" name="row[<%=name%>][<%=index%>][name]" class="form-control" value="<%=row['name']%>" size="10">
+        <input type="text" name="row[<%=name%>][<%=index%>][value]" class="form-control" value="<%=row['value']%>" size="30">
+        <span class="btn btn-sm btn-danger btn-remove"><i class="fa fa-times"></i></span> <span class="btn btn-sm btn-primary btn-dragsort"><i class="fa fa-arrows"></i></span>
+    </dd>
+</script>
