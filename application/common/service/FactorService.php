@@ -306,7 +306,7 @@ class FactorService {
         $coefficient = static::$coefficient;
 
         $data = $b * $c;
-        return static::format($data / ($coefficient[0] / 100);
+        return static::format($data / ($coefficient[0] / 100));
     }
 
     /**
