@@ -28,7 +28,9 @@ define(['jquery', 'bootstrap', 'backend', 'table', 'form'], function ($, undefin
                     [
                         {checkbox: true},
                         {field: 'id', title: __('Id')},
-                        {field: 'factor_id', title: __('Factor_id')},
+                        {field: 'factor_id',visible:false, title: __('Factor_id')},
+                        {field: 'factor_name', title: __('指标')},
+
                         {field: 'max', title: __('Max'), operate: 'LIKE'},
                         {field: 'min', title: __('Min'), operate: 'LIKE'},
                         {field: 'national_stand', title: __('National_stand'), operate: 'LIKE'},
