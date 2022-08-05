@@ -32,7 +32,7 @@ define(['jquery', 'bootstrap', 'backend', 'table', 'form'], function ($, undefin
                         {field: 'max', title: __('Max'), operate: 'LIKE'},
                         {field: 'min', title: __('Min'), operate: 'LIKE'},
                         {field: 'national_stand', title: __('National_stand'), operate: 'LIKE'},
-                        {field: 'input_mode', title: __('Input_mode'), operate: 'LIKE'},
+                        {field: 'input_mode', title: "网页输入模式", operate: 'LIKE',searchList: {"A": "根据公式", "C": "问卷模式","D": "直接输入结果"}},
                         {field: 'method', title: __('Method'), operate: 'LIKE'},
                         {field: 'source', title: __('Source'), operate: 'LIKE'},
                         {field: 'link', title: __('Link'), operate: 'LIKE'},
