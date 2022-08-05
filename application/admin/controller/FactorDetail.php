@@ -23,6 +23,10 @@ class FactorDetail extends Backend
         parent::_initialize();
         $this->model = new \app\admin\model\FactorDetail;
 
+        $mode = ['A'=>'根据公式','C'=>'问卷模式','D'=>'直接输入结果'];
+
+        $this->view->assign('mode', $mode);
+
     }
 
 

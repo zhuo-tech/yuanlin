@@ -36,7 +36,7 @@ define(['jquery', 'bootstrap', 'backend', 'table', 'form'], function ($, undefin
                         {field: 'method', title: __('Method'), operate: 'LIKE'},
                         {field: 'source', title: __('Source'), operate: 'LIKE'},
                         {field: 'link', title: __('Link'), operate: 'LIKE'},
-                        {field: 'status', title: __('Status')},
+                        {field: 'status', title: __('Status'),searchList: {"0": "删除", "1": "正常"}},
                         {field: 'create_time', visible:false, title: __('Create_time'), operate:'RANGE', addclass:'datetimerange', autocomplete:false, formatter: Table.api.formatter.datetime},
                         {field: 'update_time', visible:false, title: __('Update_time'), operate:'RANGE', addclass:'datetimerange', autocomplete:false, formatter: Table.api.formatter.datetime},
                         {field: 'create_by',visible:false,  title: __('Create_by')},
