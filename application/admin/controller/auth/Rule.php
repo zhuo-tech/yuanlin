@@ -61,6 +61,8 @@ class Rule extends Backend
             $total = count($this->rulelist);
             $result = array("total" => $total, "rows" => $list);
 
+//            var_dump($result);
+
             return json($result);
         }
         return $this->view->fetch();
