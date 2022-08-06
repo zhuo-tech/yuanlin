@@ -30,12 +30,16 @@ class ItemFactorService {
 
             $data = [];
             foreach ($factors as $key => $factor) {
-                $data[$key]['item_id']   = $itemId;
-                $data[$key]['factor_id'] = $factor;
-                $data[$key]['result']    = '';
-                $data[$key]['status']    = 0;
+                $itemFactor = ItemsModel::find(['item_id' => $itemId, 'factor_id' => $factor]);
+                if (empty($itemFactor)) {
+                    $data[$key]['item_id']   = $itemId;
+                    $data[$key]['factor_id'] = $factor;
+                    $data[$key]['result']    = '';
+                    $data[$key]['status']    = 0;
+                }
             }
-            if (ItemsModel::saveAll($data)) {
+
+            if (empty($data) || (ItemsModel::saveAll($data))) {
                 return ['error' => 0, 'message' => 'OK', 'data' => []];
             }
             return ['error' => 1, 'message' => '保存失败', 'data' => []];
