@@ -3,7 +3,9 @@
     <div class="form-group">
         <label class="control-label col-xs-12 col-sm-2">父类型</label>
         <div class="col-xs-12 col-sm-8">
-            <input id="c-pid" data-rule="required" data-source="items_cate/index" class="form-control selectpage" name="row[pid]" type="text" value="{$row.pid|htmlentities}">
+
+            {:build_select('row[pid]', $catedata, $row['pid'], ['class'=>'form-control selectpicker', 'data-rule'=>'required'])}
+
         </div>
     </div>
     <div class="form-group">
