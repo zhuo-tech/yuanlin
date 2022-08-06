@@ -70,7 +70,7 @@ class ItemFactorService {
     /**
      * @brief 执行指标数据
      * @param $itemId int 项目ID
-     * @param $factors array 指标ID
+     * @param $factors array 指标ID和参数
      * @return array
      */
     public static function executeFactors(int $itemId, array $factors): array {
