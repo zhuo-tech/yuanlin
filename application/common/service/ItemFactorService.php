@@ -80,18 +80,16 @@ class ItemFactorService {
                 return ['error' => 1, 'message' => '项目不存在', 'data' => []];
             }
 
-            $data = [];
+            ItemsModel::startTrans();
             foreach ($factors as $key => $factor) {
-                $data[$key]['item_id']   = $itemId;
-                $data[$key]['factor_id'] = $factor['id'];
-                $data[$key]['param']     = json_encode($factor['param']);
-                $data[$key]['result']    = FactorFormulaService::handle($itemId, $factor['id'], $factor['param']);
+                $param  = json_encode($factor['param']);
+                $result = FactorFormulaService::handle($itemId, $factor['id'], $factor['param']);
+                ItemsModel::update(['param' => $param, 'result' => $result], ['item_id' => $itemId, 'factor_id' => $factor['id']]);
             }
-            if (ItemsModel::saveAll($data)) {
-                return ['error' => 0, 'message' => 'OK', 'data' => []];
-            }
-            return ['error' => 1, 'message' => '保存失败', 'data' => []];
+            ItemsModel::commit();
+            return ['error' => 0, 'message' => '保存成功', 'data' => []];
         } catch (\Exception $exception) {
+            ItemsModel::rollback();
             return ['error' => 1, 'message' => $exception->getMessage(), 'data' => []];
         }
     }
