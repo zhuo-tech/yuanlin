@@ -3,6 +3,8 @@
 namespace app\admin\controller;
 
 use app\common\controller\Backend;
+use think\exception\DbException;
+use think\response\Json;
 
 /**
  * 
@@ -33,5 +35,45 @@ class Download extends Backend
      * 需要将application/admin/library/traits/Backend.php中对应的方法复制到当前控制器,然后进行修改
      */
 
+
+
+    /**
+     * 查看
+     *
+     * @return string|Json
+     * @throws \think\Exception
+     * @throws DbException
+     */
+    public function index()
+    {
+        //设置过滤方法
+        $this->request->filter(['strip_tags', 'trim']);
+        if (false === $this->request->isAjax()) {
+            return $this->view->fetch();
+        }
+        //如果发送的来源是 Selectpage，则转发到 Selectpage
+        if ($this->request->request('keyField')) {
+
+            $res = $this->selectpage();
+            return $res;
+        }
+        [$where, $sort, $order, $offset, $limit] = $this->buildparams();
+
+        $query = $this->model->where($where);
+        $list = $query
+            ->order($sort, $order)
+            ->paginate($limit);
+
+        $total = $list->total();
+        $rows = $list->items();
+
+        foreach ($rows as &$row){
+            $cate = \app\admin\model\DownloadCate::where(['id'=>$row['download_cate_id']])->find();
+            $row['download_cate_name'] = $cate['name'];
+        }
+
+        $result = ['total' => $total, 'rows' =>$rows];
+        return json($result);
+    }
 
 }

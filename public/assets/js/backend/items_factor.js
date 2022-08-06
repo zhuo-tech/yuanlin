@@ -31,7 +31,7 @@ define(['jquery', 'bootstrap', 'backend', 'table', 'form'], function ($, undefin
                         {field: 'factor_id',visible:false, title: __('Factor_id')},
                         {field: 'factor_name', title: __('factor_name')},
                         {field: 'param', title: __('Param'), operate: 'LIKE'},
-                        {field: 'result', title: __('Result'), operate: 'LIKE'},
+                        {field: 'result', title: __('Result'), operate: 'LIKE',sortable:true},
                         {field: 'status', title: "状态",searchList:{"0":"未输入","1":"已输入","2":"已计算"}},
                         {field: 'create_time',visible:false, title: __('Create_time'), operate:'RANGE', addclass:'datetimerange', autocomplete:false, formatter: Table.api.formatter.datetime},
                         {field: 'operate', title: __('Operate'), table: table, events: Table.api.events.operate, formatter: Table.api.formatter.operate}

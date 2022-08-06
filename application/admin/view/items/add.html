@@ -9,7 +9,8 @@
     <div class="form-group">
         <label class="control-label col-xs-12 col-sm-2">{:__('Item_type')}:</label>
         <div class="col-xs-12 col-sm-8">
-            <input id="c-item_type" class="form-control" name="row[item_type]" type="number">
+
+            {:build_select('row[item_type]',  $itemType, null, ['class'=>'form-control', 'required'=>'true'])}
         </div>
     </div>
     <div class="form-group">
