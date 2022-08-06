@@ -36,7 +36,7 @@ class Factor extends Api {
     /**
      * @brief 确认指标
      */
-    public function sure(Request $request) {
+    public function confirm(Request $request) {
         $itemId = $request->param('item_id', 0);
         $data   = ItemFactorService::doSure((int)$itemId);
         return json(['code' => $data['error'], 'data' => [], 'message' => $data['message']]);
