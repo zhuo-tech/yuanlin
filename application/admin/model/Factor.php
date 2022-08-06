@@ -7,10 +7,8 @@ use think\Model;
 
 class Factor extends Model
 {
-
-    
-
-    
+    const STATUS_ACTIVE = 1;
+    const STATUS_DELETE = 0;
 
     // 表名
     protected $name = 'factor';
@@ -22,17 +20,6 @@ class Factor extends Model
     protected $createTime = false;
     protected $updateTime = false;
     protected $deleteTime = false;
-
-    // 追加属性
-    protected $append = [
-        'create_time_text',
-        'update_time_text'
-    ];
-    
-
-    
-
-
 
     public function getCreateTimeTextAttr($value, $data)
     {
@@ -57,5 +44,8 @@ class Factor extends Model
         return $value === '' ? null : ($value && !is_numeric($value) ? strtotime($value) : $value);
     }
 
-
+    public function factorDetail()
+    {
+        return $this->hasOne(FactorDetail::class);
+    }
 }

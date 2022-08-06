@@ -30,8 +30,6 @@ class FactorDetail extends Model
     ];
     
 
-    
-
 
 
     public function getCreateTimeTextAttr($value, $data)
@@ -56,6 +54,4 @@ class FactorDetail extends Model
     {
         return $value === '' ? null : ($value && !is_numeric($value) ? strtotime($value) : $value);
     }
-
-
 }

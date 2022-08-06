@@ -16,10 +16,10 @@ class Items extends Model
     protected $name = 'items';
     
     // 自动写入时间戳字段
-    protected $autoWriteTimestamp = false;
+    protected $autoWriteTimestamp = true;
 
     // 定义时间戳字段名
-    protected $createTime = false;
+    protected $createTime = true;
     protected $updateTime = false;
     protected $deleteTime = false;
 
