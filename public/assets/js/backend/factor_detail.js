@@ -2,6 +2,9 @@ define(['jquery', 'bootstrap', 'backend', 'table', 'form'], function ($, undefin
 
     var Controller = {
         index: function () {
+            $('.btn-add').data('area',['80%','80%']);
+
+            $('.btn-edit').data('area',['80%','80%']);
             // 初始化表格参数配置
             Table.api.init({
                 extend: {
@@ -47,6 +50,10 @@ define(['jquery', 'bootstrap', 'backend', 'table', 'form'], function ($, undefin
                     ]
                 ]
             });
+
+            table.on('post-body.bs.table',function(){
+                $(".btn-editone").data("area",["80%","80%"]);
+            })
 
             // 为表格绑定事件
             Table.api.bindevent(table);
