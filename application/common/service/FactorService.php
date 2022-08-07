@@ -19,7 +19,7 @@ class FactorService {
      * 获取项目指标树
      * @return array
      */
-    public static function getFactorTree($itemId) {
+    public static function getFactorTree($itemId = 0) {
         // 查询顶级
         if ($itemId) {
             $data = static::getTreeByChild($itemId);

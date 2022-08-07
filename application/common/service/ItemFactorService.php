@@ -78,14 +78,13 @@ class ItemFactorService {
      * @return array
      */
     public static function executeFactors(int $itemId, array $factors): array {
-        try {
+//        try {
             $item = ItemsModel::get($itemId);
             if (empty($item)) {
                 return ['error' => 1, 'message' => '项目不存在', 'data' => []];
             }
 
-            $data = FactorDetailModel::where('factor_id', 'in', [21, 41])->column('input_mode', 'factor_id');
-
+            $data  = FactorDetailModel::where('factor_id', 'in', array_column($factors, 'id'))->column('input_mode', 'factor_id');
             ItemsFactorModel::startTrans();
             foreach ($factors as $key => $factor) {
                 $param = json_encode($factor['param']);
@@ -99,13 +98,13 @@ class ItemFactorService {
                 } else {
                     $result = '';
                 }
-                ItemsFactorModel::update(['param' => $param, 'result' => $result], ['item_id' => $itemId, 'factor_id' => $factor['id']]);
+                ItemsFactorModel::where(['item_id' => $itemId, 'factor_id' => $factor['id']])->update(['param' => $param, 'result' => $result]);
             }
             ItemsFactorModel::commit();
             return ['error' => 0, 'message' => '保存成功', 'data' => []];
-        } catch (\Exception $exception) {
-            ItemsModel::rollback();
-            return ['error' => 1, 'message' => $exception->getMessage(), 'data' => []];
-        }
+//        } catch (\Exception $exception) {
+//            ItemsModel::rollback();
+//            return ['error' => 1, 'message' => $exception->getMessage(), 'data' => []];
+//        }
     }
 }

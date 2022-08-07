@@ -21,7 +21,7 @@ class FactorFormulaService {
      * @throws DbException
      */
     public static function handle($itemId, $factorId, $param) {
-//        try {
+        try {
             // 查询factor_detail
             $factorDetail = FactorDetailModel::where(['factor_id' => $factorId])->find()->toArray();
             // 获取因子计算公式执行函数
@@ -36,9 +36,9 @@ class FactorFormulaService {
             static::$param = $param;
 
             return static::$function();
-//        } catch (\Exception $exception) {
-//            return [];
-//        }
+        } catch (\Exception $exception) {
+            return [];
+        }
     }
 
     /**
