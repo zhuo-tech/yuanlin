@@ -78,7 +78,7 @@ class ItemFactorService {
      * @return array
      */
     public static function executeFactors(int $itemId, array $factors): array {
-//        try {
+        try {
             $item = ItemsModel::get($itemId);
             if (empty($item)) {
                 return ['error' => 1, 'message' => '项目不存在', 'data' => []];
@@ -102,9 +102,9 @@ class ItemFactorService {
             }
             ItemsFactorModel::commit();
             return ['error' => 0, 'message' => '保存成功', 'data' => []];
-//        } catch (\Exception $exception) {
-//            ItemsModel::rollback();
-//            return ['error' => 1, 'message' => $exception->getMessage(), 'data' => []];
-//        }
+        } catch (\Exception $exception) {
+            ItemsModel::rollback();
+            return ['error' => 1, 'message' => $exception->getMessage(), 'data' => []];
+        }
     }
 }
