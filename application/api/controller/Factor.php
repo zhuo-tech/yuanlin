@@ -63,33 +63,33 @@ class Factor extends Api {
         $itemId  = $request->param('item_id', 0);
         $factors = $request->param('factors', []);
 
-        $itemId  = 1;
-        $factors = [
-            [
-                'id'    => 21,
-                'param' => [
-                    'b1' => 1,
-                    'b2' => 2,
-                    'c1' => 3,
-                    'c2' => 4,
-                    'd1' => 5,
-                    'd2' => 6,
-                    'e1' => 7,
-                    'e2' => 8
-                ]
-            ],
-            [
-                'id'    => 41,
-                'param' => []
-            ],
-            [
-                'id' => 23,
-                'param' => [
-                    'b' => 10000,
-                    'c' => 1233
-                ]
-            ]
-        ];
+//        $itemId  = 1;
+//        $factors = [
+//            [
+//                'id'    => 21,
+//                'param' => [
+//                    'b1' => 1,
+//                    'b2' => 2,
+//                    'c1' => 3,
+//                    'c2' => 4,
+//                    'd1' => 5,
+//                    'd2' => 6,
+//                    'e1' => 7,
+//                    'e2' => 8
+//                ]
+//            ],
+//            [
+//                'id'    => 41,
+//                'param' => []
+//            ],
+//            [
+//                'id' => 23,
+//                'param' => [
+//                    'b' => 10000,
+//                    'c' => 1233
+//                ]
+//            ]
+//        ];
         $data    = ItemFactorService::executeFactors((int)$itemId, $factors);
         return json(['code' => $data['error'], 'data' => [], 'message' => $data['message']]);
     }
