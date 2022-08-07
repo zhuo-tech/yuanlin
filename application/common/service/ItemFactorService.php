@@ -92,9 +92,9 @@ class ItemFactorService {
                 if ($type == 'A') {
                     $result = FactorFormulaService::handle($itemId, $factor['id'], $factor['param']);
                 } else if ($type == 'C') {
-                    $result = 's';
-                } else if ($type == 'D') {
                     $result = $factor['param'];
+                } else if ($type == 'D') {
+                    $result = array_sum(array_column($param, 'score')) / count($param);
                 } else {
                     $result = '';
                 }

@@ -6,6 +6,7 @@ namespace app\common\service;
 use app\admin\model\Factor as FactorModel;
 use app\admin\model\FactorDetail as FactorDetailModel;
 use app\admin\model\ItemsFactor;
+use app\admin\model\Questions;
 use think\exception\DbException;
 use function GuzzleHttp\Psr7\str;
 
@@ -43,7 +44,23 @@ class FactorService {
 
         $query = $query->field($field)->join('fa_factor_detail', 'f.id = fa_factor_detail.factor_id', 'left');
 
-        return $query->select()->toArray();
+        $data = $query->select()->toArray();
+
+        foreach ($data as $key => &$value) {
+            $inputModel = strtoupper($value['input_mode']);
+            if ($inputModel == 'A') {
+                $value['option'] = json_decode($value['option'], true) ?? [];
+            } elseif ($inputModel == 'C') {
+                $value['option'] = '';
+            } elseif ($inputModel == 'D') {
+                $questions       = json_decode($value['option']);
+                $value['option'] = [];
+                if ($questions) {
+                    $value['option'] = Questions::whereIn('id', $questions)->field(['id', 'title', 'options'])->select()->toArray();
+                }
+            }
+        }
+        return $data;
     }
 
     /**
@@ -77,7 +94,6 @@ class FactorService {
                     $value[$k] = '';
                 }
             }
-            $value['option']      = json_decode($value['option'], true) ?? [];
             $value['coefficient'] = json_decode($value['coefficient'], true) ?? [];
             if ($value['pid'] == $pid) {
                 unset($data[$key]);
