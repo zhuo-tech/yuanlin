@@ -84,6 +84,9 @@ class Factor extends Api {
         return json(['code' => $data['error'], 'data' => [], 'message' => $data['message']]);
     }
 
+    /**
+     * 获取保存的指标
+     */
     public static function getSaveFactors(Request $request) {
         $itemId  = $request->param('item_id', 0);
         $data = FactorService::getFactorTree($itemId);
