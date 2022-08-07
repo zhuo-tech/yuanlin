@@ -30,16 +30,16 @@ class ItemFactorService {
 
             $data = [];
             foreach ($factors as $key => $factor) {
-                $itemFactor = ItemsModel::find(['item_id' => $itemId, 'factor_id' => $factor]);
+                $itemFactor = ItemsFactorModel::where(['item_id' => $itemId, 'factor_id' => $factor])->select()->toArray();
                 if (empty($itemFactor)) {
-                    $data[$key]['item_id']   = $itemId;
-                    $data[$key]['factor_id'] = $factor;
-                    $data[$key]['result']    = '';
-                    $data[$key]['status']    = 0;
+                    $data[$key]['item_id']     = $itemId;
+                    $data[$key]['factor_id']   = $factor;
+                    $data[$key]['result']      = '';
+                    $data[$key]['status']      = 0;
+                    $data[$key]['create_time'] = time();
                 }
             }
-
-            if (empty($data) || (ItemsModel::saveAll($data))) {
+            if (empty($data) || (ItemsFactorModel::insertAll($data))) {
                 return ['error' => 0, 'message' => 'OK', 'data' => []];
             }
             return ['error' => 1, 'message' => '保存失败', 'data' => []];
@@ -78,34 +78,34 @@ class ItemFactorService {
      * @return array
      */
     public static function executeFactors(int $itemId, array $factors): array {
-        //        try {
-        $item = ItemsModel::get($itemId);
-        if (empty($item)) {
-            return ['error' => 1, 'message' => '项目不存在', 'data' => []];
-        }
-
-        $data = FactorDetailModel::where('factor_id' , 'in', [21, 41])->column('input_mode', 'factor_id');
-
-        ItemsFactorModel::startTrans();
-        foreach ($factors as $key => $factor) {
-            $param = json_encode($factor['param']);
-            $type  = strtoupper($data[$factor['id']]);
-            if ($type == 'A') {
-                $result = FactorFormulaService::handle($itemId, $factor['id'], $factor['param']);
-            } else if ($type == 'C') {
-                $result = 's';
-            } else if ($type == 'D') {
-                $result = $factor['param'];
-            } else {
-                $result = '';
+        try {
+            $item = ItemsModel::get($itemId);
+            if (empty($item)) {
+                return ['error' => 1, 'message' => '项目不存在', 'data' => []];
             }
-            ItemsFactorModel::update(['param' => $param, 'result' => $result], ['item_id' => $itemId, 'factor_id' => $factor['id']]);
+
+            $data = FactorDetailModel::where('factor_id', 'in', [21, 41])->column('input_mode', 'factor_id');
+
+            ItemsFactorModel::startTrans();
+            foreach ($factors as $key => $factor) {
+                $param = json_encode($factor['param']);
+                $type  = strtoupper($data[$factor['id']]);
+                if ($type == 'A') {
+                    $result = FactorFormulaService::handle($itemId, $factor['id'], $factor['param']);
+                } else if ($type == 'C') {
+                    $result = 's';
+                } else if ($type == 'D') {
+                    $result = $factor['param'];
+                } else {
+                    $result = '';
+                }
+                ItemsFactorModel::update(['param' => $param, 'result' => $result], ['item_id' => $itemId, 'factor_id' => $factor['id']]);
+            }
+            ItemsFactorModel::commit();
+            return ['error' => 0, 'message' => '保存成功', 'data' => []];
+        } catch (\Exception $exception) {
+            ItemsModel::rollback();
+            return ['error' => 1, 'message' => $exception->getMessage(), 'data' => []];
         }
-        ItemsFactorModel::commit();
-        return ['error' => 0, 'message' => '保存成功', 'data' => []];
-        //        } catch (\Exception $exception) {
-        //            ItemsModel::rollback();
-        //            return ['error' => 1, 'message' => $exception->getMessage(), 'data' => []];
-        //        }
     }
 }

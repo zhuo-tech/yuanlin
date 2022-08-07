@@ -16,11 +16,11 @@ class ItemsFactor extends Model
     protected $name = 'items_factor';
     
     // 自动写入时间戳字段
-    protected $autoWriteTimestamp = false;
+    protected $autoWriteTimestamp = true;
 
     // 定义时间戳字段名
-    protected $createTime = false;
-    protected $updateTime = false;
+    protected $createTime = true;
+    protected $updateTime = true;
     protected $deleteTime = false;
 
     // 追加属性

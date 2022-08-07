@@ -24,10 +24,13 @@ class Factor extends Api {
 
     /**
      * @brief  保存指标
+     * $itemId  = 1;
+     * $factors = [21, 41, 22, 23];
      */
     public function saveFactors(Request $request) {
         $itemId  = $request->param('item_id', 0);
         $factors = $request->param('factors', []);
+
 
         $data = ItemFactorService::saveFactors((int)$itemId, $factors);
         return json(['code' => $data['error'], 'data' => [], 'message' => $data['message']]);
@@ -48,7 +51,7 @@ class Factor extends Api {
      * factors => [
      *         [
      *             'id'    => 1,
-     *             'param' => []
+     *             'param' => ['b1' => 1, 'c1' => 2]
      *         ],
      *         [
      *             'id'    => 2,
@@ -60,26 +63,26 @@ class Factor extends Api {
         $itemId  = $request->param('item_id', 0);
         $factors = $request->param('factors', []);
 
-        $itemId  = 1;
-        $factors = [
-            [
-                'id'    => 21,
-                'param' => [
-                    'b1' => 1,
-                    'b2' => 2,
-                    'c1' => 3,
-                    'c2' => 4,
-                    'd1' => 5,
-                    'd2' => 6,
-                    'e1' => 7,
-                    'e2' => 8
-                ]
-            ],
-            [
-                'id'    => 41,
-                'param' => []
-            ],
-        ];
+//        $itemId  = 1;
+//        $factors = [
+//            [
+//                'id'    => 21,
+//                'param' => [
+//                    'b1' => 1,
+//                    'b2' => 2,
+//                    'c1' => 3,
+//                    'c2' => 4,
+//                    'd1' => 5,
+//                    'd2' => 6,
+//                    'e1' => 7,
+//                    'e2' => 8
+//                ]
+//            ],
+//            [
+//                'id'    => 41,
+//                'param' => []
+//            ],
+//        ];
         $data    = ItemFactorService::executeFactors((int)$itemId, $factors);
         return json(['code' => $data['error'], 'data' => [], 'message' => $data['message']]);
     }
@@ -88,8 +91,8 @@ class Factor extends Api {
      * 获取保存的指标
      */
     public static function getSaveFactors(Request $request) {
-        $itemId  = $request->param('item_id', 0);
-        $data = FactorService::getFactorTree($itemId);
+        $itemId = $request->param('item_id', 0);
+        $data   = FactorService::getFactorTree($itemId);
         return json(['code' => 0, 'data' => $data, 'message' => 'OK']);
     }
 }
