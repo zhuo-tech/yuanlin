@@ -20,15 +20,10 @@ class FactorFormulaService {
     /**
      * @throws DbException
      */
-    public static function handle($itemId, $factorId, $param): array {
-        try {
+    public static function handle($itemId, $factorId, $param) {
+//        try {
             // 查询factor_detail
-            $factorDetail = FactorDetailModel::get($factorId);
-            // 获取item的factor参数
-            $itemFactor = ItemsFactor::where(['item_id' => $itemId, 'factor_id' => $factorId])->select();
-            if (empty($itemFactor)) {
-                return [];
-            }
+            $factorDetail = FactorDetailModel::where(['factor_id' => $factorId])->find()->toArray();
             // 获取因子计算公式执行函数
             $function = $factorDetail['method'] ?? '';
             if (empty($function)) {
@@ -38,12 +33,12 @@ class FactorFormulaService {
             // 获取公式的系统配置系数
             static::$coefficient = json_decode($factorDetail['coefficient'], true);
             // 获取公式的用户输入参数
-            static::$param = json_decode($itemFactor['param'], true);
+            static::$param = $param;
 
             return static::$function();
-        } catch (\Exception $exception) {
-            return [];
-        }
+//        } catch (\Exception $exception) {
+//            return [];
+//        }
     }
 
     /**

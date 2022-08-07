@@ -6,7 +6,7 @@ namespace app\common\service;
 use app\admin\model\Factor as FactorModel;
 use app\admin\model\FactorDetail as FactorDetailModel;
 use app\admin\model\Items as ItemsModel;
-use app\admin\model\ItemsFactor;
+use app\admin\model\ItemsFactor as ItemsFactorModel;
 use think\exception\DbException;
 
 
@@ -78,23 +78,34 @@ class ItemFactorService {
      * @return array
      */
     public static function executeFactors(int $itemId, array $factors): array {
-        try {
-            $item = ItemsModel::get($itemId);
-            if (empty($item)) {
-                return ['error' => 1, 'message' => '项目不存在', 'data' => []];
-            }
-
-            ItemsModel::startTrans();
-            foreach ($factors as $key => $factor) {
-                $param  = json_encode($factor['param']);
-                $result = FactorFormulaService::handle($itemId, $factor['id'], $factor['param']);
-                ItemsModel::update(['param' => $param, 'result' => $result], ['item_id' => $itemId, 'factor_id' => $factor['id']]);
-            }
-            ItemsModel::commit();
-            return ['error' => 0, 'message' => '保存成功', 'data' => []];
-        } catch (\Exception $exception) {
-            ItemsModel::rollback();
-            return ['error' => 1, 'message' => $exception->getMessage(), 'data' => []];
+        //        try {
+        $item = ItemsModel::get($itemId);
+        if (empty($item)) {
+            return ['error' => 1, 'message' => '项目不存在', 'data' => []];
         }
+
+        $data = FactorDetailModel::where('factor_id' , 'in', [21, 41])->column('input_mode', 'factor_id');
+
+        ItemsFactorModel::startTrans();
+        foreach ($factors as $key => $factor) {
+            $param = json_encode($factor['param']);
+            $type  = strtoupper($data[$factor['id']]);
+            if ($type == 'A') {
+                $result = FactorFormulaService::handle($itemId, $factor['id'], $factor['param']);
+            } else if ($type == 'C') {
+                $result = 's';
+            } else if ($type == 'D') {
+                $result = $factor['param'];
+            } else {
+                $result = '';
+            }
+            ItemsFactorModel::update(['param' => $param, 'result' => $result], ['item_id' => $itemId, 'factor_id' => $factor['id']]);
+        }
+        ItemsFactorModel::commit();
+        return ['error' => 0, 'message' => '保存成功', 'data' => []];
+        //        } catch (\Exception $exception) {
+        //            ItemsModel::rollback();
+        //            return ['error' => 1, 'message' => $exception->getMessage(), 'data' => []];
+        //        }
     }
 }
