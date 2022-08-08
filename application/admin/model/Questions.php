@@ -32,7 +32,7 @@ class Questions extends Model
     
     public function getStatusList()
     {
-        return ['11' => __('Status 11')];
+        return ['1' => "正常",'0'=>"删除"];
     }
 
 

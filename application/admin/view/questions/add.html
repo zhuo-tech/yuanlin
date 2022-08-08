@@ -9,21 +9,20 @@
     <div class="form-group">
         <label class="control-label col-xs-12 col-sm-2">{:__('Options')}:</label>
         <div class="col-xs-12 col-sm-8">
-            <textarea id="c-options" class="form-control " rows="5" name="row[options]" cols="50"></textarea>
+            <dl class="fieldlist" data-name="row[options]" data-template="testtpl">
+                <dd>
+                    <ins>选项</ins>
+                    <ins>名称</ins>
+                    <ins>分数</ins>
+                </dd>
+                <dd>
+                    <a href="javascript:;" class="btn btn-sm btn-success btn-append"><i class="fa fa-plus"></i> 追加</a>
+                </dd>
+                <textarea name="row[options]" class="form-control hide" cols="30" rows="5"></textarea>
+            </dl>
         </div>
     </div>
-    <div class="form-group">
-        <label class="control-label col-xs-12 col-sm-2">{:__('Status')}:</label>
-        <div class="col-xs-12 col-sm-8">
-            
-            <div class="radio">
-            {foreach name="statusList" item="vo"}
-            <label for="row[status]-{$key}"><input id="row[status]-{$key}" name="row[status]" type="radio" value="{$key}" {in name="key" value="11"}checked{/in} /> {$vo}</label> 
-            {/foreach}
-            </div>
 
-        </div>
-    </div>
     <div class="form-group layer-footer">
         <label class="control-label col-xs-12 col-sm-2"></label>
         <div class="col-xs-12 col-sm-8">
@@ -32,3 +31,13 @@
         </div>
     </div>
 </form>
+
+
+<script type="text/html" id="testtpl">
+    <dd class="form-inline">
+        <input type="text" name="row[<%=name%>][<%=index%>][var]" class="form-control" value="<%=row['var']%>" size="10">
+        <input type="text" name="row[<%=name%>][<%=index%>][label]" class="form-control" value="<%=row['label']%>" size="30">
+        <input type="text" name="row[<%=name%>][<%=index%>][score]" class="form-control" value="<%=row['score']%>" size="30">
+        <span class="btn btn-sm btn-danger btn-remove"><i class="fa fa-times"></i></span> <span class="btn btn-sm btn-primary btn-dragsort"><i class="fa fa-arrows"></i></span>
+    </dd>
+</script>
