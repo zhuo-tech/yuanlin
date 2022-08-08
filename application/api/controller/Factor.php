@@ -8,7 +8,7 @@ use app\common\service\ItemFactorService;
 use think\Request;
 
 /**
- * 首页接口
+ * 指标接口
  */
 class Factor extends Api {
     protected $noNeedLogin = ['*'];
