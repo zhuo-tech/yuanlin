@@ -16,6 +16,8 @@ class Factor extends Api {
 
     /**
      * @brief 获取所有项目指标
+     *
+     *@ApiReturnParams   (name="data", type="object", sample="[{'name':'string','id':'int','child':[{'email':'string','age':'integer'}]}]", description="扩展数据返回")
      */
     public function tree() {
         $data = FactorService::getFactorTree();
@@ -26,6 +28,15 @@ class Factor extends Api {
      * @brief  保存指标
      * $itemId  = 1;
      * $factors = [21, 41, 22, 23];
+
+     * @ApiParams   (name="item_id", type="integer", required=true, description="项目id")
+     * @ApiParams   (name="factors", type="array", required=true,sample="[21, 41, 22, 23]", description="指标id")
+
+     * @ApiReturn   ({
+        'code':'1',
+        'mesg':'返回成功'
+        })
+     *
      */
     public function saveFactors(Request $request) {
         $itemId  = $request->param('item_id', 0);
