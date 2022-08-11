@@ -76,7 +76,7 @@ class Items extends Backend
         foreach ($rows as &$row){
             $cate = \app\admin\model\ItemsCate::where(['id'=>$row['item_cate_id']])->find();
             $row['item_cate_name'] = $cate['name'];
-            $row['item_type'] = $this->itemType[$row['item_type']];
+            //$row['item_type'] = $this->itemType[$row['item_type']];
         }
 
         $result = ['total' => $total, 'rows' =>$rows];
