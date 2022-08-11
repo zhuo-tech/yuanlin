@@ -16,7 +16,7 @@ class Item extends Api {
     protected $noNeedRight = ['*'];
 
     /**
-     * @brief  创建项目
+     * @ApiTitle    (创建项目)
      * @ApiParams   (name="name", type="string", required=true, description="项目名称")
      * @ApiParams   (name="item_type", type="int", required=true, description="项目类型")
      * @ApiParams   (name="province", type="int", required=true, description="省CODE")
@@ -41,7 +41,7 @@ class Item extends Api {
     }
 
     /**
-     * @brief 根据分类查询
+     * @ApiTitle根据分类查询
      *
      * @ApiParams   (name="page", type="string", required=false, description="页数")
      * @ApiParams   (name="cid", type="string", required=false, description="分类ID")

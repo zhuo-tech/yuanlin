@@ -16,6 +16,9 @@ class Category extends Api {
     protected $noNeedLogin = ['*'];
     protected $noNeedRight = ['*'];
 
+    /**
+     * @ApiTitle (分类列表)
+     */
     public function category() {
         $data = ItemCategoryService::category();
         return json(['code' => 0, 'message' => 'OK', 'data' => $data]);
