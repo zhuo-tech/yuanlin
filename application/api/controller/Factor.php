@@ -66,7 +66,7 @@ class Factor extends Api {
     /**
      * @brief 执行计算指标
      * @ApiParams   (name="item_id", type="integer", required=true, description="项目id")
-     * @ApiParams   (name="factors", type="array", required=true,sample="[{"id":1,"param":{"b1":1,"c1":2}},{"id":2,"param":{"b1":1}}]", description="指标id")
+     * @ApiParams   (name="factors", type="object", required=true, sample="[{"id":1,"param":{"b1":1,"c1":2}},{"id":2,"param":{"b1":1}}]", description="指标id")
 
      * @ApiReturn   ({
         'code':'0',
