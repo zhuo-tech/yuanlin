@@ -94,7 +94,7 @@ class ItemFactorService {
                 } else if ($type == 'C') {
                     $result = $factor['param'];
                 } else if ($type == 'D') {
-                    $result = array_sum(array_column($param, 'score')) / count($param);
+                    $result = array_sum(array_column($factor['param'], 'score')) / count($factor['param']);
                 } else {
                     $result = '';
                 }
