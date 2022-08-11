@@ -59,6 +59,4 @@ class Item extends Api {
         $data = ItemService::cate(['cid' => $cid, 'keyword' => $keyword], $page);
         return json(['code' => 0, 'message' => 'OK', 'data' => $data]);
     }
-
-    public function
 }
