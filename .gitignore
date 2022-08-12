@@ -1,6 +1,7 @@
 /nbproject/
 /runtime/*
 /addons/*
+/vendor
 
 /public/assets/addons/*
 /public/uploads/*
