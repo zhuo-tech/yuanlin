@@ -23,15 +23,6 @@ class ItemsCate extends Model
     protected $updateTime = false;
     protected $deleteTime = false;
 
-    // 追加属性
-    protected $append = [
-        'create_time_text',
-        'update_time_text'
-    ];
-    
-
-    
-
 
 
     public function getCreateTimeTextAttr($value, $data)

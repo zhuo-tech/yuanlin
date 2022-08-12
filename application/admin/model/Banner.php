@@ -24,11 +24,11 @@ class Banner extends Model
     protected $deleteTime = false;
 
     // 追加属性
-    protected $append = [
-        'status_text',
-        'create_time_text'
-    ];
-    
+//    protected $append = [
+//        'status_text',
+//        'create_time_text'
+//    ];
+//
 
     
     public function getStatusList()

@@ -16,7 +16,7 @@ class Item extends Api {
     protected $noNeedRight = ['*'];
 
     /**
-     * @brief  创建项目
+     * @ApiTitle    (创建项目)
      * @ApiParams   (name="name", type="string", required=true, description="项目名称")
      * @ApiParams   (name="item_type", type="int", required=true, description="项目类型")
      * @ApiParams   (name="province", type="int", required=true, description="省CODE")
@@ -38,5 +38,25 @@ class Item extends Api {
     public function store(Request $request) {
         $data = ItemService::saveItem($request->param());
         return json(['code' => $data['error'], 'data' => [], 'message' => $data['message']]);
+    }
+
+    /**
+     * @ApiTitle根据分类查询
+     *
+     * @ApiParams   (name="page", type="string", required=false, description="页数")
+     * @ApiParams   (name="cid", type="string", required=false, description="分类ID")
+     * @ApiParams   (name="keyword", type="string", required=false, description="搜索关键词")
+     * @ApiReturn   ({
+    'code':'0',
+    'mesg':'返回成功',
+    })
+     */
+    public function query(Request $request) {
+        $page    = $request->param('page', 0);
+        $cid     = $request->param('bid', 0);
+        $keyword = $request->param('keyword', '');
+
+        $data = ItemService::cate(['cid' => $cid, 'keyword' => $keyword], $page);
+        return json(['code' => 0, 'message' => 'OK', 'data' => $data]);
     }
 }
