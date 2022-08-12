@@ -8,16 +8,29 @@ use app\common\service\ItemFactorService;
 use think\Request;
 
 /**
- * 指标接口
+ * @title 指标
+ * @description 接口说明
  */
 class Factor extends Api {
     protected $noNeedLogin = ['*'];
     protected $noNeedRight = ['*'];
 
     /**
-     * @@ApiTitle (获取所有项目指标)
-     *
-     *@ApiReturn   (name="data", type="object", sample="[{'name':'string','id':'int','child':[{'email':'string','age':'integer'}]}]", description="扩展数据返回")
+     * @title 指标树
+     * @description 接口说明
+     * @author 开发者
+     * @url /api/factor/tree
+     * @method GET
+
+     * @return name:名称
+     * @return id:id
+     * @return input_mode:输入模式
+     * @return option:选项@option
+     * @option name:名称 var:指标 tip:提示
+     * @return meaning:含义
+     * @return source:来源
+     * @return child:子指标@child
+     * @child name:名称 id:id input_mode:输入模式 option:选项 meaning:含义 source:来源 child:子指标
      */
     public function tree() {
         $data = FactorService::getFactorTree();
@@ -25,17 +38,15 @@ class Factor extends Api {
     }
 
     /**
-     * @ApiTitle  (保存指标)
-     * $itemId  = 1;
-     * $factors = [21, 41, 22, 23];
-     * @ApiParams   (name="item_id", type="integer", required=true, description="项目id")
-     * @ApiParams   (name="factors", type="array", required=true,sample="[21, 41, 22, 23]", description="指标id")
+     * @title 保存指标
+     * @description 接口说明
+     * @author 开发者
+     * @url /api/factor/saveFactors
+     * @method POST
 
-     * @ApiReturn   ({
-        'code':'0',
-        'mesg':'返回成功'
-        })
-     *
+     * @param name:item_id type:int require:1 default:1 other: desc:项目id
+     * @param name:factors type:array require:1 default:[] other: desc:指标数组
+
      */
     public function saveFactors(Request $request) {
         $itemId  = $request->param('item_id');

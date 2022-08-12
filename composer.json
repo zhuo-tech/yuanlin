@@ -30,10 +30,15 @@
         "ext-curl": "*",
         "ext-pdo": "*",
         "ext-bcmath": "*",
-        "txthinking/mailer": "^2.0"
+        "txthinking/mailer": "^2.0",
+        "weiwei/api-doc": "1.6.2"
     },
     "config": {
-        "preferred-install": "dist"
+        "preferred-install": "dist",
+        "allow-plugins": {
+            "topthink/think-installer": true,
+            "easywechat-composer/easywechat-composer": true
+        }
     },
     "repositories": [
         {

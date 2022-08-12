@@ -22,11 +22,8 @@ use Psr\Container\ContainerInterface;
 trait ServiceSubscriberTrait
 {
     /** @var ContainerInterface */
-    protected $container;
+    private $container;
 
-    /**
-     * {@inheritdoc}
-     */
     public static function getSubscribedServices(): array
     {
         static $services;
@@ -35,26 +32,16 @@ trait ServiceSubscriberTrait
             return $services;
         }
 
-        $services = method_exists(get_parent_class(self::class) ?: '', __FUNCTION__) ? parent::getSubscribedServices() : [];
+        $services = \is_callable(['parent', __FUNCTION__]) ? parent::getSubscribedServices() : [];
 
         foreach ((new \ReflectionClass(self::class))->getMethods() as $method) {
             if ($method->isStatic() || $method->isAbstract() || $method->isGenerator() || $method->isInternal() || $method->getNumberOfRequiredParameters()) {
                 continue;
             }
 
-            if (self::class !== $method->getDeclaringClass()->name) {
-                continue;
+            if (self::class === $method->getDeclaringClass()->name && ($returnType = $method->getReturnType()) && !$returnType->isBuiltin()) {
+                $services[self::class.'::'.$method->name] = '?'.$returnType->getName();
             }
-
-            if (!($returnType = $method->getReturnType()) instanceof \ReflectionNamedType) {
-                continue;
-            }
-
-            if ($returnType->isBuiltin()) {
-                continue;
-            }
-
-            $services[self::class.'::'.$method->name] = '?'.$returnType->getName();
         }
 
         return $services;
@@ -62,17 +49,13 @@ trait ServiceSubscriberTrait
 
     /**
      * @required
-     *
-     * @return ContainerInterface|null
      */
     public function setContainer(ContainerInterface $container)
     {
         $this->container = $container;
 
-        if (method_exists(get_parent_class(self::class) ?: '', __FUNCTION__)) {
+        if (\is_callable(['parent', __FUNCTION__])) {
             return parent::setContainer($container);
         }
-
-        return null;
     }
 }
