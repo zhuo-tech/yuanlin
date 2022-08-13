@@ -9,7 +9,6 @@ use app\admin\model\FactorDetail as FactorDetailModel;
 use app\admin\model\ItemsFactor;
 use app\admin\model\Questions;
 use think\exception\DbException;
-use function GuzzleHttp\Psr7\str;
 
 
 /**

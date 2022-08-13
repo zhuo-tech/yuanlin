@@ -3,13 +3,7 @@
 namespace app\common\service;
 
 
-use app\admin\model\Factor as FactorModel;
-use app\admin\model\FactorDetail as FactorDetailModel;
 use app\admin\model\ItemsCate;
-use app\admin\model\ItemsFactor;
-use app\admin\model\Questions;
-use think\exception\DbException;
-use function GuzzleHttp\Psr7\str;
 
 
 /**

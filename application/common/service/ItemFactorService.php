@@ -3,11 +3,9 @@
 namespace app\common\service;
 
 
-use app\admin\model\Factor as FactorModel;
 use app\admin\model\FactorDetail as FactorDetailModel;
 use app\admin\model\Items as ItemsModel;
 use app\admin\model\ItemsFactor as ItemsFactorModel;
-use think\exception\DbException;
 
 
 /**

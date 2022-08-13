@@ -3,10 +3,8 @@
 namespace app\common\service;
 
 
-use app\admin\model\ItemsCate;
 use app\admin\validate\Items as ItemsValidate;
 use app\admin\model\Items;
-use function GuzzleHttp\Psr7\str;
 
 
 /**
