@@ -13,10 +13,11 @@ class Banner extends Api {
     protected $noNeedRight = ['*'];
 
     /**
-     *@brief Banner
+     * @brief Banner
      */
     public function index() {
-        $banners = BannerModel::where(['status' => 1])->field(['id', 'name', 'image', 'type', 'link'])->order('sort', 'asc')->select()->toArray();
-        return json(['code' => 0, 'message' => 'OK', 'data'=> $banners]);
+        $banners = BannerModel::where(['status' => 1])->field(['id', 'name', 'image', 'type', 'link'])
+            ->order('sort', 'asc')->select()->toArray();
+        return json(['code' => 0, 'message' => 'OK', 'data' => $banners]);
     }
 }
