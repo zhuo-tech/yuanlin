@@ -62,6 +62,10 @@ class ItemService {
             $where['name'] = ['like', "%{$search['keyword']}%"];
         }
 
+        if ($search['uid']) {
+            $where['uid'] = ['=', $search['uid']];
+        }
+
         $order         = 'id desc';
         $limit         = 10;
         $list          = Items::where($where)->field($fields)->orderRaw($order)->paginate($limit, false, ['page' => $page])->toArray();

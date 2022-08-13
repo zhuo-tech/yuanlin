@@ -54,10 +54,14 @@ class FactorService {
                 $value['option'] = '';
             } elseif ($inputModel == 'D') {
                 $questions       = json_decode($value['option']);
-                $value['option'] = [];
+                $questionOptions = [];
                 if ($questions) {
-                    $value['option'] = Questions::whereIn('id', $questions)->field(['id', 'title', 'options'])->select()->toArray();
+                    $questionOptions  = Questions::whereIn('id', $questions)->field(['id', 'title', 'options'])->select()->toArray();
+                    foreach ($questionOptions as &$questionOption) {
+                        $questionOption['options'] = json_decode($questionOption['options'], true);
+                    }
                 }
+                $value['option'] = $questionOptions;
             }
         }
         return $data;
