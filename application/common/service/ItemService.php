@@ -43,18 +43,9 @@ class ItemService {
     public static function cate($search, $page = 1, $fields = '*') {
         $page = ($page >= 1) ? $page : 1;
 
-        //  根据分类查询 判断是一级分类还是二级分类
-        if (isset($search['cid']) && $search['cid']) {
-            //  判断是一级分类还是二级分类
-            $cate = ItemsCate::find($search['cid']);
-            if (isset($cate['pid']) && ($cate['pid'] == 0)) {
-                $cates                 = ItemsCate::where(['pid' => $cate['id'], 'status' => 1])->column('id');
-                $cates[] = $cate['id'];
-
-                $where['item_cate_id'] = ['in', $cates];
-            } else {
-                $where['item_cate_id'] = ['=', $search['cid']];
-            }
+        $cid = ItemCategoryService::innermost($search['cid']);
+        if ($cid) {
+            $where['item_cate_id'] = ['in', $cid];
         }
 
         $where['status'] = 1;
@@ -71,6 +62,33 @@ class ItemService {
         $list          = Items::where($where)->field($fields)->orderRaw($order)->paginate($limit, false, ['page' => $page])->toArray();
         $data['list']  = $list['data'];
         $data['total'] = (int)ceil($list['total'] / $limit);
+        return $data;
+    }
+
+    public static function search($search, $page = 1) {
+        $page = ($page >= 1) ? $page : 1;
+
+        $fid = FactorService::innermost($search['fid']);
+        if ($fid) {
+            $where['fa_items_factor.factor_id'] = ['in', $fid];
+        }
+        $where['i.status'] = 1;
+        if ($search['keyword']) {
+            $where['name'] = ['like', "%{$search['keyword']}%"];
+        }
+
+        if ($search['uid']) {
+            $where['uid'] = ['=', $search['uid']];
+        }
+
+        $order         = 'i.id desc';
+        $limit         = 10;
+        $fields        = 'i.*';
+        $list          = Items::alias('i')->join('fa_items_factor', 'fa_items_factor.item_id = i.id', 'left')
+                        ->where($where)->field($fields)->orderRaw($order)->group('i.id')->paginate($limit, false, ['page' => $page])->toArray();
+        $data['total'] = $list['total'];
+        $data['pages'] = (int)ceil($list['total'] / $limit);
+        $data['list']  = $list['data'];
         return $data;
     }
 }

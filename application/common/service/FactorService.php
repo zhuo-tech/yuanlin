@@ -3,6 +3,7 @@
 namespace app\common\service;
 
 
+use app\admin\model\Factor;
 use app\admin\model\Factor as FactorModel;
 use app\admin\model\FactorDetail as FactorDetailModel;
 use app\admin\model\ItemsFactor;
@@ -106,5 +107,28 @@ class FactorService {
             }
         }
         return $tree;
+    }
+
+    /**
+     * @brief 根据ID查询指标ID
+     * @param $id
+     */
+    public static function innermost($id) {
+        $factor = Factor::find($id);
+        $data   = [];
+        if (empty($factor)) {
+            return [];
+        }
+        if ($factor['pid'] == 0) {
+            $factorIds = Factor::where(['pid' => $id])->column('id');
+            if (empty($factorIds)) {
+                return [];
+            }
+            $map['pid']     = ['in', $factorIds];
+            $data = Factor::whereIn('id', $factorIds)->whereOr($map)->where(['status' => 1])->column('id');
+        } else {
+            $data = Factor::where(['id' => $id])->whereOr(['pid' => $id])->where(['status' => 1])->column('id');
+        }
+        return $data;
     }
 }

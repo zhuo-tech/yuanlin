@@ -35,4 +35,17 @@ class Item extends Api {
         $data = ItemService::cate(['cid' => $cid, 'uid' => $uid, 'keyword' => $keyword], $page);
         return json(['code' => 0, 'message' => 'OK', 'data' => $data]);
     }
+
+    /**
+     * @brief 根据分类查询
+     */
+    public function search(Request $request) {
+        $page    = $request->param('page', 0);
+        $fid     = $request->param('fid', 0);
+        $uid     = $request->param('uid', 0);
+        $keyword = $request->param('keyword', '');
+
+        $data = ItemService::search(['fid' => $fid, 'uid' => $uid, 'keyword' => $keyword], $page);
+        return json(['code' => 0, 'message' => 'OK', 'data' => $data]);
+    }
 }

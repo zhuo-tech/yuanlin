@@ -44,4 +44,17 @@ class ItemCategoryService {
         }
         return $tree;
     }
+
+    /**
+     * @brief 根据ID返回子级ID
+     * @param $cid
+     */
+    public static function innermost($cid) {
+        $cid    = intval($cid);
+        if ($cid <= 0) {
+            return [];
+        }
+        $data   = ItemsCate::where('id|pid', '=', $cid)->where(['status' => 1])->column('id');
+        return $data;
+    }
 }
