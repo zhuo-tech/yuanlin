@@ -87,10 +87,9 @@ class ItemService {
         }
 
         $order         = 'i.id desc';
-        $limit         = $size;
         $fields        = 'i.*';
         $list          = Items::alias('i')->join('fa_items_factor', 'fa_items_factor.item_id = i.id', 'left')
-                        ->where($where)->field($fields)->orderRaw($order)->group('i.id')->paginate($limit, false, ['page' => $page])->toArray();
+                        ->where($where)->field($fields)->orderRaw($order)->group('i.id')->paginate($size, false, ['page' => $page])->toArray();
         $data['total'] = $list['total'];
         $data['pages'] = (int)ceil($list['total'] / $limit);
         $data['list']  = $list['data'];
