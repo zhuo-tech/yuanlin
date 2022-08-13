@@ -37,7 +37,7 @@ class Item extends Api {
     }
 
     /**
-     * @brief 根据分类查询
+     * @brief 根据指标查询
      */
     public function search(Request $request) {
         $page    = $request->param('page', 0);

@@ -65,6 +65,13 @@ class ItemService {
         return $data;
     }
 
+    /**
+     * @brief 根据指标查询
+     * @param $search
+     * @param $page
+     * @return array
+     * @throws \think\exception\DbException
+     */
     public static function search($search, $page = 1) {
         $page = ($page >= 1) ? $page : 1;
 
