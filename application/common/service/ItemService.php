@@ -70,7 +70,7 @@ class ItemService {
      * @return array
      * @throws \think\exception\DbException
      */
-    public static function search($search, $page = 1) {
+    public static function search($search, $page = 1, $size = 10) {
         $page = ($page >= 1) ? $page : 1;
 
         $fid = FactorService::innermost($search['fid']);
@@ -87,7 +87,7 @@ class ItemService {
         }
 
         $order         = 'i.id desc';
-        $limit         = 10;
+        $limit         = $size;
         $fields        = 'i.*';
         $list          = Items::alias('i')->join('fa_items_factor', 'fa_items_factor.item_id = i.id', 'left')
                         ->where($where)->field($fields)->orderRaw($order)->group('i.id')->paginate($limit, false, ['page' => $page])->toArray();
