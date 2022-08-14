@@ -29,11 +29,11 @@ class Download extends Api {
      * @brief 下载案例
      */
     public function cases(Request $request) {
-        $page = $request->param('page', 0);
-        $type = $request->param('type');
-        $name = $request->param('keyword');
-
-        $data = DownloadService::search(['type' => $type, 'keyword' => $name], $page, ['id', 'name', 'year', 'description']);
+        $page   = $request->param('page', 0);
+        $type   = $request->param('type');
+        $name   = $request->param('keyword');
+        $fields = ['id', 'name', 'year', 'description', 'link', 'document'];
+        $data   = DownloadService::search(['type' => $type, 'keyword' => $name], $page, $fields);
         return json(['code' => 0, 'data' => $data, 'message' => 'OK']);
     }
 }
