@@ -31,7 +31,12 @@
         "ext-pdo": "*",
         "ext-bcmath": "*",
         "txthinking/mailer": "^2.0",
-        "weiwei/api-doc": "1.6.2"
+        "weiwei/api-doc": "1.6.2",
+        "alibabacloud/dysmsapi-20170525": "^2.0.18",
+        "alibabacloud/darabonba-openapi": "^0.2.5",
+        "alibabacloud/tea-console": "^0.1.0",
+        "alibabacloud/tea-utils": "^0.2.0",
+        "alibabacloud/smsintl": "^1.8"
     },
     "config": {
         "preferred-install": "dist",
@@ -40,10 +45,14 @@
             "easywechat-composer/easywechat-composer": true
         }
     },
-    "repositories": [
-        {
+    "repositories": {
+        "packagist": {
+            "type": "composer",
+            "url": "https://mirrors.aliyun.com/composer/"
+        },
+        "0": {
             "type": "git",
             "url": "https://gitee.com/fastadminnet/framework.git"
         }
-    ]
+    }
 }

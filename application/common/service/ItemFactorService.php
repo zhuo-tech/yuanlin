@@ -3,11 +3,9 @@
 namespace app\common\service;
 
 
-use app\admin\model\Factor as FactorModel;
 use app\admin\model\FactorDetail as FactorDetailModel;
 use app\admin\model\Items as ItemsModel;
 use app\admin\model\ItemsFactor as ItemsFactorModel;
-use think\exception\DbException;
 
 
 /**
@@ -101,7 +99,7 @@ class ItemFactorService {
                 ItemsFactorModel::where(['item_id' => $itemId, 'factor_id' => $factor['id']])->update(['param' => $param, 'result' => $result]);
             }
             ItemsFactorModel::commit();
-            return ['error' => 0, 'message' => '保存成功', 'data' => []];
+            return ['error' => 0, 'message' => '结果计算完成', 'data' => []];
         } catch (\Exception $exception) {
             ItemsModel::rollback();
             return ['error' => 1, 'message' => $exception->getMessage(), 'data' => []];

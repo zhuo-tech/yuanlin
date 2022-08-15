@@ -17,7 +17,7 @@ class Category extends Api {
     protected $noNeedRight = ['*'];
 
     /**
-     * @ApiTitle (分类列表)
+     * @brief 分类列表
      */
     public function category() {
         $data = ItemCategoryService::category();

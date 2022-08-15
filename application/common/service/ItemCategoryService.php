@@ -3,13 +3,7 @@
 namespace app\common\service;
 
 
-use app\admin\model\Factor as FactorModel;
-use app\admin\model\FactorDetail as FactorDetailModel;
 use app\admin\model\ItemsCate;
-use app\admin\model\ItemsFactor;
-use app\admin\model\Questions;
-use think\exception\DbException;
-use function GuzzleHttp\Psr7\str;
 
 
 /**
@@ -22,7 +16,7 @@ class ItemCategoryService {
      * @return array
      */
     public static function category($itemId = 0) {
-        $data = ItemsCate::where(['status' => 1])->field(['id', 'pid', 'name', 'label'])->select()->toArray();
+        $data = ItemsCate::where(['status' => 1])->field(['id', 'pid', 'name', 'type'])->select()->toArray();
         return static::sortData($data);
     }
 
@@ -43,5 +37,18 @@ class ItemCategoryService {
             }
         }
         return $tree;
+    }
+
+    /**
+     * @brief 根据ID返回子级ID
+     * @param $cid
+     */
+    public static function innermost($cid) {
+        $cid    = intval($cid);
+        if ($cid <= 0) {
+            return [];
+        }
+        $data   = ItemsCate::where('id|pid', '=', $cid)->where(['status' => 1])->column('id');
+        return $data;
     }
 }

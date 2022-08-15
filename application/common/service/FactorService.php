@@ -3,12 +3,12 @@
 namespace app\common\service;
 
 
+use app\admin\model\Factor;
 use app\admin\model\Factor as FactorModel;
 use app\admin\model\FactorDetail as FactorDetailModel;
 use app\admin\model\ItemsFactor;
 use app\admin\model\Questions;
 use think\exception\DbException;
-use function GuzzleHttp\Psr7\str;
 
 
 /**
@@ -36,7 +36,7 @@ class FactorService {
      */
     public static function factorData($id = []): array {
         $where = ['f.status' => 1];
-        $field = ['name', 'f.id', 'input_mode', 'option', 'coefficient', 'pid', 'method', 'meaning', 'calc_method', 'source'];
+        $field = ['name', 'f.id', 'input_mode', 'option', 'coefficient', 'pid', 'method', 'meaning', 'calc_method', 'source', 'document'];
         $query = FactorModel::alias('f')->where($where);
         if ($id) {
             $query = $query->whereIn('f.id', $id);
@@ -54,10 +54,14 @@ class FactorService {
                 $value['option'] = '';
             } elseif ($inputModel == 'D') {
                 $questions       = json_decode($value['option']);
-                $value['option'] = [];
+                $questionOptions = [];
                 if ($questions) {
-                    $value['option'] = Questions::whereIn('id', $questions)->field(['id', 'title', 'options'])->select()->toArray();
+                    $questionOptions  = Questions::whereIn('id', $questions)->field(['id', 'title', 'options'])->select()->toArray();
+                    foreach ($questionOptions as &$questionOption) {
+                        $questionOption['options'] = json_decode($questionOption['options'], true);
+                    }
                 }
+                $value['option'] = $questionOptions;
             }
         }
         return $data;
@@ -102,5 +106,28 @@ class FactorService {
             }
         }
         return $tree;
+    }
+
+    /**
+     * @brief 根据ID查询指标ID
+     * @param $id
+     */
+    public static function innermost($id) {
+        $factor = Factor::find($id);
+        $data   = [];
+        if (empty($factor)) {
+            return [];
+        }
+        if ($factor['pid'] == 0) {
+            $factorIds = Factor::where(['pid' => $id])->column('id');
+            if (empty($factorIds)) {
+                return [];
+            }
+            $map['pid']     = ['in', $factorIds];
+            $data = Factor::whereIn('id', $factorIds)->whereOr($map)->where(['status' => 1])->column('id');
+        } else {
+            $data = Factor::where(['id' => $id])->whereOr(['pid' => $id])->where(['status' => 1])->column('id');
+        }
+        return $data;
     }
 }
