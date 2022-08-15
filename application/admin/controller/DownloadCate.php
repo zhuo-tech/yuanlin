@@ -179,7 +179,13 @@ class DownloadCate extends Backend
                 $this->model->order($order);
             }
 
-            $datalist = $this->model->where($where)
+            $query = $this->model->where($where);
+
+            if($this->request->request("type") =='add'){
+                $query = $query->where(['pid'=>0]);
+            }
+
+            $datalist = $query
                 ->page($page, $pagesize)
                 ->select();
 
