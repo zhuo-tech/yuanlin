@@ -19,11 +19,29 @@ class Factor extends Backend
      * @var \app\admin\model\Factor
      */
     protected $model = null;
+    protected $catelist = [];
 
     public function _initialize()
     {
         parent::_initialize();
         $this->model = new \app\admin\model\Factor;
+
+
+        $dataList = \think\Db::name("factor")->field('*', true)->order('id ASC')->select();
+        foreach ($dataList as $k => &$v) {
+            $v['name'] = __($v['name']);
+        }
+        unset($v);
+        Tree::instance()->init($dataList);
+
+        $this->catelist = Tree::instance()->getTreeList(Tree::instance()->getTreeArray(0), 'name');
+
+        $catedata = [0 => __('None')];
+
+        foreach ($this->catelist as $k => $v) {
+            $catedata[$v['id']] = $v['name'];
+        }
+        $this->view->assign('catedata', $catedata);
 
     }
 
@@ -39,23 +57,15 @@ class Factor extends Backend
     public function index()
     {
         //设置过滤方法
-        $this->request->filter(['strip_tags', 'trim']);
-        if (false === $this->request->isAjax()) {
-            return $this->view->fetch();
-        }
-        //如果发送的来源是 Selectpage，则转发到 Selectpage
-        if ($this->request->request('keyField')) {
+        if ($this->request->isAjax()) {
 
-            $res = $this->selectpage();
-            return $res;
+            $list = $this->catelist;
+            $total = count($this->catelist);
+            $result = array("total" => $total, "rows" => $list);
+
+            return json($result);
         }
-        [$where, $sort, $order, $offset, $limit] = $this->buildparams();
-        $list = $this->model
-            ->where($where)
-            ->order($sort, $order)
-            ->paginate($limit);
-        $result = ['total' => $list->total(), 'rows' => $list->items()];
-        return json($result);
+        return $this->view->fetch();
     }
 
 
