@@ -3,6 +3,7 @@
 namespace app\admin\controller;
 
 use app\common\controller\Backend;
+use fast\Tree;
 use think\exception\DbException;
 use think\response\Json;
 
@@ -22,6 +23,8 @@ class Items extends Backend
 
     protected $itemType = null;
 
+    protected $catelist = [];
+
     public function _initialize()
     {
         parent::_initialize();
@@ -30,6 +33,24 @@ class Items extends Backend
         $this->itemType = ['1'=>'城市绿化','2'=>'乡村生态'];
 
         $this->view->assign('itemType', $this->itemType);
+
+
+
+        $dataList = \think\Db::name("items_cate")->field('*', true)->order('id ASC')->select();
+        foreach ($dataList as $k => &$v) {
+            $v['name'] = __($v['name']);
+        }
+        unset($v);
+        Tree::instance()->init($dataList);
+
+        $this->catelist = Tree::instance()->getTreeList(Tree::instance()->getTreeArray(0), 'name');
+
+        $catedata = [0 => __('None')];
+
+        foreach ($this->catelist as $k => $v) {
+            $catedata[$v['id']] = $v['name'];
+        }
+        $this->view->assign('catedata', $catedata);
 
     }
 

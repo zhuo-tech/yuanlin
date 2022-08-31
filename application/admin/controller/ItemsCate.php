@@ -28,12 +28,12 @@ class ItemsCate extends Backend
         parent::_initialize();
         $this->model = new \app\admin\model\ItemsCate;
 
-        $ruleList = \think\Db::name("items_cate")->field('*', true)->order('id ASC')->select();
-        foreach ($ruleList as $k => &$v) {
+        $dataList = \think\Db::name("items_cate")->field('*', true)->order('id ASC')->select();
+        foreach ($dataList as $k => &$v) {
             $v['name'] = __($v['name']);
         }
         unset($v);
-        Tree::instance()->init($ruleList);
+        Tree::instance()->init($dataList);
 
         $this->catelist = Tree::instance()->getTreeList(Tree::instance()->getTreeArray(0), 'name');
 
