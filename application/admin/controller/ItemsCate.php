@@ -35,21 +35,14 @@ class ItemsCate extends Backend
         unset($v);
         Tree::instance()->init($ruleList);
 
-
-
-
         $this->catelist = Tree::instance()->getTreeList(Tree::instance()->getTreeArray(0), 'name');
-
 
         $catedata = [0 => __('None')];
 
         foreach ($this->catelist as $k => $v) {
             $catedata[$v['id']] = $v['name'];
         }
-
-
         $this->view->assign('catedata', $catedata);
-
     }
 
 

@@ -3,6 +3,7 @@
 namespace app\admin\controller;
 
 use app\common\controller\Backend;
+use think\Db;
 use think\exception\DbException;
 use think\response\Json;
 
@@ -64,8 +65,12 @@ class Download extends Backend
             ->order($sort, $order)
             ->paginate($limit);
 
-        $total = $list->total();
-        $rows = $list->items();
+        $total = Db::table('fa_download')->count();
+        $rows = Db::table('fa_download')
+           ->limit($limit)->select();
+
+//        $total = $list->total();
+//        $rows = $list->items();
 
         foreach ($rows as &$row){
             $cate = \app\admin\model\DownloadCate::where(['id'=>$row['download_cate_id']])->find();
