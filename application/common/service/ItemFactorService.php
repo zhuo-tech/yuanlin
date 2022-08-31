@@ -33,6 +33,8 @@ class ItemFactorService {
                     $data[$key]['item_id']     = $itemId;
                     $data[$key]['factor_id']   = $factor;
                     $data[$key]['result']      = '';
+                    $data[$key]['sample_size'] = $factor['sample_size'] ?? 0;
+                    $data[$key]['invest_time'] = $factor['invest_time'] ?? 0;
                     $data[$key]['status']      = 0;
                     $data[$key]['create_time'] = time();
                 }

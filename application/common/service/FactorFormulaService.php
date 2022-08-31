@@ -325,7 +325,16 @@ class FactorFormulaService {
         extract(static::$param);
         return $b * $c * $d * $e;
     }
-    
+
+    /**
+     * @brief  地质灾害易发性
+     * @factor b×0.3+c×0.2+d×0.25-e×0.15+f×0.1
+     */
+    public static function geologicalHazardSusceptibility() {
+        extract(static::$param);
+        return $b * 0.3 + $c * 0.2 + $d * 0.25 - $e * 0.15 + $f * 0.1;
+    }
+
     private static function format($number): string {
         return sprintf('%.2f', $number) . '%';
     }
