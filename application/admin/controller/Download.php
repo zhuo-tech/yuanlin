@@ -3,6 +3,8 @@
 namespace app\admin\controller;
 
 use app\common\controller\Backend;
+use fast\Tree;
+use think\Db;
 use think\exception\DbException;
 use think\response\Json;
 
@@ -19,11 +21,29 @@ class Download extends Backend
      * @var \app\admin\model\Download
      */
     protected $model = null;
+    protected $catelist = [];
 
     public function _initialize()
     {
         parent::_initialize();
         $this->model = new \app\admin\model\Download;
+
+
+        $dataList = \think\Db::name("download_cate")->field('*', true)->order('id ASC')->select();
+        foreach ($dataList as $k => &$v) {
+            $v['name'] = __($v['name']);
+        }
+        unset($v);
+        Tree::instance()->init($dataList);
+
+        $this->catelist = Tree::instance()->getTreeList(Tree::instance()->getTreeArray(0), 'name');
+
+        $catedata = [0 => __('None')];
+
+        foreach ($this->catelist as $k => $v) {
+            $catedata[$v['id']] = $v['name'];
+        }
+        $this->view->assign('catedata', $catedata);
 
     }
 
@@ -64,8 +84,12 @@ class Download extends Backend
             ->order($sort, $order)
             ->paginate($limit);
 
-        $total = $list->total();
-        $rows = $list->items();
+        $total = Db::table('fa_download')->count();
+        $rows = Db::table('fa_download')
+           ->limit($limit)->select()->toArray();
+
+//        $total = $list->total();
+//        $rows = $list->items();
 
         foreach ($rows as &$row){
             $cate = \app\admin\model\DownloadCate::where(['id'=>$row['download_cate_id']])->find();

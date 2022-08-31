@@ -2,6 +2,10 @@ define(['jquery', 'bootstrap', 'backend', 'table', 'form'], function ($, undefin
 
     var Controller = {
         index: function () {
+
+            $('.btn-add').data('area',['80%','80%']);
+
+            $('.btn-edit').data('area',['80%','80%']);
             // 初始化表格参数配置
             Table.api.init({
                 extend: {

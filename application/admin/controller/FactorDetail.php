@@ -3,6 +3,7 @@
 namespace app\admin\controller;
 
 use app\common\controller\Backend;
+use fast\Tree;
 use think\exception\DbException;
 use think\response\Json;
 
@@ -19,6 +20,7 @@ class FactorDetail extends Backend
      * @var \app\admin\model\FactorDetail
      */
     protected $model = null;
+    protected $catelist = [];
 
     public function _initialize()
     {
@@ -28,6 +30,22 @@ class FactorDetail extends Backend
         $mode = ['A'=>'根据公式','C'=>'问卷模式','D'=>'直接输入结果'];
 
         $this->view->assign('mode', $mode);
+
+        $dataList = \think\Db::name("factor")->field('*', true)->order('id ASC')->select();
+        foreach ($dataList as $k => &$v) {
+            $v['name'] = __($v['name']);
+        }
+        unset($v);
+        Tree::instance()->init($dataList);
+
+        $this->catelist = Tree::instance()->getTreeList(Tree::instance()->getTreeArray(0), 'name');
+
+        $catedata = [0 => __('None')];
+
+        foreach ($this->catelist as $k => $v) {
+            $catedata[$v['id']] = $v['name'];
+        }
+        $this->view->assign('catedata', $catedata);
 
     }
 
