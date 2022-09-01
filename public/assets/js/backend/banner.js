@@ -25,14 +25,14 @@ define(['jquery', 'bootstrap', 'backend', 'table', 'form'], function ($, undefin
                 columns: [
                     [
                         {checkbox: true},
-                        {field: 'id', title: __('Id')},
+                        {field: 'id', title: __('Id'),searchable:false,},
                         {field: 'name', title: __('Name'), operate: 'LIKE'},
-                        {field: 'image', title: __('Image'), operate: false, events: Table.api.events.image, formatter: Table.api.formatter.image},
-                        {field: 'type', title: __('Type')},
-                        {field: 'link', title: __('Link'), operate: 'LIKE'},
-                        {field: 'sort', title: __('Sort')},
-                        {field: 'status', title: __('Status'), searchList: {"2":__('Status 2')}, formatter: Table.api.formatter.status},
-                        {field: 'create_time',  visible:false,title: __('Create_time'), operate:'RANGE', addclass:'datetimerange', autocomplete:false, formatter: Table.api.formatter.datetime},
+                        {field: 'image', title: __('Image'), searchable:false,operate: false, events: Table.api.events.image, formatter: Table.api.formatter.image},
+                        {field: 'type', title: __('Type'),searchList: {"1": "指标", "2": "案例"}},
+                        {field: 'link', title: __('Link'), operate: 'LIKE',searchable:false,},
+                        {field: 'sort', title: __('Sort'),searchable:false,},
+                        {field: 'status', title: __('Status'),searchList: {"0": "删除", "1": "正常"}, formatter: Table.api.formatter.status},
+                        {field: 'create_time',  visible:false,searchable:false,title: __('Create_time'), operate:'RANGE', addclass:'datetimerange', autocomplete:false, formatter: Table.api.formatter.datetime},
                         {field: 'operate', title: __('Operate'), table: table, events: Table.api.events.operate, formatter: Table.api.formatter.operate}
                     ]
                 ]
