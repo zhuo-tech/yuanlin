@@ -25,17 +25,17 @@ define(['jquery', 'bootstrap', 'backend', 'table', 'form'], function ($, undefin
                 columns: [
                     [
                         {checkbox: true},
-                        {field: 'id', title: __('Id')},
-                        {field: 'pid', title: "父类型"},
+                        {field: 'id', title: __('Id'),searchable:false,},
+                        {field: 'pid', title: "父类型",visible:false,searchable:false,},
                         {field: 'name', title: __('Name'), align: 'left', formatter:function (value, row, index) {
                                 return value.toString().replace(/(&|&amp;)nbsp;/g, '&nbsp;');
                             }
                         },
-                        {field: 'label', title: __('Label'), operate: 'LIKE'},
+                        {field: 'label', visible:false,searchable:false,title: __('Label'), operate: 'LIKE'},
 
                         {field: 'id', title: '展开', operate: false, formatter: Controller.api.formatter.subnode},
-                        {field: 'create_time', visible:false, title: __('Create_time'), operate:'RANGE', addclass:'datetimerange', autocomplete:false, formatter: Table.api.formatter.datetime},
-                        {field: 'update_time', visible:false, title: __('Update_time'), operate:'RANGE', addclass:'datetimerange', autocomplete:false, formatter: Table.api.formatter.datetime},
+                        {field: 'create_time', visible:false,searchable:false, title: __('Create_time'), operate:'RANGE', addclass:'datetimerange', autocomplete:false, formatter: Table.api.formatter.datetime},
+                        {field: 'update_time', visible:false, searchable:false,title: __('Update_time'), operate:'RANGE', addclass:'datetimerange', autocomplete:false, formatter: Table.api.formatter.datetime},
                         {field: 'operate', title: __('Operate'), table: table, events: Table.api.events.operate, formatter: Table.api.formatter.operate}
                     ]
                 ],
