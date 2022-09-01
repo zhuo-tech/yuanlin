@@ -18,7 +18,7 @@
     <div class="form-group">
         <label class="control-label col-xs-12 col-sm-2">{:__('Status')}:</label>
         <div class="col-xs-12 col-sm-8">
-            <input id="c-status" data-rule="required" class="form-control" name="row[status]" type="number" value="{$row.status|htmlentities}">
+            {:build_radios('row[status]', ['1'=>__('正常'), '0'=>__('删除')])}
         </div>
     </div>
 

@@ -88,7 +88,7 @@ class FactorDetail extends Backend
         $filter = \GuzzleHttp\json_decode($filter,1);
 
         if(isset($filter['factor_name'])){
-            $filter['f.name'] = $filter['factor_name'];
+            $filter['f.name'] = ['like',"%{$filter['factor_name']}%"];
             unset($filter['factor_name']);
         }
 
