@@ -25,14 +25,14 @@ define(['jquery', 'bootstrap', 'backend', 'table', 'form'], function ($, undefin
                 columns: [
                     [
                         {checkbox: true},
-                        {field: 'id', title: __('Id')},
-                        {field: 'pid', title: __('Pid')},
+                        {field: 'id', title: __('Id'),searchable:false},
+                        {field: 'pid',visible:false, title: __('Pid'),searchable:false},
                         {field: 'name', title: __('Name'), align: 'left', formatter:function (value, row, index) {
                                 return value.toString().replace(/(&|&amp;)nbsp;/g, '&nbsp;');
                             }
                         },
-                        {field: 'create_time',visible:false, title: __('Create_time'), operate:'RANGE', addclass:'datetimerange', autocomplete:false, formatter: Table.api.formatter.datetime},
-                        {field: 'id', title: '展开', operate: false, formatter: Controller.api.formatter.subnode},
+                        {field: 'create_time',visible:false,searchable:false, title: __('Create_time'), operate:'RANGE', addclass:'datetimerange', autocomplete:false, formatter: Table.api.formatter.datetime},
+                        {field: 'id', title: '展开', operate: false,searchable:false, formatter: Controller.api.formatter.subnode},
                         {field: 'operate', title: __('Operate'), table: table, events: Table.api.events.operate, formatter: Table.api.formatter.operate}
                     ]
                 ]

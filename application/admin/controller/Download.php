@@ -79,22 +79,37 @@ class Download extends Backend
         }
         [$where, $sort, $order, $offset, $limit] = $this->buildparams();
 
-        $query = $this->model->where($where);
-        $list = $query
-            ->order($sort, $order)
-            ->paginate($limit);
+//        $query = $this->model->where($where);
+//        $list = $query
+//            ->order($sort, $order)
+//            ->paginate($limit);
 
-        $total = Db::table('fa_download')->count();
-        $rows = Db::table('fa_download')
+        $filter = $this->request->get("filter", '');
+
+        $filter = \GuzzleHttp\json_decode($filter,1);
+
+        if(isset($filter['download_cate_name'])){
+            $filter['dc.name'] = $filter['download_cate_name'];
+            unset($filter['download_cate_name']);
+        }
+
+        if(isset($filter['name'])){
+            $filter['d.name'] = $filter['name'];
+            unset($filter['name']);
+        }
+
+        $total = Db::table('fa_download d')
+            ->join('fa_download_cate dc','d.download_cate_id=dc.id','left')
+            ->where($filter)
+            ->count();
+        $rows = Db::table('fa_download d')
+            ->field("d.*,dc.name as download_cate_name")
+            ->join('fa_download_cate dc','d.download_cate_id=dc.id','left')
+            ->where($filter)
            ->limit($limit)->select()->toArray();
 
 //        $total = $list->total();
 //        $rows = $list->items();
-
-        foreach ($rows as &$row){
-            $cate = \app\admin\model\DownloadCate::where(['id'=>$row['download_cate_id']])->find();
-            $row['download_cate_name'] = $cate['name'];
-        }
 
         $result = ['total' => $total, 'rows' =>$rows];
         return json($result);

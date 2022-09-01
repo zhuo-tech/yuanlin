@@ -4,6 +4,7 @@ namespace app\admin\controller;
 
 use app\common\controller\Backend;
 use fast\Tree;
+use think\Db;
 use think\exception\DbException;
 use think\response\Json;
 
@@ -81,17 +82,39 @@ class FactorDetail extends Backend
         }
         [$where, $sort, $order, $offset, $limit] = $this->buildparams();
 
-        $query = $this->model->where($where);
-        $list = $query
-            ->order($sort, $order)
-            ->paginate($limit);
 
-        $total = $list->total();
-        $rows = $list->items();
+        $filter = $this->request->get("filter", '');
+
+        $filter = \GuzzleHttp\json_decode($filter,1);
+
+        if(isset($filter['factor_name'])){
+            $filter['f.name'] = $filter['factor_name'];
+            unset($filter['factor_name']);
+        }
+
+//        var_dump($filter);die;
+
+//        $query = $this->model->where($where);
+//        $list = $query
+//            ->order($sort, $order)
+//            ->paginate($limit);
+//
+//        $total = $list->total();
+//        $rows = $list->items();
+
+        $total = Db::table('fa_factor_detail fd')
+            ->join('fa_factor f','f.id=fd.factor_id','left')
+            ->where($filter)->count();
+        $rows = Db::table('fa_factor_detail fd')
+            ->field("fd.*,f.name as factor_name")
+            ->join('fa_factor f','f.id=fd.factor_id','left')
+            ->order($sort, $order)
+            ->where($filter)
+            ->limit($offset,$limit)->select()->toArray();
 
         foreach ($rows as &$row){
-            $factor = \app\admin\model\Factor::where(['id'=>$row['factor_id']])->find();
-            $row['factor_name'] = $factor['name'];
+//            $factor = \app\admin\model\Factor::where(['id'=>$row['factor_id']])->find();
+//            $row['factor_name'] = $factor['name'];
         }
 
         $result = ['total' => $total, 'rows' =>$rows];
