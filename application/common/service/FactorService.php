@@ -8,6 +8,7 @@ use app\admin\model\Factor as FactorModel;
 use app\admin\model\FactorDetail as FactorDetailModel;
 use app\admin\model\ItemsFactor;
 use app\admin\model\Questions;
+use think\Env;
 use think\exception\DbException;
 
 
@@ -56,7 +57,7 @@ class FactorService {
                 $questions       = json_decode($value['option']);
                 $questionOptions = [];
                 if ($questions) {
-                    $questionOptions  = Questions::whereIn('id', $questions)->field(['id', 'title', 'options'])->select()->toArray();
+                    $questionOptions = Questions::whereIn('id', $questions)->field(['id', 'title', 'options'])->select()->toArray();
                     foreach ($questionOptions as &$questionOption) {
                         $questionOption['options'] = json_decode($questionOption['options'], true);
                     }
@@ -79,7 +80,6 @@ class FactorService {
 
         $secondData = static::factorData(array_column($selectData, 'pid'));
         $oneData    = static::factorData(array_column($secondData, 'pid'));
-
         return array_merge($oneData, $secondData, $selectData);
     }
 
@@ -123,11 +123,31 @@ class FactorService {
             if (empty($factorIds)) {
                 return [];
             }
-            $map['pid']     = ['in', $factorIds];
-            $data = Factor::whereIn('id', $factorIds)->whereOr($map)->where(['status' => 1])->column('id');
+            $map['pid'] = ['in', $factorIds];
+            $data       = Factor::whereIn('id', $factorIds)->whereOr($map)->where(['status' => 1])->column('id');
         } else {
             $data = Factor::where(['id' => $id])->whereOr(['pid' => $id])->where(['status' => 1])->column('id');
         }
+        return $data;
+    }
+
+    /**
+     * @brief 精选指标
+     * @param $page
+     * @return array
+     * @throws \think\exception\DbException
+     */
+    public static function selected($page = 1, $size = 10) {
+        $page = ($page >= 1) ? $page : 1;
+
+        $list   = FactorModel::where(['show_index' => 1, 'status' => 1])->field(['id', 'name', 'image'])->paginate($size, false, ['page' => $page])->toArray();
+
+        foreach ($list['data'] as &$v) {
+            $v['image'] = Env::get('app.baseurl', 'http://ies-admin.zhuo-zhuo.com') . $v['image'];
+        }
+        $data['total'] = $list['total'];
+        $data['pages'] = (int)ceil($list['total'] / $size);
+        $data['list']  = $list['data'];
         return $data;
     }
 }

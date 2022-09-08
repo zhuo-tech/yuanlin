@@ -4,6 +4,7 @@ namespace app\api\controller;
 
 use app\common\controller\Api;
 use app\common\model\Config as ConfigModel;
+use think\Env;
 use think\Request;
 
 /**
@@ -23,8 +24,8 @@ class Config extends Api {
         // 配置数据
         $config['name']    = $dbConfig['name'];
         $config['icp']     = $dbConfig['beian'];
-        $config['cdn_url'] = $dbConfig['cdnurl'];
+        $config['cdn_url'] = Env::get('app.baseurl', 'http://ies-admin.zhuo-zhuo.com');
         $config['site']    = json_decode($dbConfig['siteConfig'], true);
-        dump($config);die();
+        return json(['code' => 0, 'data' => $config, 'message' => 'OK']);
     }
 }

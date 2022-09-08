@@ -49,4 +49,13 @@ class Item extends Api {
         $data = ItemService::search(['fid' => $fid, 'uid' => $uid, 'keyword' => $keyword], $page, $size);
         return json(['code' => 0, 'message' => 'OK', 'data' => $data]);
     }
+
+    /**
+     * @brief 精选指标
+     */
+    public static function selected(Request $request) {
+        $page = $request->param('page', 0);
+        $data = FactorService::selected($page);
+        return json(['code' => 0, 'message' => 'OK', 'data' => $data]);
+    }
 }
