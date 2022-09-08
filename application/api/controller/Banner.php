@@ -18,7 +18,7 @@ class Banner extends Api {
      * @brief Banner
      */
     public function index() {
-        $banners = BannerModel::where(['status' => 1])->field(['id', 'name', 'image', 'type', 'link'])
+        $banners = BannerModel::where(['status' => 1])->field(['id', 'name', 'image', 'type', 'link','content'])
             ->order('sort', 'asc')->select()->toArray();
         $news= NewsModel::field(['id', 'name', 'image', 'type', 'link'])
             ->order('sorts', 'asc')->select()->toArray();
