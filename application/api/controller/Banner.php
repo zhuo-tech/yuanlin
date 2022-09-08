@@ -6,6 +6,7 @@ use app\admin\model\News as NewsModel;
 use app\common\controller\Api;
 use app\admin\model\Banner as BannerModel;
 use app\admin\model\Factor as FactorModel;
+use think\Env;
 
 /**
  * Banner接口
@@ -20,8 +21,15 @@ class Banner extends Api {
     public function index() {
         $banners = BannerModel::where(['status' => 1])->field(['id', 'name', 'image', 'type', 'link','content'])
             ->order('sort', 'asc')->select()->toArray();
+        foreach ($banners as $banner){
+            $banner['image'] = Env::get('app.baseurl', 'http://ies-admin.zhuo-zhuo.com').$banner['image'];
+        }
         $news= NewsModel::field(['id', 'name', 'image', 'type', 'link'])
             ->order('sorts', 'asc')->select()->toArray();
+
+        foreach ($news as $new){
+            $new['image'] = Env::get('app.baseurl', 'http://ies-admin.zhuo-zhuo.com').$new['image'];
+        }
         $total = FactorModel::where(['status'=>1])->count();
         $first = FactorModel::where(['pid'=>0,'status'=>1])->count();
         $second = FactorModel::alias('f1')
