@@ -66,7 +66,7 @@ class Factor extends Api {
             ->limit(3)->select()->toArray();
 
         foreach ($item as &$v){
-            $v['images'] = Env::get('app.baseurl', true).$v['images'];
+            $v['images'] = Env::get('app.baseurl', 'http://ies-admin.zhuo-zhuo.com').$v['images'];
         }
 
         $factor['items'] = $item;
