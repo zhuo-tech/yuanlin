@@ -87,7 +87,7 @@ class ItemService {
         }
 
         if ($search['uid']) {
-            $where['uid'] = ['=', $search['uid']];
+            $where['user_id'] = ['=', $search['uid']];
         }
 
         $order  = 'i.id desc';
