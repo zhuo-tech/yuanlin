@@ -55,7 +55,9 @@ class Factor extends Api {
 
         $factorId  = $request->param('factor_id');
 
-        $factor =  FactorDetailModel::where(['factor_id'=>$factorId])->field('*')->select()->toArray()[0];
+        $factor =  FactorDetailModel::alias('fd')
+            ->join('factor f','fd.factor_id=f.id','left')
+            ->where(['fd.factor_id'=>$factorId])->field('fd.*,f.name')->select()->toArray()[0];
 
         $factor['option'] = json_decode($factor['option']);
 
