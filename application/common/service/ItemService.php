@@ -5,6 +5,7 @@ namespace app\common\service;
 
 use app\admin\validate\Items as ItemsValidate;
 use app\admin\model\Items;
+use think\Env;
 
 
 /**
@@ -90,6 +91,11 @@ class ItemService {
         $fields        = 'i.*';
         $list          = Items::alias('i')->join('fa_items_factor', 'fa_items_factor.item_id = i.id', 'left')
                         ->where($where)->field($fields)->orderRaw($order)->group('i.id')->paginate($size, false, ['page' => $page])->toArray();
+
+        foreach ($list['data'] as &$v){
+            $v['images'] = Env::get('app.baseurl', 'http://ies-admin.zhuo-zhuo.com').$v['images'];
+        }
+
         $data['total'] = $list['total'];
         $data['pages'] = (int)ceil($list['total'] / $size);
         $data['list']  = $list['data'];
