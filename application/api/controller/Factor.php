@@ -6,9 +6,11 @@ use app\common\controller\Api;
 use app\common\service\FactorService;
 use app\common\service\ItemFactorService;
 use think\Db;
+use think\Env;
 use think\Request;
 use app\admin\model\FactorDetail as FactorDetailModel;
 use app\admin\model\Factor as FactorModel;
+use app\admin\model\ItemsFactor as ItemFactorModel;
 
 /**
  * @title 指标
@@ -56,6 +58,18 @@ class Factor extends Api {
         $factor =  FactorDetailModel::where(['factor_id'=>$factorId])->field('*')->select()->toArray()[0];
 
         $factor['option'] = json_decode($factor['option']);
+
+        $item = ItemFactorModel::alias('if')
+            ->join('fa_items i','i.id=if.item_id','left')
+            ->field('i.name,i.images')
+            ->where(['if.factor_id'=>$factorId])
+            ->limit(3)->select()->toArray();
+
+        foreach ($item as &$v){
+            $v['images'] = Env::get('app.baseurl', true).$v['images'];
+        }
+
+        $factor['items'] = $item;
 
         return json(['code' => 0, 'message' => 'OK', 'data' => $factor]);
 
