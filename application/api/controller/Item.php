@@ -53,7 +53,7 @@ class Item extends Api {
     /**
      * @brief 精选指标
      */
-    public static function selected(Request $request) {
+    public function selected(Request $request) {
         $page = $request->param('page', 0);
         $data = FactorService::selected($page);
         return json(['code' => 0, 'message' => 'OK', 'data' => $data]);
