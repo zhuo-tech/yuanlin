@@ -27,7 +27,7 @@ class Factor extends Backend
         $this->model = new \app\admin\model\Factor;
 
 
-        $dataList = \think\Db::name("factor")->field('*', true)->order('id ASC')->select();
+        $dataList = \think\Db::name("factor")->where(['status'=>1])->field('*', true)->order('id ASC')->select();
         foreach ($dataList as $k => &$v) {
             $v['name'] = __($v['name']);
         }

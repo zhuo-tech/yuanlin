@@ -5,7 +5,10 @@ namespace app\api\controller;
 use app\common\controller\Api;
 use app\common\service\FactorService;
 use app\common\service\ItemFactorService;
+use think\Db;
 use think\Request;
+use app\admin\model\FactorDetail as FactorDetailModel;
+use app\admin\model\Factor as FactorModel;
 
 /**
  * @title 指标
@@ -21,6 +24,41 @@ class Factor extends Api {
     public function tree() {
         $data = FactorService::getFactorTree();
         return json(['code' => 0, 'data' => $data, 'message' => 'OK']);
+    }
+
+
+    public function factorTree(){
+        $first = FactorModel::where(['status'=>1,'pid'=>0])->field("id,name")->select()->toArray();
+        foreach ($first as &$v){
+            $v['children'] =  $this->getChildren($v);
+        }
+        return json(['code' => 0, 'data' => $first, 'message' => 'OK']);
+    }
+
+
+    private function getChildren($factor){
+        $child =  FactorModel::where(['status'=>1,'pid'=>$factor['id']])->field("id,name")->select()->toArray();
+        if($child){
+            $factor['children'] = $child;
+            foreach ($child as &$v){
+                $v['children'] = $this->getChildren($v);
+            }
+        }
+        return $child;
+    }
+
+
+
+    public function factorDetail(Request $request){
+
+        $factorId  = $request->param('factor_id');
+
+        $factor =  FactorDetailModel::where(['factor_id'=>$factorId])->field('*')->select()->toArray()[0];
+
+        $factor['option'] = json_decode($factor['option']);
+
+        return json(['code' => 0, 'message' => 'OK', 'data' => $factor]);
+
     }
 
     /**
