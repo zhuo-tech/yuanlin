@@ -6,6 +6,7 @@ namespace app\common\service;
 use app\admin\model\Factor;
 use app\admin\model\Factor as FactorModel;
 use app\admin\model\FactorDetail as FactorDetailModel;
+use app\admin\model\Items;
 use app\admin\model\ItemsFactor;
 use app\admin\model\Questions;
 use think\Env;
@@ -48,7 +49,8 @@ class FactorService {
         $data = $query->select()->toArray();
 
         foreach ($data as $key => &$value) {
-            $inputModel = strtoupper($value['input_mode']);
+            $value['document'] = json_decode($value['document']);
+            $inputModel        = strtoupper($value['input_mode']);
             if ($inputModel == 'A') {
                 $value['option'] = json_decode($value['option'], true) ?? [];
             } elseif ($inputModel == 'C') {
@@ -80,6 +82,7 @@ class FactorService {
 
         $secondData = static::factorData(array_column($selectData, 'pid'));
         $oneData    = static::factorData(array_column($secondData, 'pid'));
+
         return array_merge($oneData, $secondData, $selectData);
     }
 
@@ -140,8 +143,7 @@ class FactorService {
     public static function selected($page = 1, $size = 10) {
         $page = ($page >= 1) ? $page : 1;
 
-        $list   = FactorModel::where(['show_index' => 1, 'status' => 1])->field(['id', 'name', 'image'])->paginate($size, false, ['page' => $page])->toArray();
-
+        $list = FactorModel::where(['show_index' => 1, 'status' => 1])->field(['id', 'name', 'image'])->paginate($size, false, ['page' => $page])->toArray();
         foreach ($list['data'] as &$v) {
             $v['image'] = Env::get('app.baseurl', 'http://ies-admin.zhuo-zhuo.com') . $v['image'];
         }

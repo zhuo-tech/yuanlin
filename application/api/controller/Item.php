@@ -46,7 +46,7 @@ class Item extends Api {
         $size    = $request->param('size', 10);
         $keyword = $request->param('keyword', '');
 
-        $data = ItemService::search(['fid' => $fid, 'uid' => $uid, 'keyword' => $keyword], $page, $size);
+        $data = ItemService::search(['fid' => $fid, 'uid' => $uid, 'keyword' => $keyword], $page, (int)$size);
         return json(['code' => 0, 'message' => 'OK', 'data' => $data]);
     }
 
