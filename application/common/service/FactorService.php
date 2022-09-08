@@ -144,9 +144,12 @@ class FactorService {
         $page = ($page >= 1) ? $page : 1;
 
         $list = FactorModel::where(['show_index' => 1, 'status' => 1])->field(['id', 'name', 'image'])->paginate($size, false, ['page' => $page])->toArray();
-        foreach ($list['data'] as &$v) {
-            $v['image'] = Env::get('app.baseurl', 'http://ies-admin.zhuo-zhuo.com') . $v['image'];
+        if(isset($list['data'])) {
+            foreach ($list['data'] as &$v) {
+                $v['image'] = Env::get('app.baseurl', 'http://ies-admin.zhuo-zhuo.com') . $v['image'];
+            }
         }
+
         $data['total'] = $list['total'];
         $data['pages'] = (int)ceil($list['total'] / $size);
         $data['list']  = $list['data'];
