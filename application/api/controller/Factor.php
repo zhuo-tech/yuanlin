@@ -60,6 +60,7 @@ class Factor extends Api {
             ->where(['fd.factor_id'=>$factorId])->field('fd.*,f.name')->select()->toArray()[0];
 
         $factor['option'] = json_decode($factor['option']);
+        $factor['document'] = json_decode($factor['document']);
 
         $item = ItemFactorModel::alias('if')
             ->join('fa_items i','i.id=if.item_id','left')
