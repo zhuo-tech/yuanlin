@@ -59,7 +59,14 @@ class ItemService {
         $order         = 'id desc';
         $limit         = 10;
         $list          = Items::where($where)->field($fields)->orderRaw($order)->paginate($limit, false, ['page' => $page])->toArray();
+
+        if (isset($list['data'])) {
+            foreach ($list['data'] as &$v) {
+                $v['images'] = Env::get('app.baseurl', 'http://ies-admin.zhuo-zhuo.com') . $v['images'];
+            }
+        }
         $data['list']  = $list['data'] ?? [];
+
         $data['total'] = (int)ceil($list['total'] / $limit);
         return $data;
     }
