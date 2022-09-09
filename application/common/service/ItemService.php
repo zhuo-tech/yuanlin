@@ -63,6 +63,7 @@ class ItemService {
         if (isset($list['data'])) {
             foreach ($list['data'] as &$v) {
                 $v['images'] = Env::get('app.baseurl', 'http://ies-admin.zhuo-zhuo.com') . $v['images'];
+                $v['create_date'] = date("Y-m-d",$v['update_time']);
             }
         }
         $data['list']  = $list['data'] ?? [];
