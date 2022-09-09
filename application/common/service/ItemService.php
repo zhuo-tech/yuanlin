@@ -53,13 +53,13 @@ class ItemService {
         }
 
         if ($search['uid']) {
-            $where['uid'] = ['=', $search['uid']];
+            $where['user_id'] = ['=', $search['uid']];
         }
 
         $order         = 'id desc';
         $limit         = 10;
         $list          = Items::where($where)->field($fields)->orderRaw($order)->paginate($limit, false, ['page' => $page])->toArray();
-        $data['list']  = $list['data'];
+        $data['list']  = $list['data'] ?? [];
         $data['total'] = (int)ceil($list['total'] / $limit);
         return $data;
     }
@@ -73,6 +73,9 @@ class ItemService {
      */
     public static function search($search, $page = 1, $size = 10) {
         $page = ($page >= 1) ? $page : 1;
+        if($size <= 0) {
+            $size = 10;
+        }
 
         $fid = FactorService::innermost($search['fid']);
         if ($fid) {
@@ -84,20 +87,22 @@ class ItemService {
         }
 
         if ($search['uid']) {
-            $where['uid'] = ['=', $search['uid']];
+            $where['user_id'] = ['=', $search['uid']];
         }
 
-        $order         = 'i.id desc';
-        $fields        = 'i.*';
-        $list          = Items::alias('i')->join('fa_items_factor', 'fa_items_factor.item_id = i.id', 'left')
-                        ->where($where)->field($fields)->orderRaw($order)->group('i.id')->paginate($size, false, ['page' => $page])->toArray();
+        $order  = 'i.id desc';
+        $fields = 'i.*';
+        $list   = Items::alias('i')->join('fa_items_factor', 'fa_items_factor.item_id = i.id', 'left')
+            ->where($where)->field($fields)->orderRaw($order)->group('i.id')->paginate($size, false, ['page' => $page])->toArray();
 
-        foreach ($list['data'] as &$v){
-            $v['images'] = Env::get('app.baseurl', 'http://ies-admin.zhuo-zhuo.com').$v['images'];
+        if (isset($list['data'])) {
+            foreach ($list['data'] as &$v) {
+                $v['images'] = Env::get('app.baseurl', 'http://ies-admin.zhuo-zhuo.com') . $v['images'];
+            }
         }
 
-        $data['total'] = $list['total'];
-        $data['pages'] = (int)ceil($list['total'] / $size);
+        $data['total'] = $list['total'] ?? 0;
+        $data['pages'] = (int)ceil($data['total'] / $size);
         $data['list']  = $list['data'];
         return $data;
     }
