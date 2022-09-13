@@ -36,10 +36,12 @@ class News extends Api {
     public function cityList(Request $request){
 
 
-        $pid   = $request->param('pid');
+        $code  = $request->param('code');
 
-        $citys= cityModel::field(['id', 'area_name','area_code'])
-            ->where(['pid'=>$pid])
+        $citys= cityModel::alias('c1')
+            ->join('fa_city c2','c1.pid=c2.id','left')
+            ->field(['c1.id', 'c1.area_name','c1.area_code'])
+            ->where(['c2.area_code'=>$code])
             ->order('id', 'asc')->select()->toArray();
         return json(['code' => 0, 'message' => 'OK', 'data' => $citys]);
 
