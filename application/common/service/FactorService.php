@@ -23,7 +23,6 @@ class FactorService {
      * @return array
      */
     public static function getFactorTree($itemId = 0) {
-        // 查询顶级
         $data = static::factorData($itemId);
         return static::sortData($data);
     }
@@ -44,13 +43,13 @@ class FactorService {
 
         // 查询已经选择的
         $selectFactors = [];
-        if($itemId) {
+        if ($itemId) {
             $selectRows    = ItemsFactor::where(['item_id' => $itemId])->select()->toArray();
             $selectFactors = array_column($selectRows, 'factor_id');
         }
 
         foreach ($data as $key => &$value) {
-            if($selectFactors && in_array($value['id'], $selectFactors)) {
+            if ($selectFactors && in_array($value['id'], $selectFactors)) {
                 $value['selected'] = 1;
             } else {
                 $value['selected'] = 0;
@@ -85,13 +84,8 @@ class FactorService {
         $selectRows    = ItemsFactor::where(['item_id' => $itemId, 'status' => 1])->select()->toArray();
         $selectFactors = array_column($selectRows, 'factor_id');
         $selectData    = static::factorData($selectFactors);
-
-        dump($selectFactors);
-        $secondData = static::factorData(array_column($selectData, 'pid'));
-        dump($secondData);
-        die();
-        $oneData = static::factorData(array_column($secondData, 'pid'));
-
+        $secondData    = static::factorData(array_column($selectData, 'pid'));
+        $oneData       = static::factorData(array_column($secondData, 'pid'));
         return array_merge($oneData, $secondData, $selectData);
     }
 
