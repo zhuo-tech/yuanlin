@@ -32,7 +32,7 @@ class Download extends Api {
         $page   = $request->param('page', 0);
         $type   = $request->param('type');
         $name   = $request->param('keyword');
-        $fields = ['id', 'name', 'year', 'description', 'link', 'document'];
+        $fields = ['id', 'name', 'year', 'description', 'link', 'document','image'];
         $data   = DownloadService::search(['type' => $type, 'keyword' => $name], $page, $fields);
         return json(['code' => 0, 'data' => $data, 'message' => 'OK']);
     }

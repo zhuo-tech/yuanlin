@@ -53,13 +53,22 @@ class ItemService {
         }
 
         if ($search['uid']) {
-            $where['uid'] = ['=', $search['uid']];
+            $where['user_id'] = ['=', $search['uid']];
         }
 
         $order         = 'id desc';
         $limit         = 10;
         $list          = Items::where($where)->field($fields)->orderRaw($order)->paginate($limit, false, ['page' => $page])->toArray();
+
+        if (isset($list['data'])) {
+            foreach ($list['data'] as &$v) {
+                $v['images'] = Env::get('app.baseurl', 'http://ies-admin.zhuo-zhuo.com') . $v['images'];
+                $v['create_date'] = date("Y-m-d",$v['update_time']);
+                $v['keyword'] = explode(',',$v['keyword']);
+            }
+        }
         $data['list']  = $list['data'] ?? [];
+
         $data['total'] = (int)ceil($list['total'] / $limit);
         return $data;
     }

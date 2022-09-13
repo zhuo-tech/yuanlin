@@ -5,6 +5,7 @@ namespace app\common\service;
 
 use app\admin\model\Download as DownloadModel;
 use app\admin\model\DownloadCate;
+use think\Env;
 
 
 /**
@@ -50,6 +51,12 @@ class DownloadService {
         $order         = 'id desc';
         $limit         = 10;
         $list          = DownloadModel::where($where)->field($fields)->paginate($limit, false, ['page' => $page])->toArray();
+        if (isset($list['data'])) {
+            foreach ($list['data'] as &$v) {
+                $v['image'] = Env::get('app.baseurl', 'http://ies-admin.zhuo-zhuo.com') . $v['image'];
+                $v['document'] = $v['document']?json_decode($v['document']):[];
+            }
+        }
         $data['total'] = $list['total'];
         $data['pages'] = (int)ceil($list['total'] / $limit);
         $data['list']  = $list['data'];

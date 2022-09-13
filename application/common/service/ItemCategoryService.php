@@ -16,7 +16,9 @@ class ItemCategoryService {
      * @return array
      */
     public static function category($itemId = 0) {
-        $data = ItemsCate::where(['status' => 1])->field(['id', 'pid', 'name', 'type'])->select()->toArray();
+        $data = ItemsCate::where(['status' => 1])->field(['id', 'pid', 'name', 'type'])
+            ->order('sorts','asc')
+            ->select()->toArray();
         return static::sortData($data);
     }
 
