@@ -23,8 +23,9 @@ class Factor extends Api {
     /**
      * @brief 指标树
      */
-    public function tree() {
-        $data = FactorService::getFactorTree();
+    public function tree(Request $request) {
+        $itemId = $request->param('item_id', 0);
+        $data = FactorService::getFactorTree($itemId);
         return json(['code' => 0, 'data' => $data, 'message' => 'OK']);
     }
 

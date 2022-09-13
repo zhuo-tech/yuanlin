@@ -24,11 +24,7 @@ class FactorService {
      */
     public static function getFactorTree($itemId = 0) {
         // 查询顶级
-        if ($itemId) {
-            $data = static::getTreeByChild($itemId);
-        } else {
-            $data = static::factorData();
-        }
+        $data = static::factorData($itemId);
         return static::sortData($data);
     }
 
@@ -36,19 +32,29 @@ class FactorService {
      * @brief  获取所有的项目指标
      * @return array
      */
-    public static function factorData($id = []): array {
+    public static function factorData($itemId = 0, $id = []): array {
         $where = ['f.status' => 1];
         $field = ['name', 'f.id', 'input_mode', 'option', 'coefficient', 'pid', 'method', 'meaning', 'calc_method', 'source', 'document'];
         $query = FactorModel::alias('f')->where($where);
         if ($id) {
             $query = $query->whereIn('f.id', $id);
         }
-
         $query = $query->field($field)->join('fa_factor_detail', 'f.id = fa_factor_detail.factor_id', 'left');
+        $data  = $query->select()->toArray();
 
-        $data = $query->select()->toArray();
+        // 查询已经选择的
+        $selectFactors = [];
+        if($itemId) {
+            $selectRows    = ItemsFactor::where(['item_id' => $itemId])->select()->toArray();
+            $selectFactors = array_column($selectRows, 'factor_id');
+        }
 
         foreach ($data as $key => &$value) {
+            if($selectFactors && in_array($value['id'], $selectFactors)) {
+                $value['selected'] = 1;
+            } else {
+                $value['selected'] = 0;
+            }
             $value['document'] = json_decode($value['document']);
             $inputModel        = strtoupper($value['input_mode']);
             if ($inputModel == 'A') {
@@ -80,8 +86,11 @@ class FactorService {
         $selectFactors = array_column($selectRows, 'factor_id');
         $selectData    = static::factorData($selectFactors);
 
+        dump($selectFactors);
         $secondData = static::factorData(array_column($selectData, 'pid'));
-        $oneData    = static::factorData(array_column($secondData, 'pid'));
+        dump($secondData);
+        die();
+        $oneData = static::factorData(array_column($secondData, 'pid'));
 
         return array_merge($oneData, $secondData, $selectData);
     }
@@ -144,7 +153,7 @@ class FactorService {
         $page = ($page >= 1) ? $page : 1;
 
         $list = FactorModel::where(['show_index' => 1, 'status' => 1])->field(['id', 'name', 'image'])->paginate($size, false, ['page' => $page])->toArray();
-        if(isset($list['data'])) {
+        if (isset($list['data'])) {
             foreach ($list['data'] as &$v) {
                 $v['image'] = Env::get('app.baseurl', 'http://ies-admin.zhuo-zhuo.com') . $v['image'];
             }
