@@ -16,7 +16,7 @@ class Items extends Validate {
         'city'          => ['require', 'regex' => '/^\d{6}$/'],
         'area'          => ['require', 'regex' => '/^\d{6}$/'],
         'areas'         => ['require', 'regex' => '/^[0-9]+(.[0-9]+)?$/'],
-        'item_cate_id'  => ['require', 'regex' => '/^\+?[1-9][0-9]*$/'],
+        //'item_cate_id'  => ['require', 'regex' => '/^\+?[1-9][0-9]*$/'],
         'images'        => ['require'],
         'designer_team' => ['require'],
         'introduction'  => ['require'],
