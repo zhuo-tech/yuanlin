@@ -20,7 +20,7 @@ class Item extends Api {
      */
     public function store(Request $request) {
         $data = ItemService::saveItem($request->param());
-        return json(['code' => $data['error'], 'data' => [], 'message' => $data['message']]);
+        return json(['code' => $data['error'], 'data' => $data['data'], 'message' => $data['message']]);
     }
 
     /**
