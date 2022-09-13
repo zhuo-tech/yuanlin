@@ -54,6 +54,7 @@ class DownloadService {
         if (isset($list['data'])) {
             foreach ($list['data'] as &$v) {
                 $v['image'] = Env::get('app.baseurl', 'http://ies-admin.zhuo-zhuo.com') . $v['image'];
+                $v['document'] = $v['document']?json_decode($v['document']):[];
             }
         }
         $data['total'] = $list['total'];
