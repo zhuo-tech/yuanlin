@@ -13,9 +13,10 @@ use think\exception\DbException;
 class LevelService {
 
     /**
+     * @brief  计算等级
      * @throws DbException
      */
-    public static function handle($itemId, $factorId, $value) {
+    public static function handle($factorId, $value) {
         try {
             // 查询factor_detail
             $factorDetail = FactorDetailModel::where(['factor_id' => $factorId])->find()->toArray();
