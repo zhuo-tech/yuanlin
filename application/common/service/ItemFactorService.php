@@ -54,7 +54,7 @@ class ItemFactorService {
      * @param $itemId int 项目ID
      * @return array
      */
-    public static function confirm(int $itemId): array {
+    public static function doSure(int $itemId): array {
         try {
             $item = ItemsModel::get($itemId);
             if (empty($item)) {
