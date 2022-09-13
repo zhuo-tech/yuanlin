@@ -36,8 +36,8 @@ class Items extends Validate {
         'area.regex'            => '区县必须为6位数字',
         'areas.require'         => '面积必填',
         'areas.regex'           => '面积必须为数字',
-        'item_cate_id.require'  => '项目分类必填',
-        'item_cate_id.regex'    => '项目分类有误',
+//        'item_cate_id.require'  => '项目分类必填',
+//        'item_cate_id.regex'    => '项目分类有误',
         'images.require'        => '图片必传',
         'introduction.require'  => '项目描述必填',
         'designer_team.require' => '设计团队必填'
