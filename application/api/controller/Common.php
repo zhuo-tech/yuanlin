@@ -16,7 +16,7 @@ use think\Hook;
  */
 class Common extends Api
 {
-    protected $noNeedLogin = ['init'];
+    protected $noNeedLogin = ['*'];
     protected $noNeedRight = '*';
 
     /**
