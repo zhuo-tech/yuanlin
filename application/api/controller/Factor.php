@@ -12,6 +12,8 @@ use app\admin\model\FactorDetail as FactorDetailModel;
 use app\admin\model\Factor as FactorModel;
 use app\admin\model\ItemsFactor as ItemFactorModel;
 
+use app\admin\model\Questions as QuestionsModel;
+
 /**
  * @title 指标
  * @description 接口说明
@@ -61,6 +63,13 @@ class Factor extends Api {
 
         $factor['option'] = json_decode($factor['option']);
         $factor['document'] = json_decode($factor['document']);
+
+        $question = QuestionsModel::field("*")->where(['id'=>$factor['questions_id']])->select()->toArray();
+        foreach ($question as &$q){
+            $q['options'] = json_decode($q['options']);
+        }
+
+        $factor['questions'] = $question;
 
         $item = ItemFactorModel::alias('if')
             ->join('fa_items i','i.id=if.item_id','left')
