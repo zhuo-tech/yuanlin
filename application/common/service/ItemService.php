@@ -27,7 +27,7 @@ class ItemService {
         $model  = new Items($data);
         $result = $model->allowField(true)->save();
         if ($result) {
-            return ['error' => 0, 'message' => '创建成功', 'data' => []];
+            return ['error' => 0, 'message' => '创建成功', 'data' => ['id' => $model->id]];
         }
         return ['error' => 1, 'message' => '创建失败', 'data' => []];
     }
