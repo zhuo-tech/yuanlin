@@ -33,7 +33,7 @@ class FactorService {
      */
     public static function factorData($itemId = 0, $id = []): array {
         $where = ['f.status' => 1];
-        $field = ['name', 'f.id', 'input_mode', 'option', 'coefficient', 'pid', 'method', 'meaning', 'calc_method', 'source', 'document'];
+        $field = ['name', 'f.id', 'input_mode', 'option', 'coefficient', 'pid', 'method', 'meaning', 'calc_method', 'source', 'document',"max",'min','national_stand'];
         $query = FactorModel::alias('f')->where($where);
         if ($id) {
             $query = $query->whereIn('f.id', $id);
