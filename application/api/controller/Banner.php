@@ -29,6 +29,7 @@ class Banner extends Api {
 
         foreach ($news as &$new){
             $new['image'] = Env::get('app.baseurl', 'http://ies-admin.zhuo-zhuo.com').$new['image'];
+            $new['create_date'] = date("Y-m-d",$new['create_time']);
         }
         $total = FactorModel::where(['status'=>1])->count();
         $first = FactorModel::where(['pid'=>0,'status'=>1])->count();
