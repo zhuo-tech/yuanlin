@@ -44,8 +44,8 @@ class User extends Api
      */
     public function login()
     {
-        $account = $this->request->post('account');
-        $password = $this->request->post('password');
+        $account = $this->request->request('account');
+        $password = $this->request->request('password');
         if (!$account || !$password) {
             $this->error(__('Invalid parameters'));
         }
