@@ -127,6 +127,9 @@ class Factor extends Api {
         return json(['code' => 0, 'data' => $data, 'message' => 'OK']);
     }
 
+    /**
+     * @brief 获取项目指标
+     */
     public function getItemFactors(Request $request) {
         $itemId = $request->param('item_id', 0);
         $data   = FactorService::getSetFactors($itemId);
