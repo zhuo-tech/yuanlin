@@ -65,7 +65,7 @@ class Factor extends Api {
         $factor['option'] = json_decode($factor['option']);
         $factor['document'] = json_decode($factor['document']);
 
-        $question = QuestionsModel::field("*")->where(['id'=>$factor['questions_id']])->select()->toArray();
+        $question = QuestionsModel::field("*")->whereIn('id',$factor['questions_id'])->select()->toArray();
         foreach ($question as &$q){
             $q['options'] = json_decode($q['options']);
         }
