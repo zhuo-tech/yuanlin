@@ -20,6 +20,7 @@ class Download extends Api {
      * @brief 案例分类
      */
     public function type() {
+        header( 'Access-Control-Allow-Origin: *' );
         $data = DownloadService::type();
         return json(['code' => 0, 'data' => $data, 'message' => 'OK']);
     }
@@ -29,6 +30,7 @@ class Download extends Api {
      * @brief 下载案例
      */
     public function cases(Request $request) {
+        header( 'Access-Control-Allow-Origin: *' );
         $page   = $request->param('page', 0);
         $type   = $request->param('type');
         $name   = $request->param('keyword');
