@@ -13,9 +13,9 @@
 // 定义应用目录
 define('APP_PATH', __DIR__ . '/../application/');
 
-header("Access-Control-Allow-Origin:*");
-header("Access-Control-Allow-Methods:GET, POST, OPTIONS");
-header("Access-Control-Allow-Headers:*");
+//header("Access-Control-Allow-Origin:*");
+//header("Access-Control-Allow-Methods:GET, POST, OPTIONS");
+//header("Access-Control-Allow-Headers:*");
 
 // 判断是否安装
 if (!is_file(APP_PATH . 'admin/command/Install/install.lock')) {
