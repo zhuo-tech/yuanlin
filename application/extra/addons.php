@@ -3,11 +3,20 @@
 return [
     'autoload' => false,
     'hooks' => [
-        'upgrade' => [
-            'simditor',
+        'sms_send' => [
+            'alisms',
+            'qcloudsms',
+        ],
+        'sms_notice' => [
+            'alisms',
+            'qcloudsms',
+        ],
+        'sms_check' => [
+            'alisms',
+            'qcloudsms',
         ],
         'config_init' => [
-            'simditor',
+            'qcloudsms',
         ],
     ],
     'route' => [],
