@@ -155,7 +155,7 @@ class User extends Api {
 
         $user = \app\common\model\User::where(['mobile'=>$mobile])->select()->toArray();
         if($user){
-            $this->error(__('Email is exist'));
+            $this->error(__('mobile is exist'));
         }
 
         $ret = $this->auth->register($mobile, $password, '', $mobile, []);
