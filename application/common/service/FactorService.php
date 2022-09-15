@@ -58,9 +58,9 @@ class FactorService {
             $inputModel        = strtoupper($value['input_mode']);
             if ($inputModel == 'A') {
                 $value['option'] = json_decode($value['option'], true) ?? [];
-            } elseif ($inputModel == 'C') {
-                $value['option'] = '';
             } elseif ($inputModel == 'D') {
+                $value['option'] = '';
+            } elseif ($inputModel == 'C') {
                 $questions       = json_decode($value['option']);
                 $questionOptions = [];
                 if ($questions) {
