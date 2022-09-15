@@ -120,6 +120,10 @@ class Factor extends Api {
         $preFactorId  = 0;
         $nextFactorId = 0;
 
+        if($factorId==-1){
+            $this->error('已经是最后一项');
+        }
+
         if ($factorId) {
 
             $current = ItemFactorModel::field("id")
@@ -146,6 +150,8 @@ class Factor extends Api {
 
             if ($next) {
                 $nextFactorId = $next[0]['factor_id'];
+            }else{
+                $nextFactorId =-1;
             }
 
         } else {
@@ -170,6 +176,8 @@ class Factor extends Api {
                 ->select()->toArray();
             if ($next) {
                 $nextFactorId = $next[0]['factor_id'];
+            }else{
+                $nextFactorId =-1;
             }
 
         }
