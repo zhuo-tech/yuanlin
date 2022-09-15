@@ -36,7 +36,7 @@ class FactorService {
         // 查询已经选择的
         $selectFactors = [];
         if ($itemId) {
-            $selectRows    = ItemsFactor::where(['item_id' => $itemId])->select()->toArray();
+            $selectRows    = ItemsFactor::where(['item_id' => $itemId, 'status' => 1])->select()->toArray();
             $selectFactors = array_column($selectRows, 'factor_id');
         }
 
