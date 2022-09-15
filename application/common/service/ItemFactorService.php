@@ -96,7 +96,7 @@ class ItemFactorService {
                 } else if ($type == 'C') {
                     $result = array_sum(array_column($factor['param'], 'score')) / count($factor['param']);
                 } else {
-                    $result = '';
+                    $result = 0;
                 }
                 ItemsFactorModel::where(['item_id' => $itemId, 'factor_id' => $factor['id']])->update(['param' => $param, 'result' => $result]);
             }
