@@ -120,41 +120,6 @@ class FactorService {
     }
 
     /**
-     * @brief 根据子级返回结构
-     * @param $itemId
-     */
-    public static function getSetFactors($itemId) {
-        // 先查询所有的
-        $selectRows    = ItemsFactor::where(['item_id' => $itemId, 'status' => 1])->select()->toArray();
-        $selectFactors = array_column($selectRows, 'factor_id');
-        $selectData    = static::faData($selectFactors);
-        foreach ($selectData as &$value) {
-            $value['level'] = LevelService::handle($value['id'], $value['result']);
-        }
-
-        $secondData = static::faData(array_column($selectData, 'pid'));
-        $oneData    = static::faData(array_column($secondData, 'pid'));
-        $data       = array_merge($oneData, $secondData, $selectData);
-        return static::sortData($data);
-    }
-
-    /**
-     * @brief
-     * @return array
-     */
-    public static function faData($id = []): array {
-        $where = ['f.status' => 1];
-        $field = ['name', 'f.id', 'national_stand', 'result', 'pid'];
-        $query = FactorModel::alias('f')->where($where);
-        if ($id) {
-            $query = $query->whereIn('f.id', $id);
-        }
-        $query = $query->field($field)->join('fa_factor_detail', 'f.id = fa_factor_detail.factor_id', 'left')
-            ->join('fa_items_factor', 'f.id = fa_items_factor.factor_id', 'left');
-        return $query->select()->toArray();
-    }
-
-    /**
      * 组织树
      * @param $data
      * @param int $pid

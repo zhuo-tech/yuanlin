@@ -72,8 +72,8 @@ class Factor extends Api {
         $factor['option']   = json_decode($factor['option']);
         $factor['document'] = json_decode($factor['document']);
 
-        $question = QuestionsModel::field("*")->whereIn('id',$factor['questions_id'])->select()->toArray();
-        foreach ($question as &$q){
+        $question = QuestionsModel::field("*")->whereIn('id', $factor['questions_id'])->select()->toArray();
+        foreach ($question as &$q) {
             $q['options'] = json_decode($q['options']);
         }
 
@@ -101,83 +101,79 @@ class Factor extends Api {
      * @brief 获取当前输入的指标
      */
 
-    public function getItemFactor(Request $request){
+    public function getItemFactor(Request $request) {
 
         $itemId = $request->param('item_id');
 
         $factorId = $request->param('current_factor_id');
 
-        $preFactorId = 0;
+        $preFactorId  = 0;
         $nextFactorId = 0;
 
-        if($factorId){
+        if ($factorId) {
 
-            $current =  ItemFactorModel::field("id")
-                ->where(['item_id'=>$itemId])
-                ->where(['factor_id'=>$factorId])
-                ->select()->toArray()[0];
+            $current = ItemFactorModel::field("id")
+                           ->where(['item_id' => $itemId])
+                           ->where(['factor_id' => $factorId])
+                           ->select()->toArray()[0];
 
             $pre = ItemFactorModel::field("id,factor_id")
-                ->where(['item_id'=>$itemId])
-                ->where('id','<',$current['id'])
-                ->order('id','desc')
+                ->where(['item_id' => $itemId])
+                ->where('id', '<', $current['id'])
+                ->order('id', 'desc')
                 ->limit(1)
                 ->select()->toArray();
-            if($pre){
+            if ($pre) {
                 $preFactorId = $pre[0]['factor_id'];
             }
 
             $next = ItemFactorModel::field("id,factor_id")
-                ->where(['item_id'=>$itemId])
-                ->where('id','>',$current['id'])
-                ->order('id','asc')
+                ->where(['item_id' => $itemId])
+                ->where('id', '>', $current['id'])
+                ->order('id', 'asc')
                 ->limit(1)
                 ->select()->toArray();
 
-            if($next){
+            if ($next) {
                 $nextFactorId = $next[0]['factor_id'];
             }
 
-        }else{
+        } else {
 
-            $current =  ItemFactorModel::field("id,factor_id")
-                ->where(['item_id'=>$itemId])
-                ->order('id','asc')
+            $current = ItemFactorModel::field("id,factor_id")
+                ->where(['item_id' => $itemId])
+                ->order('id', 'asc')
                 ->limit(1)
                 ->select()->toArray();
 
-            if($current){
+            if ($current) {
 
                 $factorId = $current[0]['factor_id'];
 
             }
 
             $next = ItemFactorModel::field("id,factor_id")
-                ->where(['item_id'=>$itemId])
-                ->where('id','>',$current[0]['id'])
-                ->order('id','asc')
+                ->where(['item_id' => $itemId])
+                ->where('id', '>', $current[0]['id'])
+                ->order('id', 'asc')
                 ->limit(1)
                 ->select()->toArray();
-            if($next){
+            if ($next) {
                 $nextFactorId = $next[0]['factor_id'];
             }
 
         }
 
 
-
-
-
-
         $factor = FactorDetailModel::alias('fd')
-            ->join('factor f', 'fd.factor_id=f.id', 'left')
-            ->where(['fd.factor_id' => $factorId])->field('fd.*,f.name')->select()->toArray()[0];
+                      ->join('factor f', 'fd.factor_id=f.id', 'left')
+                      ->where(['fd.factor_id' => $factorId])->field('fd.*,f.name')->select()->toArray()[0];
 
         $factor['option']   = json_decode($factor['option']);
         $factor['document'] = json_decode($factor['document']);
 
-        $question = QuestionsModel::field("*")->whereIn('id',$factor['questions_id'])->select()->toArray();
-        foreach ($question as &$q){
+        $question = QuestionsModel::field("*")->whereIn('id', $factor['questions_id'])->select()->toArray();
+        foreach ($question as &$q) {
             $q['options'] = json_decode($q['options']);
         }
 
@@ -195,7 +191,7 @@ class Factor extends Api {
 
         $factor['items'] = $item;
 
-        return json(['code' => 0, 'message' => 'OK', 'pre'=>$preFactorId,'next'=>$nextFactorId,'data' => $factor]);
+        return json(['code' => 0, 'message' => 'OK', 'pre' => $preFactorId, 'next' => $nextFactorId, 'data' => $factor]);
 
 
     }
@@ -231,14 +227,6 @@ class Factor extends Api {
         return json(['code' => $data['error'], 'data' => [], 'message' => $data['message']]);
     }
 
-    /**
-     * @brief 获取保存的指标【没有用到】
-     */
-    public static function getSaveFactors(Request $request) {
-        $itemId = $request->param('item_id', 0);
-        $data   = FactorService::getFactorTree($itemId);
-        return json(['code' => 0, 'data' => $data, 'message' => 'OK']);
-    }
 
     /**
      * @brief 获取项目指标
@@ -247,24 +235,30 @@ class Factor extends Api {
         $itemId = $request->param('item_id', 0);
         //$data   = FactorService::getSetFactors($itemId);
 
-        $selectRows = ItemFactorModel::alias('if') ->field("if.id,f.pid,f.name")
-            ->join("fa_factor f",'if.factor_id=f.id','left')
-            ->where(['if.item_id'=>$itemId]) ->select()->toArray();
-        $first = FactorModel::where(['status' => 1, 'pid' => 0])
+        $selectRows = ItemFactorModel::alias('if')->field("if.id,f.pid,f.name,fd.max,fd.min,fd.national_stand,format_type,if.result")
+            ->join("fa_factor f", 'if.factor_id=f.id', 'left')
+            ->join('fa_factor_detail fd', 'fd.factor_id = f.id', 'left')
+            ->where(['if.item_id' => $itemId])->select()->toArray();
+        $first      = FactorModel::where(['status' => 1, 'pid' => 0])
             ->field("id,name")->select()->toArray();
         foreach ($first as &$v) {
-            $v['children'] =  FactorModel::where(['status' => 1, 'pid' => $v['id']])
+            $v['children'] = FactorModel::where(['status' => 1, 'pid' => $v['id']])
                 ->field("id,name")->select()->toArray();
         }
-        foreach ($first as &$f){
-            foreach ($f['children'] as $child){
+        // 查询
 
-                foreach ($selectRows as $row){
-                    if($row['pid']==$child['id']){ $f['select'][] = $row; }
+        foreach ($first as &$f) {
+            foreach ($f['children'] as $child) {
+                foreach ($selectRows as $row) {
+                    if ($row['pid'] == $child['id']) {
+                        $result = floatval($row['result']);
+                        $row['level'] = ($result - $row['min']) / ($row['max'] - $row['min']) / 2 * 10;
+                        $f['select'][] = $row;
+                    }
                 }
             }
         }
-        foreach ($first as &$ff){
+        foreach ($first as &$ff) {
             unset($ff['children']);
         }
         return json(['code' => 0, 'data' => $first, 'message' => 'OK']);
