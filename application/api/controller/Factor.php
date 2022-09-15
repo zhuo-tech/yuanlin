@@ -40,6 +40,16 @@ class Factor extends Api {
         return json(['code' => 0, 'data' => $data, 'message' => 'OK']);
     }
 
+
+    /**
+     * @brief 获取保存的指标【没有用到】
+     */
+    public static function getSaveFactors(Request $request) {
+        $itemId = $request->param('item_id', 0);
+        $data   = FactorService::getFactorTree($itemId);
+        return json(['code' => 0, 'data' => $data, 'message' => 'OK']);
+    }
+
     public function factorTree() {
         $first = FactorModel::where(['status' => 1, 'pid' => 0])->field("id,name")->select()->toArray();
         foreach ($first as &$v) {
