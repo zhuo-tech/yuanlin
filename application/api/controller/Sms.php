@@ -24,44 +24,42 @@ class Sms extends Api
      */
     public function send()
     {
-
-        $this->success(__('发送成功'));
         $mobile = $this->request->post("mobile");
         $event = $this->request->post("event");
         $event = $event ? $event : 'register';
 
         if (!$mobile || !\think\Validate::regex($mobile, "^1\d{10}$")) {
-            $this->error(__('手机号不正确'));
+            return json(['code' => 1, 'message' => '手机号不正确', 'data' => []]);
         }
         $last = Smslib::get($mobile, $event);
         if ($last && time() - $last['createtime'] < 60) {
-            $this->error(__('发送频繁'));
+            return json(['code' => 1, 'message' => '发送频繁', 'data' => []]);
         }
         $ipSendTotal = \app\common\model\Sms::where(['ip' => $this->request->ip()])->whereTime('createtime', '-1 hours')->count();
         if ($ipSendTotal >= 5) {
-            $this->error(__('发送频繁'));
+            return json(['code' => 1, 'message' => '发送频繁', 'data' => []]);
         }
         if ($event) {
             $userinfo = User::getByMobile($mobile);
             if ($event == 'register' && $userinfo) {
                 //已被注册
-                $this->error(__('已被注册'));
+                return json(['code' => 1, 'message' => '已被注册', 'data' => []]);
             } elseif (in_array($event, ['changemobile']) && $userinfo) {
                 //被占用
-                $this->error(__('已被占用'));
+                return json(['code' => 1, 'message' => '已被占用', 'data' => []]);
             } elseif (in_array($event, ['changepwd', 'resetpwd']) && !$userinfo) {
                 //未注册
-                $this->error(__('未注册'));
+                return json(['code' => 1, 'message' => '未注册', 'data' => []]);
             }
         }
         if (!Hook::get('sms_send')) {
-            $this->error(__('请在后台插件管理安装短信验证插件'));
+            return json(['code' => 1, 'message' => '发送失败', 'data' => []]);
         }
         $ret = Smslib::send($mobile, null, $event);
         if ($ret) {
-            $this->success(__('发送成功'));
+            return json(['code' => 0, 'message' => '发送成功', 'data' => []]);
         } else {
-            $this->error(__('发送失败，请检查短信配置是否正确'));
+            return json(['code' => 1, 'message' => '发送失败', 'data' => []]);
         }
     }
 
