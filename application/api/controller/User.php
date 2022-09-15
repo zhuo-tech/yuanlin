@@ -143,6 +143,7 @@ class User extends Api {
 
         $mobile   = $this->request->post('mobile');
         $code     = $this->request->post('code');
+        $password     = $this->request->post('password');
 
         if ($mobile && !Validate::regex($mobile, "^1\d{10}$")) {
             $this->error(__('Mobile is incorrect'));
@@ -157,7 +158,7 @@ class User extends Api {
             $this->error(__('Email is exist'));
         }
 
-        $ret = $this->auth->register($mobile, $mobile, '', $mobile, []);
+        $ret = $this->auth->register($mobile, $password, '', $mobile, []);
         if ($ret) {
             $data = ['userinfo' => $this->auth->getUserinfo()];
             $this->success(__('Sign up successful'), $data);
@@ -179,6 +180,7 @@ class User extends Api {
 
         $email    = $this->request->post('email');
         $code     = $this->request->post('code');
+        $password     = $this->request->post('password');
 
         if ($email && !Validate::is($email, "email")) {
             $this->error(__('Email is incorrect'));
@@ -191,7 +193,7 @@ class User extends Api {
         if($ret){
             $this->error(__('code is incorrect'));
         }
-        $ret = $this->auth->register($email, $email, $email, '', []);
+        $ret = $this->auth->register($email, $password, $email, '', []);
         if ($ret) {
             $data = ['userinfo' => $this->auth->getUserinfo()];
             $this->success(__('Sign up successful'), $data);
