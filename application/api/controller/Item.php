@@ -2,9 +2,9 @@
 
 namespace app\api\controller;
 
+use app\admin\model\Items as ItemsModel;
 use app\common\controller\Api;
 use app\common\service\FactorService;
-use app\common\service\ItemFactorService;
 use app\common\service\ItemService;
 use think\Request;
 
@@ -57,5 +57,17 @@ class Item extends Api {
         $page = $request->param('page', 0);
         $data = FactorService::selected($page);
         return json(['code' => 0, 'message' => 'OK', 'data' => $data]);
+    }
+
+    public function saveItem(Request $request){
+
+        //var_dump(11);die;
+
+        $itemId = $request->param('item_id', 0);
+
+        $res = ItemsModel::update(['status' => 2], ['id' => $itemId]);
+
+        return json_encode(['code' => 0, 'message' => 'OK', 'data' => []]);
+
     }
 }
