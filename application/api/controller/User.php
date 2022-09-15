@@ -13,7 +13,7 @@ use think\Validate;
  * 会员接口
  */
 class User extends Api {
-    protected $noNeedLogin = ['login', 'mobilelogin', 'register', 'emailRegister','resetpwd', 'changeemail', 'changemobile', 'third', 'profile'];
+    protected $noNeedLogin = ['login', 'mobilelogin', 'register', 'emailRegister','mobileRegister','resetpwd', 'changeemail', 'changemobile', 'third', 'profile'];
     protected $noNeedRight = '*';
 
     public function _initialize() {
@@ -130,6 +130,50 @@ class User extends Api {
         }
     }
 
+
+
+    /**
+     * mobile注册会员
+     * @ApiMethod (POST)
+     * @param string $email 邮箱
+     * @param string $code 验证码
+     */
+
+    public function mobileRegister(){
+
+        $mobile   = $this->request->post('mobile');
+        $code     = $this->request->post('code');
+
+        if ($mobile && !Validate::regex($mobile, "^1\d{10}$")) {
+            $this->error(__('Mobile is incorrect'));
+        }
+//        $ret = Sms::check($mobile, $code, 'register');
+//        if (!$ret) {
+//            $this->error(__('Captcha is incorrect'));
+//        }
+
+        $user = \app\common\model\User::where(['mobile'=>$mobile])->select()->toArray();
+        if($user){
+            $this->error(__('Email is exist'));
+        }
+
+        $ret = $this->auth->register($mobile, $mobile, '', $mobile, []);
+        if ($ret) {
+            $data = ['userinfo' => $this->auth->getUserinfo()];
+            $this->success(__('Sign up successful'), $data);
+        } else {
+            $this->error($this->auth->getError());
+        }
+    }
+
+
+
+    /**
+     * email注册会员
+     * @ApiMethod (POST)
+     * @param string $email 邮箱
+     * @param string $code 验证码
+     */
 
     public function emailRegister(){
 
