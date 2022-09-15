@@ -88,6 +88,11 @@ class Factor extends Api {
     }
 
 
+    /**
+     *
+     * @brief 获取当前输入的指标
+     */
+
     public function getItemFactor(Request $request){
 
         $itemId = $request->param('item_id');
