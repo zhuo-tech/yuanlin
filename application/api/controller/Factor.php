@@ -31,6 +31,14 @@ class Factor extends Api {
         return json(['code' => 0, 'data' => $data, 'message' => 'OK']);
     }
 
+    /**
+     * @brief 已选指标，不包含二级
+     */
+    public function simpleTree(Request $request) {
+        $itemId = $request->param('item_id', 0);
+        $data   = FactorService::simpleTree($itemId);
+        return json(['code' => 0, 'data' => $data, 'message' => 'OK']);
+    }
 
     public function factorTree() {
         $first = FactorModel::where(['status' => 1, 'pid' => 0])->field("id,name")->select()->toArray();
