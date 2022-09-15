@@ -189,10 +189,10 @@ class User extends Api {
         if($user){
             $this->error(__('Email is exist'));
         }
-        $ret = Ems::check($email,$code,'register');
-        if($ret){
-            $this->error(__('code is incorrect'));
-        }
+//        $ret = Ems::check($email,$code,'register');
+//        if($ret){
+//            $this->error(__('code is incorrect'));
+//        }
         $ret = $this->auth->register($email, $password, $email, '', []);
         if ($ret) {
             $data = ['userinfo' => $this->auth->getUserinfo()];

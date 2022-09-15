@@ -28,6 +28,50 @@ class FactorService {
     }
 
     /**
+     * @brief  二级指标树
+     * @param $itemId
+     * @return array
+     */
+    public static function simpleTree($itemId) {
+        // 查询已经选择的
+        $selectFactors = [];
+        if ($itemId) {
+            $selectRows    = ItemsFactor::where(['item_id' => $itemId, 'status' => 1])->select()->toArray();
+            $selectFactors = array_column($selectRows, 'factor_id');
+        }
+
+        // 查询所有的指标
+        $fields     = ['id', 'pid', 'name'];
+        $factorRows = FactorModel::where(['status' => 1])->field($fields)->select()->toArray();
+        $topFactors = [];
+        $sonFactors = [];
+        foreach ($factorRows as $factorRow) {
+            if ($factorRow['pid'] == 0) {
+                $topFactors[] = $factorRow;
+            } else {
+                $sonFactors[] = $factorRow;
+            }
+        }
+        foreach ($topFactors as &$topFactor) {
+            foreach ($sonFactors as $sonFactor) {
+                if ($topFactor['id'] == $sonFactor['pid']) {
+                    foreach ($sonFactors as $son) {
+                        if ($son['pid'] == $sonFactor['id']) {
+                            if ($selectFactors && in_array($son['id'], $selectFactors)) {
+                                $son['selected'] = 1;
+                            } else {
+                                $son['selected'] = 0;
+                            }
+                            $topFactor['child'][] = $son;
+                        }
+                    }
+                }
+            }
+        }
+        return $topFactors;
+    }
+
+    /**
      * @brief  获取所有的项目指标
      * @return array
      */

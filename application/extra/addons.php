@@ -5,18 +5,18 @@ return [
     'hooks' => [
         'sms_send' => [
             'alisms',
+            'qcloudsms',
         ],
         'sms_notice' => [
             'alisms',
+            'qcloudsms',
         ],
         'sms_check' => [
             'alisms',
-        ],
-        'upgrade' => [
-            'simditor',
+            'qcloudsms',
         ],
         'config_init' => [
-            'simditor',
+            'qcloudsms',
         ],
     ],
     'route' => [],
