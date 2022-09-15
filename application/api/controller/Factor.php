@@ -187,7 +187,7 @@ class Factor extends Api {
 
         $factor['items'] = $item;
 
-        return json(['code' => 0, 'message' => 'OK', 'data' => $factor,'pre'=>$preFactorId,'next'=>$nextFactorId]);
+        return json(['code' => 0, 'message' => 'OK', 'pre'=>$preFactorId,'next'=>$nextFactorId,'data' => $factor]);
 
 
     }
