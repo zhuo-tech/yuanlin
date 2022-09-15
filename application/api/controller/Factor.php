@@ -245,7 +245,28 @@ class Factor extends Api {
      */
     public function getItemFactors(Request $request) {
         $itemId = $request->param('item_id', 0);
-        $data   = FactorService::getSetFactors($itemId);
-        return json(['code' => 0, 'data' => $data, 'message' => 'OK']);
+        //$data   = FactorService::getSetFactors($itemId);
+
+        $selectRows = ItemFactorModel::alias('if') ->field("if.id,f.pid,f.name")
+            ->join("fa_factor f",'if.factor_id=f.id','left')
+            ->where(['if.item_id'=>$itemId]) ->select()->toArray();
+        $first = FactorModel::where(['status' => 1, 'pid' => 0])
+            ->field("id,name")->select()->toArray();
+        foreach ($first as &$v) {
+            $v['children'] =  FactorModel::where(['status' => 1, 'pid' => $v['id']])
+                ->field("id,name")->select()->toArray();
+        }
+        foreach ($first as &$f){
+            foreach ($f['children'] as $child){
+
+                foreach ($selectRows as $row){
+                    if($row['pid']==$child['id']){ $f['select'][] = $row; }
+                }
+            }
+        }
+        foreach ($first as &$ff){
+            unset($ff['children']);
+        }
+        return json(['code' => 0, 'data' => $first, 'message' => 'OK']);
     }
 }
