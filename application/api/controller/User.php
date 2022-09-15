@@ -63,7 +63,7 @@ class User extends Api {
      */
     public function mobilelogin() {
         $mobile  = $this->request->post('mobile');
-        $captcha = $this->request->post('captcha');
+        $captcha = $this->request->post('code');
         if (!$mobile || !$captcha) {
             $this->error(__('Invalid parameters'));
         }
