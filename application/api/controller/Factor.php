@@ -27,25 +27,25 @@ class Factor extends Api {
      */
     public function tree(Request $request) {
         $itemId = $request->param('item_id', 0);
-        $data = FactorService::getFactorTree($itemId);
+        $data   = FactorService::getFactorTree($itemId);
         return json(['code' => 0, 'data' => $data, 'message' => 'OK']);
     }
 
 
-    public function factorTree(){
-        $first = FactorModel::where(['status'=>1,'pid'=>0])->field("id,name")->select()->toArray();
-        foreach ($first as &$v){
-            $v['children'] =  $this->getChildren($v);
+    public function factorTree() {
+        $first = FactorModel::where(['status' => 1, 'pid' => 0])->field("id,name")->select()->toArray();
+        foreach ($first as &$v) {
+            $v['children'] = $this->getChildren($v);
         }
         return json(['code' => 0, 'data' => $first, 'message' => 'OK']);
     }
 
 
-    private function getChildren($factor){
-        $child =  FactorModel::where(['status'=>1,'pid'=>$factor['id']])->field("id,name")->select()->toArray();
-        if($child){
+    private function getChildren($factor) {
+        $child = FactorModel::where(['status' => 1, 'pid' => $factor['id']])->field("id,name")->select()->toArray();
+        if ($child) {
             $factor['children'] = $child;
-            foreach ($child as &$v){
+            foreach ($child as &$v) {
                 $v['children'] = $this->getChildren($v);
             }
         }
@@ -53,16 +53,15 @@ class Factor extends Api {
     }
 
 
+    public function factorDetail(Request $request) {
 
-    public function factorDetail(Request $request){
+        $factorId = $request->param('factor_id');
 
-        $factorId  = $request->param('factor_id');
+        $factor = FactorDetailModel::alias('fd')
+                      ->join('factor f', 'fd.factor_id=f.id', 'left')
+                      ->where(['fd.factor_id' => $factorId])->field('fd.*,f.name')->select()->toArray()[0];
 
-        $factor =  FactorDetailModel::alias('fd')
-            ->join('factor f','fd.factor_id=f.id','left')
-            ->where(['fd.factor_id'=>$factorId])->field('fd.*,f.name')->select()->toArray()[0];
-
-        $factor['option'] = json_decode($factor['option']);
+        $factor['option']   = json_decode($factor['option']);
         $factor['document'] = json_decode($factor['document']);
 
         $question = QuestionsModel::field("*")->whereIn('id',$factor['questions_id'])->select()->toArray();
@@ -73,13 +72,13 @@ class Factor extends Api {
         $factor['questions'] = $question;
 
         $item = ItemFactorModel::alias('if')
-            ->join('fa_items i','i.id=if.item_id','left')
+            ->join('fa_items i', 'i.id=if.item_id', 'left')
             ->field('i.name,i.images')
-            ->where(['if.factor_id'=>$factorId])
+            ->where(['if.factor_id' => $factorId])
             ->limit(3)->select()->toArray();
 
-        foreach ($item as &$v){
-            $v['images'] = Env::get('app.baseurl', 'http://ies-admin.zhuo-zhuo.com').$v['images'];
+        foreach ($item as &$v) {
+            $v['images'] = Env::get('app.baseurl', 'http://ies-admin.zhuo-zhuo.com') . $v['images'];
         }
 
         $factor['items'] = $item;
@@ -120,11 +119,20 @@ class Factor extends Api {
     }
 
     /**
-     * @brief 获取保存的指标
+     * @brief 获取保存的指标【没有用到】
      */
     public static function getSaveFactors(Request $request) {
         $itemId = $request->param('item_id', 0);
         $data   = FactorService::getFactorTree($itemId);
+        return json(['code' => 0, 'data' => $data, 'message' => 'OK']);
+    }
+
+    /**
+     * @brief 获取项目指标
+     */
+    public function getItemFactors(Request $request) {
+        $itemId = $request->param('item_id', 0);
+        $data   = FactorService::getSetFactors($itemId);
         return json(['code' => 0, 'data' => $data, 'message' => 'OK']);
     }
 }

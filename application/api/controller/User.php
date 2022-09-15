@@ -12,13 +12,11 @@ use think\Validate;
 /**
  * 会员接口
  */
-class User extends Api
-{
-    protected $noNeedLogin = ['login', 'mobilelogin', 'register', 'resetpwd', 'changeemail', 'changemobile', 'third'];
+class User extends Api {
+    protected $noNeedLogin = ['login', 'mobilelogin', 'register', 'resetpwd', 'changeemail', 'changemobile', 'third', 'profile'];
     protected $noNeedRight = '*';
 
-    public function _initialize()
-    {
+    public function _initialize() {
         parent::_initialize();
 
         if (!Config::get('fastadmin.usercenter')) {
@@ -30,8 +28,7 @@ class User extends Api
     /**
      * 会员中心
      */
-    public function index()
-    {
+    public function index() {
         $this->success('', ['welcome' => $this->auth->nickname]);
     }
 
@@ -39,22 +36,21 @@ class User extends Api
      * 会员登录
      *
      * @ApiMethod (POST)
-     * @param string $account  账号
+     * @param string $account 账号
      * @param string $password 密码
      */
-    public function login()
-    {
-        $account = $this->request->request('account');
-        $password = $this->request->request('password');
+    public function login() {
+        $account  = $this->request->post('account');
+        $password = $this->request->post('password');
         if (!$account || !$password) {
             $this->error(__('Invalid parameters'));
         }
         $ret = $this->auth->login($account, $password);
         if ($ret) {
             $data = ['userinfo' => $this->auth->getUserinfo()];
-            $this->success(__('Logged in successful'), $data);
+            return json(['code' => 0, 'data' => $data, 'message' => 'OK']);
         } else {
-            $this->error($this->auth->getError());
+            return json(['code' => 1, 'data' => [], 'message' => '登录失败']);
         }
     }
 
@@ -62,12 +58,11 @@ class User extends Api
      * 手机验证码登录
      *
      * @ApiMethod (POST)
-     * @param string $mobile  手机号
+     * @param string $mobile 手机号
      * @param string $captcha 验证码
      */
-    public function mobilelogin()
-    {
-        $mobile = $this->request->post('mobile');
+    public function mobilelogin() {
+        $mobile  = $this->request->post('mobile');
         $captcha = $this->request->post('captcha');
         if (!$mobile || !$captcha) {
             $this->error(__('Invalid parameters'));
@@ -103,17 +98,16 @@ class User extends Api
      * @ApiMethod (POST)
      * @param string $username 用户名
      * @param string $password 密码
-     * @param string $email    邮箱
-     * @param string $mobile   手机号
-     * @param string $code     验证码
+     * @param string $email 邮箱
+     * @param string $mobile 手机号
+     * @param string $code 验证码
      */
-    public function register()
-    {
+    public function register() {
         $username = $this->request->post('username');
         $password = $this->request->post('password');
-        $email = $this->request->post('email');
-        $mobile = $this->request->post('mobile');
-        $code = $this->request->post('code');
+        $email    = $this->request->post('email');
+        $mobile   = $this->request->post('mobile');
+        $code     = $this->request->post('code');
         if (!$username || !$password) {
             $this->error(__('Invalid parameters'));
         }
@@ -140,8 +134,7 @@ class User extends Api
      * 退出登录
      * @ApiMethod (POST)
      */
-    public function logout()
-    {
+    public function logout() {
         if (!$this->request->isPost()) {
             $this->error(__('Invalid parameters'));
         }
@@ -153,18 +146,23 @@ class User extends Api
      * 修改会员个人信息
      *
      * @ApiMethod (POST)
-     * @param string $avatar   头像地址
+     * @param string $avatar 头像地址
      * @param string $username 用户名
      * @param string $nickname 昵称
-     * @param string $bio      个人简介
+     * @param string $bio 个人简介
      */
-    public function profile()
-    {
-        $user = $this->auth->getUser();
-        $username = $this->request->post('username');
-        $nickname = $this->request->post('nickname');
-        $bio = $this->request->post('bio');
-        $avatar = $this->request->post('avatar', '', 'trim,strip_tags,htmlspecialchars');
+    public function profile() {
+        $user               = $this->auth->getUser();
+        $username           = $this->request->post('username');
+        $occupationName     = $this->request->post('occupation_name');
+        $occupationCategory = $this->request->post('occupation_category');
+        $province           = $this->request->post('province');
+        $companyAddress     = $this->request->post('company_address');
+        $city               = $this->request->post('city');
+        $birthday           = $this->request->post('birthday');
+        $gender             = $this->request->post('gender');
+        $bio                = $this->request->post('bio');
+        $avatar             = $this->request->post('avatar', '', 'trim,strip_tags,htmlspecialchars');
         if ($username) {
             $exists = \app\common\model\User::where('username', $username)->where('id', '<>', $this->auth->id)->find();
             if ($exists) {
@@ -172,15 +170,16 @@ class User extends Api
             }
             $user->username = $username;
         }
-        if ($nickname) {
-            $exists = \app\common\model\User::where('nickname', $nickname)->where('id', '<>', $this->auth->id)->find();
-            if ($exists) {
-                $this->error(__('Nickname already exists'));
-            }
-            $user->nickname = $nickname;
-        }
-        $user->bio = $bio;
-        $user->avatar = $avatar;
+
+        $user->bio                 = $bio;
+        $user->occupation_name     = $occupationName;
+        $user->occupation_category = $occupationCategory;
+        $user->company_address     = $companyAddress;
+        $user->province            = $province;
+        $user->city                = $city;
+        $user->birthday            = $birthday;
+        $user->gender              = $gender;
+        $user->avatar              = $avatar;
         $user->save();
         $this->success();
     }
@@ -189,13 +188,12 @@ class User extends Api
      * 修改邮箱
      *
      * @ApiMethod (POST)
-     * @param string $email   邮箱
+     * @param string $email 邮箱
      * @param string $captcha 验证码
      */
-    public function changeemail()
-    {
-        $user = $this->auth->getUser();
-        $email = $this->request->post('email');
+    public function changeemail() {
+        $user    = $this->auth->getUser();
+        $email   = $this->request->post('email');
         $captcha = $this->request->post('captcha');
         if (!$email || !$captcha) {
             $this->error(__('Invalid parameters'));
@@ -210,10 +208,10 @@ class User extends Api
         if (!$result) {
             $this->error(__('Captcha is incorrect'));
         }
-        $verification = $user->verification;
+        $verification        = $user->verification;
         $verification->email = 1;
-        $user->verification = $verification;
-        $user->email = $email;
+        $user->verification  = $verification;
+        $user->email         = $email;
         $user->save();
 
         Ems::flush($email, 'changeemail');
@@ -224,13 +222,12 @@ class User extends Api
      * 修改手机号
      *
      * @ApiMethod (POST)
-     * @param string $mobile  手机号
+     * @param string $mobile 手机号
      * @param string $captcha 验证码
      */
-    public function changemobile()
-    {
-        $user = $this->auth->getUser();
-        $mobile = $this->request->post('mobile');
+    public function changemobile() {
+        $user    = $this->auth->getUser();
+        $mobile  = $this->request->post('mobile');
         $captcha = $this->request->post('captcha');
         if (!$mobile || !$captcha) {
             $this->error(__('Invalid parameters'));
@@ -245,10 +242,10 @@ class User extends Api
         if (!$result) {
             $this->error(__('Captcha is incorrect'));
         }
-        $verification = $user->verification;
+        $verification         = $user->verification;
         $verification->mobile = 1;
-        $user->verification = $verification;
-        $user->mobile = $mobile;
+        $user->verification   = $verification;
+        $user->mobile         = $mobile;
         $user->save();
 
         Sms::flush($mobile, 'changemobile');
@@ -260,14 +257,13 @@ class User extends Api
      *
      * @ApiMethod (POST)
      * @param string $platform 平台名称
-     * @param string $code     Code码
+     * @param string $code Code码
      */
-    public function third()
-    {
-        $url = url('user/index');
+    public function third() {
+        $url      = url('user/index');
         $platform = $this->request->post("platform");
-        $code = $this->request->post("code");
-        $config = get_addon_config('third');
+        $code     = $this->request->post("code");
+        $config   = get_addon_config('third');
         if (!$config || !isset($config[$platform])) {
             $this->error(__('Invalid parameters'));
         }
@@ -291,17 +287,16 @@ class User extends Api
      * 重置密码
      *
      * @ApiMethod (POST)
-     * @param string $mobile      手机号
+     * @param string $mobile 手机号
      * @param string $newpassword 新密码
-     * @param string $captcha     验证码
+     * @param string $captcha 验证码
      */
-    public function resetpwd()
-    {
-        $type = $this->request->post("type");
-        $mobile = $this->request->post("mobile");
-        $email = $this->request->post("email");
+    public function resetpwd() {
+        $type        = $this->request->post("type");
+        $mobile      = $this->request->post("mobile");
+        $email       = $this->request->post("email");
         $newpassword = $this->request->post("newpassword");
-        $captcha = $this->request->post("captcha");
+        $captcha     = $this->request->post("captcha");
         if (!$newpassword || !$captcha) {
             $this->error(__('Invalid parameters'));
         }

@@ -22,7 +22,7 @@ class LevelService {
             $factorDetail = FactorDetailModel::where(['factor_id' => $factorId])->find()->toArray();
             return ($value - $factorDetail['min']) / ($factorDetail['max'] - $factorDetail['min']) / 2 * 10;
         } catch (\Exception $exception) {
-            return [];
+            return 0;
         }
     }
 }

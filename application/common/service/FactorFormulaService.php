@@ -335,7 +335,8 @@ class FactorFormulaService {
         return $b * 0.3 + $c * 0.2 + $d * 0.25 - $e * 0.15 + $f * 0.1;
     }
 
-    private static function format($number): string {
-        return sprintf('%.2f', $number) . '%';
+    // 不进行格式化操作
+    private static function format($number) {
+        return $number;
     }
 }
