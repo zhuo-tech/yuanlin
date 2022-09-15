@@ -13,7 +13,7 @@ use think\Validate;
  * 会员接口
  */
 class User extends Api {
-    protected $noNeedLogin = ['login', 'mobilelogin', 'register', 'resetpwd', 'changeemail', 'changemobile', 'third', 'profile'];
+    protected $noNeedLogin = ['login', 'mobilelogin', 'register', 'emailRegister','resetpwd', 'changeemail', 'changemobile', 'third', 'profile'];
     protected $noNeedRight = '*';
 
     public function _initialize() {
@@ -122,6 +122,32 @@ class User extends Api {
             $this->error(__('Captcha is incorrect'));
         }
         $ret = $this->auth->register($username, $password, $email, $mobile, []);
+        if ($ret) {
+            $data = ['userinfo' => $this->auth->getUserinfo()];
+            $this->success(__('Sign up successful'), $data);
+        } else {
+            $this->error($this->auth->getError());
+        }
+    }
+
+
+    public function emailRegister(){
+
+        $email    = $this->request->post('email');
+        $code     = $this->request->post('code');
+
+        if ($email && !Validate::is($email, "email")) {
+            $this->error(__('Email is incorrect'));
+        }
+        $user = \app\common\model\User::where(['email'=>$email])->select()->toArray();
+        if($user){
+            $this->error(__('Email is exist'));
+        }
+        $ret = Ems::check($email,$code,'register');
+        if($ret){
+            $this->error(__('code is incorrect'));
+        }
+        $ret = $this->auth->register($email, $email, $email, '', []);
         if ($ret) {
             $data = ['userinfo' => $this->auth->getUserinfo()];
             $this->success(__('Sign up successful'), $data);
