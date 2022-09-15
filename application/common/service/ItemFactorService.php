@@ -61,7 +61,7 @@ class ItemFactorService {
                 return ['error' => 1, 'message' => '项目不存在', 'data' => []];
             }
 
-            if (ItemsModel::update(['status' => 1], ['item_id' => $itemId])) {
+            if (ItemsModel::update(['status' => 1], ['id' => $itemId])) {
                 return ['error' => 0, 'message' => 'OK', 'data' => []];
             }
             return ['error' => 1, 'message' => '操作失败', 'data' => []];
