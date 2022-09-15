@@ -121,7 +121,9 @@ class Factor extends Api {
         $nextFactorId = 0;
 
         if($factorId==-1){
-            $this->error('已经是最后一项');
+            //$this->error('已经是最后一项');
+
+            return json_encode(['code'=>1,'message'=>'最后一项']);
         }
 
         if ($factorId) {
