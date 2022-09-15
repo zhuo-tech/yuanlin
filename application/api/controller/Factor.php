@@ -94,6 +94,7 @@ class Factor extends Api {
     public function saveFactors(Request $request) {
         $itemId  = $request->param('item_id');
         $factors = $request->param('factors/a');
+        var_dump($itemId, $factors);die();
 
         $data = ItemFactorService::saveFactors((int)$itemId, $factors);
         return json(['code' => $data['error'], 'data' => [], 'message' => $data['message']]);
