@@ -5,6 +5,14 @@
 
 /public/assets/addons/*
 /public/uploads/*
+
+/public/css/*
+
+/public/front/*
+
+/public/js/*
+
+/public/img/*
 .idea
 composer.lock
 *.log
