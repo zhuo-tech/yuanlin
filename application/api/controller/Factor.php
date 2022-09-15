@@ -87,6 +87,106 @@ class Factor extends Api {
 
     }
 
+
+    public function getItemFactor(Request $request){
+
+        $itemId = $request->param('item_id');
+
+        $factorId = $request->param('current_factor_id');
+
+        $preFactorId = 0;
+        $nextFactorId = 0;
+
+        if($factorId){
+
+            $current =  ItemFactorModel::field("id")
+                ->where(['item_id'=>$itemId])
+                ->where(['factor_id'=>$factorId])
+                ->select()->toArray()[0];
+
+            $pre = ItemFactorModel::field("id,factor_id")
+                ->where(['item_id'=>$itemId])
+                ->where('id','<',$current['id'])
+                ->order('id','desc')
+                ->limit(1)
+                ->select()->toArray();
+            if($pre){
+                $preFactorId = $pre[0]['factor_id'];
+            }
+
+            $next = ItemFactorModel::field("id,factor_id")
+                ->where(['item_id'=>$itemId])
+                ->where('id','>',$current['id'])
+                ->order('id','asc')
+                ->limit(1)
+                ->select()->toArray();
+
+            if($next){
+                $nextFactorId = $next[0]['factor_id'];
+            }
+
+        }else{
+
+            $current =  ItemFactorModel::field("id,factor_id")
+                ->where(['item_id'=>$itemId])
+                ->order('id','asc')
+                ->limit(1)
+                ->select()->toArray();
+
+            if($current){
+
+                $factorId = $current[0]['factor_id'];
+
+            }
+
+            $next = ItemFactorModel::field("id,factor_id")
+                ->where(['item_id'=>$itemId])
+                ->where('id','>',$current[0]['id'])
+                ->order('id','asc')
+                ->limit(1)
+                ->select()->toArray();
+            if($next){
+                $nextFactorId = $next[0]['factor_id'];
+            }
+
+        }
+
+
+
+
+
+
+        $factor = FactorDetailModel::alias('fd')
+            ->join('factor f', 'fd.factor_id=f.id', 'left')
+            ->where(['fd.factor_id' => $factorId])->field('fd.*,f.name')->select()->toArray()[0];
+
+        $factor['option']   = json_decode($factor['option']);
+        $factor['document'] = json_decode($factor['document']);
+
+        $question = QuestionsModel::field("*")->whereIn('id',$factor['questions_id'])->select()->toArray();
+        foreach ($question as &$q){
+            $q['options'] = json_decode($q['options']);
+        }
+
+        $factor['questions'] = $question;
+
+        $item = ItemFactorModel::alias('if')
+            ->join('fa_items i', 'i.id=if.item_id', 'left')
+            ->field('i.name,i.images')
+            ->where(['if.factor_id' => $factorId])
+            ->limit(3)->select()->toArray();
+
+        foreach ($item as &$v) {
+            $v['images'] = Env::get('app.baseurl', 'http://ies-admin.zhuo-zhuo.com') . $v['images'];
+        }
+
+        $factor['items'] = $item;
+
+        return json(['code' => 0, 'message' => 'OK', 'data' => $factor,'pre'=>$preFactorId,'next'=>$nextFactorId]);
+
+
+    }
+
     /**
      *
      * @brief 保存指标
