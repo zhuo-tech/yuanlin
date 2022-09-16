@@ -141,13 +141,15 @@ class User extends Api {
 
     public function mobileRegister(){
 
-        $mobile   = $this->request->post('mobile');
-        $code     = $this->request->post('code');
-        $password     = $this->request->post('password');
+        $mobile   = $this->request->param('mobile');
+        $code     = $this->request->param('code');
+        $password     = $this->request->param('password');
 
         if ($mobile && !Validate::regex($mobile, "^1\d{10}$")) {
             $this->error(__('Mobile is incorrect'));
         }
+
+        if(!$mobile) $this->error(__('Mobile is incorrect'));
 //        $ret = Sms::check($mobile, $code, 'register');
 //        if (!$ret) {
 //            $this->error(__('Captcha is incorrect'));
@@ -178,9 +180,9 @@ class User extends Api {
 
     public function emailRegister(){
 
-        $email    = $this->request->post('email');
-        $code     = $this->request->post('code');
-        $password     = $this->request->post('password');
+        $email    = $this->request->param('email');
+        $code     = $this->request->param('code');
+        $password     = $this->request->param('password');
 
         if ($email && !Validate::is($email, "email")) {
             $this->error(__('Email is incorrect'));
