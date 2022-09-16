@@ -70,4 +70,16 @@ class Item extends Api {
         return json_encode(['code' => 0, 'message' => 'OK', 'data' => []]);
 
     }
+
+    public function details(Request $request){
+
+        $itemId = $request->param('item_id', 0);
+
+        $res = ItemsModel::get(['id' => $itemId]);
+
+        if(!$res) json_encode(['code' =>1, 'message' => 'error', 'data' => []]);
+
+        return json_encode(['code' => 0, 'message' => 'OK', 'data' => $res]);
+
+    }
 }
