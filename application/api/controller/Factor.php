@@ -55,6 +55,8 @@ class Factor extends Api {
                 }else{
                     $v['option'] = [];
                 }
+
+                $v['id'] =$v['pid'];
                 $v['child'] = $v;
                 unset($v['option']);
 
