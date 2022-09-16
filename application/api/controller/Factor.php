@@ -46,6 +46,8 @@ class Factor extends Api {
         $itemId = $request->param('item_id', 0);
         $data   = FactorService::simpleTree($itemId);
 
+        $n =0;
+
         foreach ($data as &$vs){
 
             foreach ($vs['child'] as &$v){
@@ -56,7 +58,9 @@ class Factor extends Api {
                     $v['option'] = [];
                 }
 
-                $v['id'] =$v['pid'];
+                $n = $n+1;
+
+                $v['id'] =$n;
                 $v['child'][] = $v;
                 unset($v['option']);
 
