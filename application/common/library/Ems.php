@@ -50,7 +50,7 @@ class Ems
      */
     public static function send($email, $code = null, $event = 'default')
     {
-        $code = is_null($code) ? Random::numeric(config('captcha.length')) : $code;
+        $code = is_null($code) ? Random::numeric(6) : $code;
         $time = time();
         $ip = request()->ip();
         $ems = \app\common\model\Ems::create(['event' => $event, 'email' => $email, 'code' => $code, 'ip' => $ip, 'createtime' => $time]);
