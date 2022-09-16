@@ -141,7 +141,7 @@ class User extends Api {
 
     public function mobileRegister(){
 
-        $mobile   = $this->request->param('mobile');
+        $mobile   = $this->request->post('mobile');
         $code     = $this->request->param('code');
         $password     = $this->request->param('password');
 
@@ -149,7 +149,7 @@ class User extends Api {
             $this->error(__('Mobile is incorrect'));
         }
 
-        if(!$mobile) $this->error(__('Mobile is incorrect'));
+        if(!$mobile) $this->error(__('手机号不正确！！'));
 //        $ret = Sms::check($mobile, $code, 'register');
 //        if (!$ret) {
 //            $this->error(__('Captcha is incorrect'));
