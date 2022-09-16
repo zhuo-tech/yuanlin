@@ -242,7 +242,7 @@ return [
         // 验证码图片宽度
         'imageW'   => 130,
         // 验证码位数
-        'length'   => 4,
+        'length'   => 6,
         // 验证成功后是否重置
         'reset'    => true
     ],
