@@ -49,6 +49,12 @@ class Factor extends Api {
         foreach ($data as &$vs){
 
             foreach ($vs['child'] as &$v){
+                $detail = FactorDetailModel::get(['factor_id'=>$v['id']])->toArray();
+                if($detail['option']){
+                    $v['option'] = json_decode($detail['option']);
+                }else{
+                    $v['option'] = [];
+                }
                 $v['child'] = $v;
 
             }
