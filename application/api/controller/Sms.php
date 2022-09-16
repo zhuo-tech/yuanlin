@@ -24,8 +24,8 @@ class Sms extends Api
      */
     public function send()
     {
-        $mobile = $this->request->post("mobile");
-        $event = $this->request->post("event");
+        $mobile = $this->request->param("mobile");
+        $event = $this->request->param("event");
         $event = $event ? $event : 'register';
 
         if (!$mobile || !\think\Validate::regex($mobile, "^1\d{10}$")) {
