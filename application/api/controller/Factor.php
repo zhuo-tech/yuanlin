@@ -41,6 +41,24 @@ class Factor extends Api {
     }
 
 
+    public function simpleTree2(Request $request){
+
+        $itemId = $request->param('item_id', 0);
+        $data   = FactorService::simpleTree($itemId);
+
+        foreach ($data as &$vs){
+
+            foreach ($vs['child'] as &$v){
+                $v['child'] = $v;
+
+            }
+
+        }
+        return json(['code' => 0, 'data' => $data, 'message' => 'OK']);
+
+    }
+
+
     /**
      * @brief 获取保存的指标【没有用到】
      */
