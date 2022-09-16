@@ -56,7 +56,7 @@ class ItemService {
             $where['user_id'] = ['=', $search['uid']];
         }
 
-        $order         = 'id desc';
+        $order         = 'id asc';
         $limit         = 10;
         $list          = Items::where($where)->field($fields)->orderRaw($order)->paginate($limit, false, ['page' => $page])->toArray();
 
