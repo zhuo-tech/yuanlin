@@ -50,7 +50,7 @@ class Sms
      */
     public static function send($mobile, $code = null, $event = 'default')
     {
-        $code = is_null($code) ? Random::numeric(config('captcha.length')) : $code;
+        $code = is_null($code) ? Random::numeric(6) : $code;
         $time = time();
         $ip = request()->ip();
         $sms = \app\common\model\Sms::create(['event' => $event, 'mobile' => $mobile, 'code' => $code, 'ip' => $ip, 'createtime' => $time]);

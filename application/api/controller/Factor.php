@@ -41,6 +41,50 @@ class Factor extends Api {
         return json(['code' => 0, 'data' => $data, 'message' => 'OK']);
     }
 
+
+    public function simpleTree2(Request $request){
+
+        $itemId = $request->param('item_id', 0);
+        $data   = FactorService::simpleTree($itemId);
+
+        $n =0;
+
+        foreach ($data as &$vs){
+
+            foreach ($vs['child'] as &$v){
+                $detail = FactorDetailModel::get(['factor_id'=>$v['id']])->toArray();
+                if($detail['option']){
+                    $v['option'] = json_decode($detail['option']);
+                }else{
+                    $v['option'] = [];
+                }
+
+                $n = $n+1;
+
+                $v['id'] =$n;
+                $v['child'][] = $v;
+                unset($v['option']);
+
+                unset($v['selected']);
+                unset($v['pid']);
+
+            }
+
+        }
+        return json(['code' => 0, 'data' => $data, 'message' => 'OK']);
+
+    }
+
+
+    /**
+     * @brief 获取保存的指标【没有用到】
+     */
+    public static function getSaveFactors(Request $request) {
+        $itemId = $request->param('item_id', 0);
+        $data   = FactorService::getFactorTree($itemId);
+        return json(['code' => 0, 'data' => $data, 'message' => 'OK']);
+    }
+
     public function factorTree() {
         $first = FactorModel::where(['status' => 1, 'pid' => 0])->field("id,name")->select()->toArray();
         foreach ($first as &$v) {
@@ -111,6 +155,12 @@ class Factor extends Api {
         $preFactorId  = 0;
         $nextFactorId = 0;
 
+        if($factorId==-1){
+            //$this->error('已经是最后一项');
+
+            return json_encode(['code'=>1,'message'=>'最后一项']);
+        }
+
         if ($factorId) {
 
             $current = ItemFactorModel::field("id")
@@ -137,6 +187,8 @@ class Factor extends Api {
 
             if ($next) {
                 $nextFactorId = $next[0]['factor_id'];
+            }else{
+                $nextFactorId =-1;
             }
 
         } else {
@@ -161,6 +213,8 @@ class Factor extends Api {
                 ->select()->toArray();
             if ($next) {
                 $nextFactorId = $next[0]['factor_id'];
+            }else{
+                $nextFactorId =-1;
             }
 
         }
@@ -192,7 +246,7 @@ class Factor extends Api {
 
         $factor['items'] = $item;
 
-        return json(['code' => 0, 'message' => 'OK', 'pre' => $preFactorId, 'next' => $nextFactorId, 'data' => $factor]);
+        return json(['code' => 0, 'message' => 'OK','current'=>$factor['factor_id'], 'pre' => $preFactorId, 'next' => $nextFactorId, 'data' => $factor]);
 
 
     }
