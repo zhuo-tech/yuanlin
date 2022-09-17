@@ -5,6 +5,7 @@ namespace app\common\service;
 
 use app\admin\validate\Items as ItemsValidate;
 use app\admin\model\Items;
+use app\admin\model\City as cityModel;
 use think\Env;
 
 
@@ -23,6 +24,15 @@ class ItemService {
         if (!$validate->scene('insert')->check($data)) {
             return ['error' => 1, 'message' => $validate->getError(), 'data' => []];
         }
+
+        $locations = [];
+        $province = cityModel::get(['area_code'=>$data['province']])->toArray();
+        array_push($locations,$province['area_name']);
+        $city =  cityModel::get(['area_code'=>$data['city']])->toArray();
+        array_push($locations,$city['area_name']);
+        $region =  cityModel::get(['area_code'=>$data['area']])->toArray();
+        array_push($locations,$region['area_name']);
+        $data['location'] =implode('/',$locations);
 
         $model  = new Items($data);
         $result = $model->allowField(true)->save();
