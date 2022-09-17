@@ -13,6 +13,7 @@ use app\admin\model\Factor as FactorModel;
 use app\admin\model\ItemsFactor as ItemFactorModel;
 
 use app\admin\model\Questions as QuestionsModel;
+use app\admin\model\Items as ItemsModel;
 
 /**
  * @title 指标
@@ -261,6 +262,10 @@ class Factor extends Api {
         foreach ($first as &$ff) {
             unset($ff['children']);
         }
-        return json(['code' => 0, 'data' => $first, 'message' => 'OK']);
+
+        $item =ItemsModel::get(['id'=>$itemId])
+            ->toArray();
+
+        return json(['code' => 0, 'data' => $first,'item'=>$item, 'message' => 'OK']);
     }
 }
