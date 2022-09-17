@@ -319,6 +319,7 @@ class Factor extends Api {
 
         $item =ItemsModel::get(['id'=>$itemId])
             ->toArray();
+        $item['location'] = implode('',explode('/',$item['location']));
 
         return json(['code' => 0, 'data' => $first,'item'=>$item, 'message' => 'OK']);
     }
