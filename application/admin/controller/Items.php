@@ -4,8 +4,12 @@ namespace app\admin\controller;
 
 use app\common\controller\Backend;
 use fast\Tree;
+use think\Db;
 use think\exception\DbException;
+use think\exception\PDOException;
+use think\exception\ValidateException;
 use think\response\Json;
+use app\admin\model\City as cityModel;
 
 /**
  * 
@@ -104,6 +108,75 @@ class Items extends Backend
         return json($result);
     }
 
+
+
+    /**
+     * 编辑
+     *
+     * @param $ids
+     * @return string
+     * @throws DbException
+     * @throws \think\Exception
+     */
+    public function edit($ids = null)
+    {
+        $row = $this->model->get($ids);
+        if (!$row) {
+            $this->error(__('No Results were found'));
+        }
+        $adminIds = $this->getDataLimitAdminIds();
+        if (is_array($adminIds) && !in_array($row[$this->dataLimitField], $adminIds)) {
+            $this->error(__('You have no permission'));
+        }
+        if (false === $this->request->isPost()) {
+            $this->view->assign('row', $row);
+            return $this->view->fetch();
+        }
+        $params = $this->request->post('row/a');
+        if (empty($params)) {
+            $this->error(__('Parameter %s can not be empty', ''));
+        }
+        $params = $this->preExcludeFields($params);
+        $result = false;
+        Db::startTrans();
+        try {
+            //是否采用模型验证
+            if ($this->modelValidate) {
+                $name = str_replace("\\model\\", "\\validate\\", get_class($this->model));
+                $validate = is_bool($this->modelValidate) ? ($this->modelSceneValidate ? $name . '.edit' : $name) : $this->modelValidate;
+                $row->validateFailException()->validate($validate);
+            }
+
+            $params = $this->handle($params);
+
+
+            $result = $row->allowField(true)->save($params);
+            Db::commit();
+        } catch (ValidateException|PDOException|Exception $e) {
+            Db::rollback();
+            $this->error($e->getMessage());
+        }
+        if (false === $result) {
+            $this->error(__('No rows were updated'));
+        }
+        $this->success();
+    }
+
+
+    public function handle($param){
+
+        $locations = explode('/',$param['location']);
+        $province = cityModel::get(['area_name'=>$locations[0]])->toArray();
+        $param['province'] = $province['area_code'];
+
+        $city = cityModel::get(['area_name'=>$locations[1]])->toArray();
+        $param['city'] = $city['area_code'];
+        $region = cityModel::get(['area_name'=>$locations[2]])->toArray();
+        $param['area'] = $region['area_code'];
+
+        return $param;
+
+    }
 
 
 }
