@@ -26,6 +26,13 @@
             <input id="c-national_stand"  class="form-control" name="row[national_stand]" type="text" value="{$row.national_stand|htmlentities}">
         </div>
     </div>
+
+    <div class="form-group">
+        <label class="control-label col-xs-12 col-sm-2">格式化类型</label>
+        <div class="col-xs-12 col-sm-8">
+            {:build_select('row[format_type]',  $format, $row['format_type'], ['class'=>'form-control', 'required'=>'true'])}
+        </div>
+    </div>
     <div class="form-group">
         <label class="control-label col-xs-12 col-sm-2">网页输入模式</label>
         <div class="col-xs-12 col-sm-8">

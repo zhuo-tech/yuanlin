@@ -30,7 +30,10 @@ class FactorDetail extends Backend
 
         $mode = ['A'=>'根据公式','C'=>'问卷模式','D'=>'直接输入结果'];
 
+        $format_type = ['1'=>'整型','2'=>'百分比'];
+
         $this->view->assign('mode', $mode);
+        $this->view->assign('format', $format_type);
 
         $dataList = \think\Db::name("factor")->field('*', true)->order('id ASC')->select();
         foreach ($dataList as $k => &$v) {
