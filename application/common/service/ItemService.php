@@ -84,6 +84,8 @@ class ItemService {
                     if ($type) {
                         $filter = $sort[$key][$type] ?? '';
                     }
+                } else {
+                    $where['item_cate_id'] = ['in', $cid];
                 }
             } else {
                 $where['item_cate_id'] = ['in', $cid];
