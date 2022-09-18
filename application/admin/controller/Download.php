@@ -6,6 +6,8 @@ use app\common\controller\Backend;
 use fast\Tree;
 use think\Db;
 use think\exception\DbException;
+use think\exception\PDOException;
+use think\exception\ValidateException;
 use think\response\Json;
 
 /**
@@ -113,6 +115,75 @@ class Download extends Backend
 
         $result = ['total' => $total, 'rows' =>$rows];
         return json($result);
+    }
+
+
+    /**
+     * 编辑
+     *
+     * @param $ids
+     * @return string
+     * @throws DbException
+     * @throws \think\Exception
+     */
+    public function edit($ids = null)
+    {
+        $row = $this->model->get($ids);
+        if (!$row) {
+            $this->error(__('No Results were found'));
+        }
+        $adminIds = $this->getDataLimitAdminIds();
+        if (is_array($adminIds) && !in_array($row[$this->dataLimitField], $adminIds)) {
+            $this->error(__('You have no permission'));
+        }
+        if (false === $this->request->isPost()) {
+            $this->view->assign('row', $row);
+            return $this->view->fetch();
+        }
+
+
+        $params = $this->request->post('row/a');
+
+        $string = urldecode(file_get_contents("php://input"));
+
+        $params = $this->handle($params,$string);
+
+        if (empty($params)) {
+            $this->error(__('Parameter %s can not be empty', ''));
+        }
+        $params = $this->preExcludeFields($params);
+        $result = false;
+        Db::startTrans();
+        try {
+            //是否采用模型验证
+            if ($this->modelValidate) {
+                $name = str_replace("\\model\\", "\\validate\\", get_class($this->model));
+                $validate = is_bool($this->modelValidate) ? ($this->modelSceneValidate ? $name . '.edit' : $name) : $this->modelValidate;
+                $row->validateFailException()->validate($validate);
+            }
+            $result = $row->allowField(true)->save($params);
+            Db::commit();
+        } catch (ValidateException|PDOException|Exception $e) {
+            Db::rollback();
+            $this->error($e->getMessage());
+        }
+        if (false === $result) {
+            $this->error(__('No rows were updated'));
+        }
+        $this->success();
+    }
+
+    public function handle($param,$string){
+        $arrays = explode('&',$string);
+        $cate = [];
+        foreach ($arrays as $array){
+            $a = explode('=',$array);
+            if($a[0]=='row[download_cate_id]'){
+                array_push($cate,$a[1]);
+            }
+        }
+        $param['download_cate_id'] = implode(',',$cate);
+        return $param;
     }
 
 }
