@@ -284,7 +284,9 @@ class Factor extends Api {
 
 
     /**
+     * 指标报告接口
      * @brief 获取项目指标
+     *
      */
     public function getItemFactors(Request $request) {
         $itemId = $request->param('item_id', 0);

@@ -2,7 +2,9 @@
 
 namespace app\api\controller;
 
+use app\admin\model\Factor as FactorModel;
 use app\admin\model\Items as ItemsModel;
+use app\admin\model\ItemsFactor;
 use app\common\controller\Api;
 use app\common\service\FactorService;
 use app\common\service\ItemService;
@@ -81,5 +83,56 @@ class Item extends Api {
 
         return json_encode(['code' => 0, 'message' => 'OK', 'data' => $res]);
 
+    }
+
+    public function selectedTree(Request $request) {
+
+        $itemId = $request->param('item_id', 0);
+        $first = FactorModel::where(['status' => 1, 'pid' => 0])->field("id,name")->select()->toArray();
+        foreach ($first as &$v) {
+            $v['children'] = $this->getChildren($v);
+        }
+
+        $selectRows    = ItemsFactor::where(['item_id' => $itemId])->select()->toArray();
+
+        $selectFactors = array_column($selectRows, 'factor_id');
+
+//        var_dump($selectFactors);
+
+
+        foreach ($first as &$f){
+
+
+            foreach ($f['children'] as $key=>&$s){
+
+                foreach ($s['children'] as $k=>&$t){
+
+                    if ($selectFactors && !in_array($t['id'], $selectFactors)){
+
+                        $t['selected'] =0;
+
+                        unset($s['children'][$k]);
+                    }else{
+                        $t['selected'] =1;
+                    }
+                }
+
+            }
+        }
+
+
+        return json(['code' => 0, 'data' => $first, 'message' => 'OK']);
+    }
+
+
+    private function getChildren($factor) {
+        $child = FactorModel::where(['status' => 1, 'pid' => $factor['id']])->field("id,name")->select()->toArray();
+        if ($child) {
+            $factor['children'] = $child;
+            foreach ($child as &$v) {
+                $v['children'] = $this->getChildren($v);
+            }
+        }
+        return $child;
     }
 }
