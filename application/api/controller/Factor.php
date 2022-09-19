@@ -326,12 +326,19 @@ class Factor extends Api {
         $keyword = $request->param('keyword', 0);
         //$data   = FactorService::getSetFactors($itemId);
 
-        $query = ItemFactorModel::alias('if')->field("if.id,f.pid,f.name,fd.max,fd.min,fd.national_stand,format_type,if.result")
+
+
+        $where['if.item_id'] = $itemId;
+
+        if($keyword){
+            $where['f.name'] = ['like', "%{$keyword}%"];
+        }
+
+        $selectRows = ItemFactorModel::alias('if')->field("if.id,f.pid,f.name,fd.max,fd.min,fd.national_stand,format_type,if.result")
             ->join("fa_factor f", 'if.factor_id=f.id', 'left')
             ->join('fa_factor_detail fd', 'fd.factor_id = f.id', 'left')
-            ->where(['if.item_id' => $itemId]);
+            ->where($where)->select()->toArray();
 
-        $selectRows = $query ->select()->toArray();
         $first      = FactorModel::where(['status' => 1, 'pid' => 0])
             ->field("id,name")->select()->toArray();
         foreach ($first as &$v) {
@@ -360,8 +367,8 @@ class Factor extends Api {
         $echart = [];
         foreach ($first as &$ff) {
             unset($ff['children']);
-            $array = array_column($ff['select'],'level');
-            array_push($echart,count($array)>0? array_sum($array)/count($array):0);
+            //$array = array_column($ff['select'],'level');
+           // array_push($echart,count($array)>0? array_sum($array)/count($array):0);
         }
 
         array_unshift($first,$all);
