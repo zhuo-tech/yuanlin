@@ -226,7 +226,12 @@ class User extends Api {
      * @param string $bio 个人简介
      */
     public function profile() {
+        $param = json_decode(file_get_contents("php://input"),1);
         $user               = $this->auth->getUser();
+        if(!$user){
+            $this->auth->init($param['token']);
+            $user               = $this->auth->getUser();
+        }
         $username           = $this->request->post('username');
         $occupationName     = $this->request->post('occupation_name');
         $occupationCategory = $this->request->post('occupation_category');
@@ -260,10 +265,17 @@ class User extends Api {
 
 
     public function editAvatar(){
+
+        $param = json_decode(file_get_contents("php://input"),1);
         $user               = $this->auth->getUser();
-        //$userId             =   $this->request->param('user_id');
-        //$user =  \app\common\model\User::get($userId);
+        if(!$user){
+            $this->auth->init($param['token']);
+            $user               = $this->auth->getUser();
+        }
         $avatar             = $this->request->post('avatar', '', 'trim,strip_tags,htmlspecialchars');
+        if(!$avatar){
+            $avatar =$param['avatar'];
+        }
         $user->avatar              = $avatar;
         $user->save();
         $this->success();
