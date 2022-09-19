@@ -84,7 +84,7 @@ class ItemFactorService {
                 return ['error' => 1, 'message' => '项目不存在', 'data' => []];
             }
 
-            $data  = FactorDetailModel::where('factor_id', 'in', array_column($factors, 'id'))->column('input_mode', 'factor_id');
+            $data = FactorDetailModel::where('factor_id', 'in', array_column($factors, 'id'))->column('input_mode', 'factor_id');
             ItemsFactorModel::startTrans();
             foreach ($factors as $key => $factor) {
                 $param = json_encode($factor['param']);
@@ -94,7 +94,12 @@ class ItemFactorService {
                 } else if ($type == 'D') {
                     $result = $factor['param'];
                 } else if ($type == 'C') {
-                    $result = array_sum(array_column($factor['param'], 'score')) / count($factor['param']);
+                    // 类型C是将所有的问题按照选择的选项的占比乘以分值再除以问题个数
+                    $sum = 0;
+                    foreach ($factor['param'] as $_param) {
+                        $sum += ($_param['score'] * $_param['value'] / 100);
+                    }
+                    $result = $sum / count($factor['param']);
                 } else {
                     $result = 0;
                 }
