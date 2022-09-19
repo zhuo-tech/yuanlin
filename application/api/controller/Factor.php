@@ -315,14 +315,18 @@ class Factor extends Api {
                 }
             }
         }
+
+        $echart = [];
         foreach ($first as &$ff) {
             unset($ff['children']);
+            $array = array_column($ff['select'],'level');
+            array_push($echart,count($array)>0? array_sum($array)/count($array):0);
         }
 
         $item =ItemsModel::get(['id'=>$itemId])
             ->toArray();
         $item['location'] = implode('',explode('/',$item['location']));
 
-        return json(['code' => 0, 'data' => $first,'item'=>$item, 'message' => 'OK']);
+        return json(['code' => 0, 'echart'=>$echart,'data' => $first,'item'=>$item, 'message' => 'OK']);
     }
 }
