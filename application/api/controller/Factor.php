@@ -45,28 +45,56 @@ class Factor extends Api {
     public function simpleTree2(Request $request){
 
         $itemId = $request->param('item_id', 0);
+
+        $cid = $request->param('cid', 0);
+
         $data   = FactorService::simpleTree($itemId);
 
         $n =0;
 
-        foreach ($data as &$vs){
+        foreach ($data as $key=>&$vs){
 
-            foreach ($vs['child'] as &$v){
-                $detail = FactorDetailModel::get(['factor_id'=>$v['id']])->toArray();
-                if($detail['option']){
-                    $v['option'] = json_decode($detail['option']);
+            if($cid){
+
+                if($cid==$vs['id']){
+
+                    foreach ($vs['child'] as &$v){
+                        $detail = FactorDetailModel::get(['factor_id'=>$v['id']])->toArray();
+                        if($detail['option']){
+                            $v['option'] = json_decode($detail['option']);
+                        }else{
+                            $v['option'] = [];
+                        }
+                        $n = $n+1;
+                        $v['id'] =$n;
+                        $v['child'][] = $v;
+                        unset($v['option']);
+                        unset($v['selected']);
+                        unset($v['pid']);
+                    }
+
                 }else{
-                    $v['option'] = [];
+
+                    unset($data[$key]);
+
                 }
 
-                $n = $n+1;
+            }else{
 
-                $v['id'] =$n;
-                $v['child'][] = $v;
-                unset($v['option']);
-
-                unset($v['selected']);
-                unset($v['pid']);
+                foreach ($vs['child'] as &$v){
+                    $detail = FactorDetailModel::get(['factor_id'=>$v['id']])->toArray();
+                    if($detail['option']){
+                        $v['option'] = json_decode($detail['option']);
+                    }else{
+                        $v['option'] = [];
+                    }
+                    $n = $n+1;
+                    $v['id'] =$n;
+                    $v['child'][] = $v;
+                    unset($v['option']);
+                    unset($v['selected']);
+                    unset($v['pid']);
+                }
 
             }
 
