@@ -337,6 +337,9 @@ class Factor extends Api {
         }
         // 查询
 
+
+        $all = ['id'=>0,'name'=>'全部'];
+
         foreach ($first as &$f) {
             foreach ($f['children'] as $child) {
                 foreach ($selectRows as $row) {
@@ -344,6 +347,8 @@ class Factor extends Api {
                         $result = floatval($row['result']);
                         $row['level'] = ($result - $row['min']) / ($row['max'] - $row['min']) / 2 * 10;
                         $f['select'][] = $row;
+
+                        $all['select'][] =$row;
                     }
                 }
             }
@@ -356,7 +361,7 @@ class Factor extends Api {
             array_push($echart,count($array)>0? array_sum($array)/count($array):0);
         }
 
-        array_unshift($first,['id'=>0,'name'=>'全部']);
+        array_unshift($first,$all);
 
         $item =ItemsModel::get(['id'=>$itemId])
             ->toArray();
