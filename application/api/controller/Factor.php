@@ -323,12 +323,15 @@ class Factor extends Api {
      */
     public function getItemFactors(Request $request) {
         $itemId = $request->param('item_id', 0);
+        $keyword = $request->param('keyword', 0);
         //$data   = FactorService::getSetFactors($itemId);
 
-        $selectRows = ItemFactorModel::alias('if')->field("if.id,f.pid,f.name,fd.max,fd.min,fd.national_stand,format_type,if.result")
+        $query = ItemFactorModel::alias('if')->field("if.id,f.pid,f.name,fd.max,fd.min,fd.national_stand,format_type,if.result")
             ->join("fa_factor f", 'if.factor_id=f.id', 'left')
             ->join('fa_factor_detail fd', 'fd.factor_id = f.id', 'left')
-            ->where(['if.item_id' => $itemId])->select()->toArray();
+            ->where(['if.item_id' => $itemId]);
+
+        $selectRows = $query ->select()->toArray();
         $first      = FactorModel::where(['status' => 1, 'pid' => 0])
             ->field("id,name")->select()->toArray();
         foreach ($first as &$v) {
