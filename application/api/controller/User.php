@@ -279,8 +279,7 @@ class User extends Api {
         }
         $user->avatar = $avatar;
         $user->save();
-        $this->success();
-
+        $this->success('OK', $this->auth->getUser(), 0);
     }
 
     /**
