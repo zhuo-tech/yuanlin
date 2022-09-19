@@ -8,6 +8,7 @@ use app\common\library\Sms;
 use fast\Random;
 use think\Config;
 use think\Cookie;
+use think\Env;
 use think\Request;
 use think\Validate;
 
@@ -197,7 +198,7 @@ class User extends Api {
         }
         //        $ret = Ems::check($email,$code,'register');
         //        if($ret){
-        //            $this->error(__('code is incorrect'));
+        //            $this->error(__('code is incorrect'i));
         //        }
         $ret = $this->auth->register($email, $password, $email, '', []);
         if ($ret) {
@@ -283,7 +284,10 @@ class User extends Api {
         }
         $user->avatar = $avatar;
         $user->save();
-        $this->success('OK', $this->auth->getUser(), 0);
+
+        $data = $this->auth->getUser();
+        $data['avatar'] =  Env::get('app.baseurl', 'http://ies-admin.zhuo-zhuo.com') . $data['avatar'];
+        $this->success('OK', $data, 0);
     }
 
     /**
