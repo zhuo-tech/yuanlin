@@ -13,7 +13,7 @@ use think\Validate;
  * 会员接口
  */
 class User extends Api {
-    protected $noNeedLogin = ['login', 'mobilelogin', 'register', 'emailRegister','mobileRegister','resetpwd', 'changeemail', 'changemobile', 'third', 'profile'];
+    protected $noNeedLogin = ['login', 'mobilelogin', 'register', 'emailRegister','mobileRegister','resetpwd', 'changeemail', 'changemobile', 'third', 'profile','editAvatar'];
     protected $noNeedRight = '*';
 
     public function _initialize() {
@@ -256,6 +256,19 @@ class User extends Api {
         $user->avatar              = $avatar;
         $user->save();
         $this->success();
+    }
+
+
+    public function editAvatar(){
+
+        //$user               = $this->auth->getUser();
+        $userId             =   $this->request->param('user_id');
+        $user =  \app\common\model\User::get($userId);
+        $avatar             = $this->request->param('avatar', '', 'trim,strip_tags,htmlspecialchars');
+        $user->avatar              = $avatar;
+        $user->save();
+        $this->success();
+
     }
 
     /**
