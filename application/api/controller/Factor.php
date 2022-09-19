@@ -99,7 +99,9 @@ class Factor extends Api {
             }
 
         }
-        return json(['code' => 0, 'data' => $data, 'message' => 'OK']);
+
+        $first = FactorModel::where(['status' => 1, 'pid' => 0])->field("id,name")->select()->toArray();
+        return json(['code' => 0, 'first'=>$first,'data' => $data, 'message' => 'OK']);
 
     }
 
