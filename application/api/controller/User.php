@@ -51,13 +51,15 @@ class User extends Api {
         $ret = $this->auth->login($account, $password);
 
         if ($ret) {
-            $data = ['userinfo' => $this->auth->getUserinfo()];
+            $user           = $this->auth->getUserinfo();
+            $user['avatar'] = Env::get('app.baseurl', 'http://ies-admin.zhuo-zhuo.com') . $user['avatar'];
+            $user           = ['userinfo' => $data];
+            $data           = ['userinfo' => $user];
             return json(['code' => 0, 'data' => $data, 'message' => 'OK']);
         } else {
             return json(['code' => 1, 'data' => [], 'message' => '登录失败']);
         }
     }
-
 
 
     /**
@@ -91,7 +93,10 @@ class User extends Api {
         }
         if ($ret) {
             Sms::flush($mobile, 'mobilelogin');
-            $data = ['userinfo' => $this->auth->getUserinfo()];
+
+            $user           = $this->auth->getUserinfo();
+            $user['avatar'] = Env::get('app.baseurl', 'http://ies-admin.zhuo-zhuo.com') . $user['avatar'];
+            $data           = ['userinfo' => $user];
             $this->success(__('Logged in successful'), $data);
         } else {
             $this->error($this->auth->getError());
@@ -129,7 +134,9 @@ class User extends Api {
         }
         $ret = $this->auth->register($username, $password, $email, $mobile, []);
         if ($ret) {
-            $data = ['userinfo' => $this->auth->getUserinfo()];
+            $user           = $this->auth->getUserinfo();
+            $user['avatar'] = Env::get('app.baseurl', 'http://ies-admin.zhuo-zhuo.com') . $user['avatar'];
+            $data           = ['userinfo' => $user];
             $this->success(__('Sign up successful'), $data);
         } else {
             $this->error($this->auth->getError());
@@ -168,7 +175,9 @@ class User extends Api {
 
         $ret = $this->auth->register($mobile, $password, '', $mobile, []);
         if ($ret) {
-            $data = ['userinfo' => $this->auth->getUserinfo()];
+            $user           = $this->auth->getUserinfo();
+            $user['avatar'] = Env::get('app.baseurl', 'http://ies-admin.zhuo-zhuo.com') . $user['avatar'];
+            $data           = ['userinfo' => $user];
             $this->success(__('Sign up successful'), $data);
         } else {
             $this->error($this->auth->getError());
@@ -202,7 +211,9 @@ class User extends Api {
         //        }
         $ret = $this->auth->register($email, $password, $email, '', []);
         if ($ret) {
-            $data = ['userinfo' => $this->auth->getUserinfo()];
+            $user = $this->auth->getUserinfo();
+            $user['avatar'] = Env::get('app.baseurl', 'http://ies-admin.zhuo-zhuo.com') . $user['avatar'];
+            $data = ['userinfo' => $user];
             $this->success(__('Sign up successful'), $data);
         } else {
             $this->error($this->auth->getError());
@@ -266,7 +277,10 @@ class User extends Api {
         $user->gender              = $gender;
         $user->avatar              = $avatar;
         $user->save();
-        $this->success('OK', $this->auth->getUser(), 0);
+
+        $data           = $this->auth->getUser();
+        $data['avatar'] = Env::get('app.baseurl', 'http://ies-admin.zhuo-zhuo.com') . $data['avatar'];
+        $this->success('OK', $data, 0);
     }
 
 
@@ -285,8 +299,8 @@ class User extends Api {
         $user->avatar = $avatar;
         $user->save();
 
-        $data = $this->auth->getUser();
-        $data['avatar'] =  Env::get('app.baseurl', 'http://ies-admin.zhuo-zhuo.com') . $data['avatar'];
+        $data           = $this->auth->getUser();
+        $data['avatar'] = Env::get('app.baseurl', 'http://ies-admin.zhuo-zhuo.com') . $data['avatar'];
         $this->success('OK', $data, 0);
     }
 
