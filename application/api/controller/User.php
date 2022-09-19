@@ -226,22 +226,23 @@ class User extends Api {
      * @param string $bio 个人简介
      */
     public function profile() {
-        $param = json_decode(file_get_contents("php://input"),1);
+        $param = $this->request->param();
         $user               = $this->auth->getUser();
         if(!$user){
             $this->auth->init($param['token']);
             $user               = $this->auth->getUser();
         }
-        $username           = $this->request->post('username');
-        $occupationName     = $this->request->post('occupation_name');
-        $occupationCategory = $this->request->post('occupation_category');
-        $province           = $this->request->post('province');
-        $companyAddress     = $this->request->post('company_address');
-        $city               = $this->request->post('city');
-        $birthday           = $this->request->post('birthday');
-        $gender             = $this->request->post('gender');
-        $bio                = $this->request->post('bio');
-        $avatar             = $this->request->post('avatar', '', 'trim,strip_tags,htmlspecialchars');
+
+        $username           = $this->request->param('username');
+        $occupationName     = $this->request->param('occupation_name');
+        $occupationCategory = $this->request->param('occupation_category');
+        $province           = $this->request->param('province');
+        $companyAddress     = $this->request->param('company_address');
+        $city               = $this->request->param('city');
+        $birthday           = $this->request->param('birthday');
+        $gender             = $this->request->param('gender');
+        $bio                = $this->request->param('bio');
+        $avatar             = $this->request->param('avatar', '', 'trim,strip_tags,htmlspecialchars');
         if ($username) {
             $exists = \app\common\model\User::where('username', $username)->where('id', '<>', $this->auth->id)->find();
             if ($exists) {
