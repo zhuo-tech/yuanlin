@@ -7,6 +7,7 @@ use app\common\library\Ems;
 use app\common\library\Sms;
 use fast\Random;
 use think\Config;
+use think\Request;
 use think\Validate;
 
 /**
@@ -39,9 +40,9 @@ class User extends Api {
      * @param string $account 账号
      * @param string $password 密码
      */
-    public function login() {
-        $account  = $this->request->request('account');
-        $password = $this->request->request('password');
+    public function login(Request $request) {
+        $account  = $request->param('account');
+        $password = $request->param('password');
         if (!$account || !$password) {
             $this->error(__('Invalid parameters'));
         }

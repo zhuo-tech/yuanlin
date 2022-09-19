@@ -21,14 +21,19 @@ class ItemService {
      * @param $data
      * @return array
      */
-    public static function saveItem($data) {
+    public static function saveItem($data, $uid) {
         $validate = new ItemsValidate();
         if (!$validate->scene('insert')->check($data)) {
             return ['error' => 1, 'message' => $validate->getError(), 'data' => []];
         }
 
-        $locations = [];
-        $province  = cityModel::get(['area_code' => $data['province']])->toArray();
+        if (!$uid || (intval($uid) != $uid)) {
+            return ['error' => 1, 'message' => '用户信息有误', 'data' => []];
+        }
+
+        $data['user_id'] = $uid;
+        $locations       = [];
+        $province        = cityModel::get(['area_code' => $data['province']])->toArray();
         array_push($locations, $province['area_name']);
         $city = cityModel::get(['area_code' => $data['city']])->toArray();
         array_push($locations, $city['area_name']);

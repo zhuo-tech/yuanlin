@@ -14,14 +14,14 @@ use think\Request;
  * 项目接口
  */
 class Item extends Api {
-    protected $noNeedLogin = ['*'];
+    protected $noNeedLogin = ['query', 'search', 'selected', 'details', 'selectedTree'];
     protected $noNeedRight = ['*'];
 
     /**
      * @brief 创建项目
      */
     public function store(Request $request) {
-        $data = ItemService::saveItem($request->param());
+        $data = ItemService::saveItem($request->param(), $this->auth->id);
         return json(['code' => $data['error'], 'data' => $data['data'], 'message' => $data['message']]);
     }
 
