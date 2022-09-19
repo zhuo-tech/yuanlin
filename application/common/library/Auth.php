@@ -355,7 +355,7 @@ class Auth
             $expiretime = time() + $keeptime;
             $key = md5(md5($this->_user->id) . md5($keeptime) . md5($expiretime) . $this->_token . config('token.key'));
             $data = [$this->_user->id, $keeptime, $expiretime, $key];
-            Cookie::set('keeplogin', implode('|', $data), 86400 * 7);
+            Cookie::set('token', implode('|', $data), 86400 * 7);
             return true;
         }
         return false;
