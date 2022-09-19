@@ -14,7 +14,7 @@ use think\Validate;
  * 会员接口
  */
 class User extends Api {
-    protected $noNeedLogin = ['login', 'mobilelogin', 'register', 'emailRegister','mobileRegister','resetpwd', 'changeemail', 'changemobile', 'third', 'profile','editAvatar'];
+    protected $noNeedLogin = ['login', 'mobilelogin', 'register', 'emailRegister', 'mobileRegister', 'resetpwd', 'changeemail', 'changemobile', 'third', 'editAvatar'];
     protected $noNeedRight = '*';
 
     public function _initialize() {
@@ -71,9 +71,9 @@ class User extends Api {
         if (!Validate::regex($mobile, "^1\d{10}$")) {
             $this->error(__('Mobile is incorrect'));
         }
-//        if (!Sms::check($mobile, $captcha, 'mobilelogin')) {
-//            $this->error(__('Captcha is incorrect'));
-//        }
+        //        if (!Sms::check($mobile, $captcha, 'mobilelogin')) {
+        //            $this->error(__('Captcha is incorrect'));
+        //        }
         $user = \app\common\model\User::getByMobile($mobile);
         if ($user) {
             if ($user->status != 'normal') {
@@ -132,7 +132,6 @@ class User extends Api {
     }
 
 
-
     /**
      * mobile注册会员
      * @ApiMethod (POST)
@@ -140,24 +139,25 @@ class User extends Api {
      * @param string $code 验证码
      */
 
-    public function mobileRegister(){
+    public function mobileRegister() {
 
         $mobile   = $this->request->post('mobile');
         $code     = $this->request->param('code');
-        $password     = $this->request->param('password');
+        $password = $this->request->param('password');
 
         if ($mobile && !Validate::regex($mobile, "^1\d{10}$")) {
             $this->error(__('Mobile is incorrect'));
         }
 
-        if(!$mobile) $this->error(__('手机号不正确！！'));
-//        $ret = Sms::check($mobile, $code, 'register');
-//        if (!$ret) {
-//            $this->error(__('Captcha is incorrect'));
-//        }
+        if (!$mobile)
+            $this->error(__('手机号不正确！！'));
+        //        $ret = Sms::check($mobile, $code, 'register');
+        //        if (!$ret) {
+        //            $this->error(__('Captcha is incorrect'));
+        //        }
 
-        $user = \app\common\model\User::where(['mobile'=>$mobile])->select()->toArray();
-        if($user){
+        $user = \app\common\model\User::where(['mobile' => $mobile])->select()->toArray();
+        if ($user) {
             $this->error(__('mobile is exist'));
         }
 
@@ -171,7 +171,6 @@ class User extends Api {
     }
 
 
-
     /**
      * email注册会员
      * @ApiMethod (POST)
@@ -179,23 +178,23 @@ class User extends Api {
      * @param string $code 验证码
      */
 
-    public function emailRegister(){
+    public function emailRegister() {
 
         $email    = $this->request->param('email');
         $code     = $this->request->param('code');
-        $password     = $this->request->param('password');
+        $password = $this->request->param('password');
 
         if ($email && !Validate::is($email, "email")) {
             $this->error(__('Email is incorrect'));
         }
-        $user = \app\common\model\User::where(['email'=>$email])->select()->toArray();
-        if($user){
+        $user = \app\common\model\User::where(['email' => $email])->select()->toArray();
+        if ($user) {
             $this->error(__('Email is exist'));
         }
-//        $ret = Ems::check($email,$code,'register');
-//        if($ret){
-//            $this->error(__('code is incorrect'));
-//        }
+        //        $ret = Ems::check($email,$code,'register');
+        //        if($ret){
+        //            $this->error(__('code is incorrect'));
+        //        }
         $ret = $this->auth->register($email, $password, $email, '', []);
         if ($ret) {
             $data = ['userinfo' => $this->auth->getUserinfo()];
@@ -228,10 +227,10 @@ class User extends Api {
      */
     public function profile() {
         $param = $this->request->param();
-        $user               = $this->auth->getUser();
-        if(!$user){
+        $user  = $this->auth->getUser();
+        if (!$user) {
             $this->auth->init($param['token']);
-            $user               = $this->auth->getUser();
+            $user = $this->auth->getUser();
         }
 
         $username           = $this->request->param('username');
@@ -262,23 +261,23 @@ class User extends Api {
         $user->gender              = $gender;
         $user->avatar              = $avatar;
         $user->save();
-        $this->success();
+        $this->success('OK', $this->auth->getUser(), 0);
     }
 
 
-    public function editAvatar(){
+    public function editAvatar() {
 
-        $param = json_decode(file_get_contents("php://input"),1);
-        $user               = $this->auth->getUser();
-        if(!$user){
+        $param = json_decode(file_get_contents("php://input"), 1);
+        $user  = $this->auth->getUser();
+        if (!$user) {
             $this->auth->init($param['token']);
-            $user               = $this->auth->getUser();
+            $user = $this->auth->getUser();
         }
-        $avatar             = $this->request->post('avatar', '', 'trim,strip_tags,htmlspecialchars');
-        if(!$avatar){
-            $avatar =$param['avatar'];
+        $avatar = $this->request->post('avatar', '', 'trim,strip_tags,htmlspecialchars');
+        if (!$avatar) {
+            $avatar = $param['avatar'];
         }
-        $user->avatar              = $avatar;
+        $user->avatar = $avatar;
         $user->save();
         $this->success();
 
