@@ -7,6 +7,7 @@ use app\common\library\Ems;
 use app\common\library\Sms;
 use fast\Random;
 use think\Config;
+use think\Cookie;
 use think\Request;
 use think\Validate;
 
@@ -47,6 +48,7 @@ class User extends Api {
             $this->error(__('Invalid parameters'));
         }
         $ret = $this->auth->login($account, $password);
+
         if ($ret) {
             $data = ['userinfo' => $this->auth->getUserinfo()];
             return json(['code' => 0, 'data' => $data, 'message' => 'OK']);
@@ -54,6 +56,8 @@ class User extends Api {
             return json(['code' => 1, 'data' => [], 'message' => '登录失败']);
         }
     }
+
+
 
     /**
      * 手机验证码登录
