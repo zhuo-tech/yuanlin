@@ -261,9 +261,9 @@ class User extends Api {
 
     public function editAvatar(){
 
-        //$user               = $this->auth->getUser();
+        $user               = $this->auth->getUser();
         $userId             =   $this->request->param('user_id');
-        $user =  \app\common\model\User::get($userId);
+        //$user =  \app\common\model\User::get($userId);
         $avatar             = $this->request->param('avatar', '', 'trim,strip_tags,htmlspecialchars');
         $user->avatar              = $avatar;
         $user->save();
