@@ -17,8 +17,7 @@ class ItemCategoryService {
      */
     public static function category($itemId = 0) {
         $data = ItemsCate::where(['status' => 1])->field(['id', 'pid', 'name', 'type'])
-            ->order('sorts','asc')
-            ->select()->toArray();
+                    ->order('sorts','asc')->select()->toArray();
         return static::sortData($data);
     }
 
@@ -50,7 +49,6 @@ class ItemCategoryService {
         if ($cid <= 0) {
             return [];
         }
-        $data   = ItemsCate::where('id|pid', '=', $cid)->where(['status' => 1])->column('id');
-        return $data;
+        return ItemsCate::where('id|pid', '=', $cid)->where(['status' => 1])->column('id,type,sorts');
     }
 }
