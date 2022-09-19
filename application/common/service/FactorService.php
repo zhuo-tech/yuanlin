@@ -93,6 +93,8 @@ class FactorService {
         }
 
         foreach ($data as $key => &$value) {
+
+            $value['id'] = (String)$value['id'];
             if ($selectFactors && in_array($value['id'], $selectFactors)) {
                 $value['selected'] = 1;
             } else {
