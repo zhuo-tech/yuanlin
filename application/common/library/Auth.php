@@ -323,7 +323,7 @@ class Auth
                 $this->_token = Random::uuid();
                 Token::set($this->_token, $user->id, $this->keeptime);
 
-                $this->keeplogin(3600*24);
+                //$this->keeplogin(3600*24);
 
                 $this->_logined = true;
 
