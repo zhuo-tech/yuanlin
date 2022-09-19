@@ -356,6 +356,8 @@ class Factor extends Api {
             array_push($echart,count($array)>0? array_sum($array)/count($array):0);
         }
 
+        array_unshift($first,['id'=>0,'name'=>'全部']);
+
         $item =ItemsModel::get(['id'=>$itemId])
             ->toArray();
         $item['location'] = implode('',explode('/',$item['location']));
