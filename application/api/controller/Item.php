@@ -21,6 +21,9 @@ class Item extends Api {
      * @brief 创建项目
      */
     public function store(Request $request) {
+        if (empty($this->auth->mobile)) {
+            return json(['code' => 1, 'data' => [], 'message' => '请先绑定手机号再创建项目']);
+        }
         $data = ItemService::saveItem($request->param(), $this->auth->id);
         return json(['code' => $data['error'], 'data' => $data['data'], 'message' => $data['message']]);
     }
