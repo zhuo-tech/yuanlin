@@ -29,8 +29,9 @@ class Factor extends Api {
      */
     public function tree(Request $request) {
         $itemId = $request->param('item_id', 0);
+        $keyword = $request->param('keyword', 0);
         $data   = FactorService::getFactorTree($itemId);
-        $data = $this->search($data,'生态系统');
+        if($keyword)$data = $this->search($data,$keyword);
         return json(['code' => 0, 'data' => $data, 'message' => 'OK']);
     }
 
