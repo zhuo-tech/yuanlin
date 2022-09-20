@@ -84,6 +84,8 @@ class Item extends Api {
 
         if(!$res) json_encode(['code' =>1, 'message' => 'error', 'data' => []]);
 
+        $res['location'] = implode('',explode('/',$res['location']));
+
         return json_encode(['code' => 0, 'message' => 'OK', 'data' => $res]);
 
     }
