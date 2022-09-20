@@ -53,9 +53,6 @@ class User extends Api {
         if ($ret) {
             $user           = $this->auth->getUserinfo();
             $user['avatar'] = Env::get('app.baseurl', 'http://ies-admin.zhuo-zhuo.com') . $user['avatar'];
-            $location = explode('/',$user['location']);
-            $user['province_name'] =$location[0];
-            $user['city_name'] = $location[1];
             $data           = ['userinfo' => $user];
             return json(['code' => 0, 'data' => $data, 'message' => 'OK']);
         } else {
