@@ -49,17 +49,39 @@ class Factor extends Api {
         $cid = $request->param('cid', 0);
 
         $data   = FactorService::simpleTree($itemId);
-
         $n =0;
-
         foreach ($data as $key=>&$vs){
-
             if($cid){
-
                 if($cid==$vs['id']){
+                    foreach ($vs['child'] as $k=> &$v){
+                        if($v['selected']==1){
+                            $detail = FactorDetailModel::get(['factor_id'=>$v['id']])->toArray();
+                            if($detail['option']){
+                                $v['option'] = json_decode($detail['option']);
+                            }else{
+                                $v['option'] = [];
+                            }
+                            $n = $n+1;
+                            $v['id'] =$n;
+                            $v['child'][] = $v;
+                            unset($v['option']);
+                            unset($v['selected']);
+                            unset($v['pid']);
+                        }else{
+                            unset($vs['child'][$k]);
+                        }
+                    }
 
-                    foreach ($vs['child'] as &$v){
+                }else{
+                    unset($data[$key]);
+                }
+
+            }else{
+
+                foreach ($vs['child'] as $k =>&$v){
+                    if($v['selected']==1){
                         $detail = FactorDetailModel::get(['factor_id'=>$v['id']])->toArray();
+
                         if($detail['option']){
                             $v['option'] = json_decode($detail['option']);
                         }else{
@@ -71,29 +93,11 @@ class Factor extends Api {
                         unset($v['option']);
                         unset($v['selected']);
                         unset($v['pid']);
-                    }
-
-                }else{
-
-                    unset($data[$key]);
-
-                }
-
-            }else{
-
-                foreach ($vs['child'] as &$v){
-                    $detail = FactorDetailModel::get(['factor_id'=>$v['id']])->toArray();
-                    if($detail['option']){
-                        $v['option'] = json_decode($detail['option']);
                     }else{
-                        $v['option'] = [];
+
+                        unset($vs['child'][$k]);
                     }
-                    $n = $n+1;
-                    $v['id'] =$n;
-                    $v['child'][] = $v;
-                    unset($v['option']);
-                    unset($v['selected']);
-                    unset($v['pid']);
+
                 }
 
             }
