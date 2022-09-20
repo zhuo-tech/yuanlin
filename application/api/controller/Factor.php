@@ -14,6 +14,7 @@ use app\admin\model\ItemsFactor as ItemFactorModel;
 
 use app\admin\model\Questions as QuestionsModel;
 use app\admin\model\Items as ItemsModel;
+use think\response\Json;
 
 /**
  * @title 指标
@@ -28,8 +29,28 @@ class Factor extends Api {
      */
     public function tree(Request $request) {
         $itemId = $request->param('item_id', 0);
+        $keyword = $request->param('keyword', 0);
         $data   = FactorService::getFactorTree($itemId);
+        if($keyword)$data = $this->search($data,$keyword);
         return json(['code' => 0, 'data' => $data, 'message' => 'OK']);
+    }
+
+    public function search($data,$keyword){
+
+        foreach ($data as $key=>&$f){
+            foreach ($f['child'] as $key2=>&$s){
+                foreach ($s['child'] as $key3=>$t){
+
+                    if(stristr($t['name'],$keyword)){
+                    }else{
+                        unset($s['child'][$key3]);
+                    }
+                }
+            }
+        }
+
+        return $data;
+
     }
 
     /**
@@ -49,17 +70,39 @@ class Factor extends Api {
         $cid = $request->param('cid', 0);
 
         $data   = FactorService::simpleTree($itemId);
-
         $n =0;
-
         foreach ($data as $key=>&$vs){
-
             if($cid){
-
                 if($cid==$vs['id']){
+                    foreach ($vs['child'] as $k=> &$v){
+                        if($v['selected']==1){
+                            $detail = FactorDetailModel::get(['factor_id'=>$v['id']])->toArray();
+                            if($detail['option']){
+                                $v['option'] = json_decode($detail['option']);
+                            }else{
+                                $v['option'] = [];
+                            }
+                            $n = $n+1;
+                            $v['id'] =$n;
+                            $v['child'][] = $v;
+                            unset($v['option']);
+                            unset($v['selected']);
+                            unset($v['pid']);
+                        }else{
+                            unset($vs['child'][$k]);
+                        }
+                    }
 
-                    foreach ($vs['child'] as &$v){
+                }else{
+                    unset($data[$key]);
+                }
+
+            }else{
+
+                foreach ($vs['child'] as $k =>&$v){
+                    if($v['selected']==1){
                         $detail = FactorDetailModel::get(['factor_id'=>$v['id']])->toArray();
+
                         if($detail['option']){
                             $v['option'] = json_decode($detail['option']);
                         }else{
@@ -71,29 +114,11 @@ class Factor extends Api {
                         unset($v['option']);
                         unset($v['selected']);
                         unset($v['pid']);
-                    }
-
-                }else{
-
-                    unset($data[$key]);
-
-                }
-
-            }else{
-
-                foreach ($vs['child'] as &$v){
-                    $detail = FactorDetailModel::get(['factor_id'=>$v['id']])->toArray();
-                    if($detail['option']){
-                        $v['option'] = json_decode($detail['option']);
                     }else{
-                        $v['option'] = [];
+
+                        unset($vs['child'][$k]);
                     }
-                    $n = $n+1;
-                    $v['id'] =$n;
-                    $v['child'][] = $v;
-                    unset($v['option']);
-                    unset($v['selected']);
-                    unset($v['pid']);
+
                 }
 
             }
