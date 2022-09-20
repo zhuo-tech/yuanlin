@@ -14,6 +14,7 @@ use app\admin\model\ItemsFactor as ItemFactorModel;
 
 use app\admin\model\Questions as QuestionsModel;
 use app\admin\model\Items as ItemsModel;
+use think\response\Json;
 
 /**
  * @title 指标
@@ -29,7 +30,26 @@ class Factor extends Api {
     public function tree(Request $request) {
         $itemId = $request->param('item_id', 0);
         $data   = FactorService::getFactorTree($itemId);
+        $data = $this->search($data,'生态系统');
         return json(['code' => 0, 'data' => $data, 'message' => 'OK']);
+    }
+
+    public function search($data,$keyword){
+
+        foreach ($data as $key=>&$f){
+            foreach ($f['child'] as $key2=>&$s){
+                foreach ($s['child'] as $key3=>$t){
+
+                    if(stristr($t['name'],$keyword)){
+                    }else{
+                        unset($s['child'][$key3]);
+                    }
+                }
+            }
+        }
+
+        return $data;
+
     }
 
     /**
