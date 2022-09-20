@@ -86,6 +86,8 @@ class Item extends Api {
 
         $res['location'] = implode('',explode('/',$res['location']));
 
+        $res['images'] = explode(',',$res['images']);
+
         return json_encode(['code' => 0, 'message' => 'OK', 'data' => $res]);
 
     }
