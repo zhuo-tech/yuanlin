@@ -115,7 +115,8 @@ class ItemService {
         $list = $list->field($fields)->orderRaw($order)->paginate($limit, false, ['page' => $page])->toArray();
         if (isset($list['data'])) {
             foreach ($list['data'] as &$v) {
-                $v['images']      = Env::get('app.baseurl', 'http://ies-admin.zhuo-zhuo.com') . $v['images'];
+                $images = explode(',',$v['images']);
+                $v['images']      = Env::get('app.baseurl', 'http://ies-admin.zhuo-zhuo.com') . $images[0];
                 $v['create_date'] = date("Y-m-d", $v['update_time']);
                 $v['keyword']     = explode(',', $v['keyword']);
             }
