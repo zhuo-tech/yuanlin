@@ -6,6 +6,7 @@ use app\common\model\User;
 use app\common\model\UserRule;
 use fast\Random;
 use think\Config;
+use think\Cookie;
 use think\Db;
 use think\Exception;
 use think\Hook;
@@ -322,6 +323,8 @@ class Auth
                 $this->_token = Random::uuid();
                 Token::set($this->_token, $user->id, $this->keeptime);
 
+                //$this->keeplogin(3600*24);
+
                 $this->_logined = true;
 
                 //登录成功的事件
@@ -336,6 +339,26 @@ class Auth
         } else {
             return false;
         }
+    }
+
+
+
+    /**
+     * 刷新保持登录的Cookie
+     *
+     * @param int $keeptime
+     * @return  boolean
+     */
+    protected function keeplogin($keeptime = 0)
+    {
+        if ($keeptime) {
+            $expiretime = time() + $keeptime;
+            $key = md5(md5($this->_user->id) . md5($keeptime) . md5($expiretime) . $this->_token . config('token.key'));
+            $data = [$this->_user->id, $keeptime, $expiretime, $key];
+            Cookie::set('token', implode('|', $data), 86400 * 7);
+            return true;
+        }
+        return false;
     }
 
     /**
