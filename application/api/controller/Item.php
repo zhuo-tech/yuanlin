@@ -8,6 +8,7 @@ use app\admin\model\ItemsFactor;
 use app\common\controller\Api;
 use app\common\service\FactorService;
 use app\common\service\ItemService;
+use think\Env;
 use think\Request;
 
 /**
@@ -86,7 +87,14 @@ class Item extends Api {
 
         $res['location'] = implode('',explode('/',$res['location']));
 
-        $res['images'] = explode(',',$res['images']);
+        $images = explode(',',$res['images']);
+        $imgs = [];
+
+        foreach ($images as $i){
+            array_push($imgs,Env::get('app.baseurl', 'http://ies-admin.zhuo-zhuo.com') . $i);
+        }
+
+        $res['images'] = $imgs;
 
         return json_encode(['code' => 0, 'message' => 'OK', 'data' => $res]);
 
