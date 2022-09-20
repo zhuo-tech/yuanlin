@@ -2,6 +2,7 @@
 
 namespace app\api\controller;
 
+use app\admin\model\City as cityModel;
 use app\common\controller\Api;
 use app\common\library\Ems;
 use app\common\library\Sms;
@@ -52,6 +53,10 @@ class User extends Api {
 
         if ($ret) {
             $user           = $this->auth->getUserinfo();
+            $province        = cityModel::get(['area_code' => $user['province']])->toArray();
+            $city        = cityModel::get(['area_code' => $user['city']])->toArray();
+            $user['province_name'] = $province['area_name'];
+            $user['city_name'] = $city['area_name'];
             $user['avatar'] = Env::get('app.baseurl', 'http://ies-admin.zhuo-zhuo.com') . $user['avatar'];
             $data           = ['userinfo' => $user];
             return json(['code' => 0, 'data' => $data, 'message' => 'OK']);
