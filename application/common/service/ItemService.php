@@ -32,15 +32,7 @@ class ItemService {
         }
 
         $data['user_id'] = $uid;
-        $locations       = [];
-        $province        = cityModel::get(['area_code' => $data['province']])->toArray();
-        array_push($locations, $province['area_name']);
-        $city = cityModel::get(['area_code' => $data['city']])->toArray();
-        array_push($locations, $city['area_name']);
-        $region = cityModel::get(['area_code' => $data['area']])->toArray();
-        array_push($locations, $region['area_name']);
-        $data['location'] = implode('/', $locations);
-
+        $data['location'] = self::getLocation($data);
         $model  = new Items($data);
         $result = $model->allowField(true)->save();
         if ($result) {
@@ -53,16 +45,7 @@ class ItemService {
 
         $model = Items::get(['id'=>$data['id']]);
 
-        //var_dump($data);die;
-
-        $locations       = [];
-        $province        = cityModel::get(['area_code' => $data['province']])->toArray();
-        array_push($locations, $province['area_name']);
-        $city = cityModel::get(['area_code' => $data['city']])->toArray();
-        array_push($locations, $city['area_name']);
-        $region = cityModel::get(['area_code' => $data['area']])->toArray();
-        array_push($locations, $region['area_name']);
-        $data['location'] = implode('/', $locations);
+        $data['location'] = self::getLocation($data);
         unset($data['token']);
 
         $result = $model->save($data);
@@ -72,6 +55,20 @@ class ItemService {
         }
         return ['error' => 1, 'message' => '修改失败', 'data' => []];
 
+
+    }
+
+    public static function getLocation($data){
+        $locations       = [];
+        $province        = cityModel::get(['area_code' => $data['province']])->toArray();
+        array_push($locations, $province['area_name']);
+        $city = cityModel::get(['area_code' => $data['city']])->toArray();
+        array_push($locations, $city['area_name']);
+        $region = cityModel::get(['area_code' => $data['area']])->toArray();
+        array_push($locations, $region['area_name']);
+        $location = implode('/', $locations);
+
+        return $location;
 
     }
 
