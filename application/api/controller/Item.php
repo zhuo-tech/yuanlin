@@ -125,6 +125,11 @@ class Item extends Api {
 
     }
 
+
+    /**
+     * @brief 已选指标三级 (输入表单时使用)
+     */
+
     public function selectedTree(Request $request) {
 
         $itemId = $request->param('item_id', 0);
