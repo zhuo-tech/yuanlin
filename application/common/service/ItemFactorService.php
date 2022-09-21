@@ -3,8 +3,10 @@
 namespace app\common\service;
 
 
+use app\admin\model\Factor as FactorModel;
 use app\admin\model\FactorDetail as FactorDetailModel;
 use app\admin\model\Items as ItemsModel;
+use app\admin\model\ItemsFactor as ItemFactorModel;
 use app\admin\model\ItemsFactor as ItemsFactorModel;
 
 
@@ -25,6 +27,8 @@ class ItemFactorService {
             if (empty($item)) {
                 return ['error' => 1, 'message' => '项目不存在', 'data' => []];
             }
+
+            $re = $item->save(['status'=>2]);
 
             $data = [];
             foreach ($factors as $key => $factor) {
@@ -84,6 +88,8 @@ class ItemFactorService {
                 return ['error' => 1, 'message' => '项目不存在', 'data' => []];
             }
 
+            $item->save(['status'=>3]);
+
             $data = FactorDetailModel::where('factor_id', 'in', array_column($factors, 'id'))->column('input_mode', 'factor_id');
             ItemsFactorModel::startTrans();
             foreach ($factors as $key => $factor) {
@@ -111,5 +117,70 @@ class ItemFactorService {
             ItemsModel::rollback();
             return ['error' => 1, 'message' => $exception->getMessage(), 'data' => []];
         }
+    }
+
+
+    public static function itemReport(int $itemId,$keyword){
+
+        $item = ItemsModel::get($itemId);
+        if (empty($item)) {
+            return ['error' => 1, 'message' => '项目不存在', 'data' => []];
+        }
+
+        $item->save(['status'=>4]);
+
+
+        $where['if.item_id'] = $itemId;
+
+        if($keyword){
+            $where['f.name'] = ['like', "%{$keyword}%"];
+        }
+
+        $selectRows = ItemFactorModel::alias('if')->field("if.id,f.pid,f.name,fd.max,fd.min,fd.national_stand,format_type,if.result")
+            ->join("fa_factor f", 'if.factor_id=f.id', 'left')
+            ->join('fa_factor_detail fd', 'fd.factor_id = f.id', 'left')
+            ->where($where)->select()->toArray();
+
+        $first      = FactorModel::where(['status' => 1, 'pid' => 0])
+            ->field("id,name")->select()->toArray();
+        foreach ($first as &$v) {
+            $v['children'] = FactorModel::where(['status' => 1, 'pid' => $v['id']])
+                ->field("id,name")->select()->toArray();
+        }
+        // 查询
+
+
+        $all = ['id'=>0,'name'=>'全部'];
+
+        foreach ($first as &$f) {
+            foreach ($f['children'] as $child) {
+                foreach ($selectRows as $row) {
+                    if ($row['pid'] == $child['id']) {
+                        $result = floatval($row['result']);
+                        $row['level'] = ($result - $row['min']) / ($row['max'] - $row['min']) / 2 * 10;
+                        $f['select'][] = $row;
+
+                        $all['select'][] =$row;
+                    }
+                }
+            }
+        }
+
+        $echart = [];
+        foreach ($first as &$ff) {
+            unset($ff['children']);
+            //$array = array_column($ff['select'],'level');
+            // array_push($echart,count($array)>0? array_sum($array)/count($array):0);
+        }
+
+        array_unshift($first,$all);
+
+        $item =ItemsModel::get(['id'=>$itemId])
+            ->toArray();
+        $item['location'] = implode('',explode('/',$item['location']));
+
+
+        return ['error' => 0, 'message' => '', 'first' => $first,'item'=>$item,'echart'=>$echart];
+
     }
 }

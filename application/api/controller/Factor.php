@@ -350,58 +350,7 @@ class Factor extends Api {
         $itemId = $request->param('item_id', 0);
         $keyword = $request->param('keyword', 0);
         //$data   = FactorService::getSetFactors($itemId);
-
-
-
-        $where['if.item_id'] = $itemId;
-
-        if($keyword){
-            $where['f.name'] = ['like', "%{$keyword}%"];
-        }
-
-        $selectRows = ItemFactorModel::alias('if')->field("if.id,f.pid,f.name,fd.max,fd.min,fd.national_stand,format_type,if.result")
-            ->join("fa_factor f", 'if.factor_id=f.id', 'left')
-            ->join('fa_factor_detail fd', 'fd.factor_id = f.id', 'left')
-            ->where($where)->select()->toArray();
-
-        $first      = FactorModel::where(['status' => 1, 'pid' => 0])
-            ->field("id,name")->select()->toArray();
-        foreach ($first as &$v) {
-            $v['children'] = FactorModel::where(['status' => 1, 'pid' => $v['id']])
-                ->field("id,name")->select()->toArray();
-        }
-        // 查询
-
-
-        $all = ['id'=>0,'name'=>'全部'];
-
-        foreach ($first as &$f) {
-            foreach ($f['children'] as $child) {
-                foreach ($selectRows as $row) {
-                    if ($row['pid'] == $child['id']) {
-                        $result = floatval($row['result']);
-                        $row['level'] = ($result - $row['min']) / ($row['max'] - $row['min']) / 2 * 10;
-                        $f['select'][] = $row;
-
-                        $all['select'][] =$row;
-                    }
-                }
-            }
-        }
-
-        $echart = [];
-        foreach ($first as &$ff) {
-            unset($ff['children']);
-            //$array = array_column($ff['select'],'level');
-           // array_push($echart,count($array)>0? array_sum($array)/count($array):0);
-        }
-
-        array_unshift($first,$all);
-
-        $item =ItemsModel::get(['id'=>$itemId])
-            ->toArray();
-        $item['location'] = implode('',explode('/',$item['location']));
-
-        return json(['code' => 0, 'echart'=>$echart,'data' => $first,'item'=>$item, 'message' => 'OK']);
+        $data = ItemFactorService::itemReport($itemId,$keyword);
+        return json(['code' => $data['error'],'item'=>$data['item'], 'echart'=>$data['echart'],'data' => $data['first'], 'message' => 'OK']);
     }
 }
