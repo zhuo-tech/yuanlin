@@ -49,6 +49,32 @@ class ItemService {
         return ['error' => 1, 'message' => '创建失败', 'data' => []];
     }
 
+    public static function editItem($data){
+
+        $model = Items::get(['id'=>$data['id']]);
+
+        //var_dump($data);die;
+
+        $locations       = [];
+        $province        = cityModel::get(['area_code' => $data['province']])->toArray();
+        array_push($locations, $province['area_name']);
+        $city = cityModel::get(['area_code' => $data['city']])->toArray();
+        array_push($locations, $city['area_name']);
+        $region = cityModel::get(['area_code' => $data['area']])->toArray();
+        array_push($locations, $region['area_name']);
+        $data['location'] = implode('/', $locations);
+        unset($data['token']);
+
+        $result = $model->save($data);
+
+        if ($result) {
+            return ['error' => 0, 'message' => '修改成功', 'data' => ['id' => $model->id]];
+        }
+        return ['error' => 1, 'message' => '修改失败', 'data' => []];
+
+
+    }
+
     /**
      * @分类项目列表
      * @param $search

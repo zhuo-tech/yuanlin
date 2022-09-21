@@ -65,15 +65,40 @@ class Item extends Api {
         return json(['code' => 0, 'message' => 'OK', 'data' => $data]);
     }
 
+
+    /**
+     * @brief 保存案例
+     */
     public function saveItem(Request $request){
 
         //var_dump(11);die;
 
         $itemId = $request->param('item_id', 0);
 
-        $res = ItemsModel::update(['status' => 2], ['id' => $itemId]);
+        if(!$itemId) $this->error('参数错误');
+
+        $item = ItemsModel::get(['user_id'=>$this->auth->id,'id'=>$itemId]);
+
+        if(!$item)$this->error('参数错误');
+
+        $res = ItemsModel::update(['status' => 5], ['id' => $itemId]);
 
         return json_encode(['code' => 0, 'message' => 'OK', 'data' => []]);
+
+    }
+
+
+    /**
+     * @brief 编辑案例
+     */
+    public function updateItem(Request $request){
+        $itemId = $request->param('id', 0);
+        if(!$itemId) $this->error('参数错误');
+        $item = ItemsModel::get(['user_id'=>$this->auth->id,'id'=>$itemId]);
+        if(!$item)$this->error('参数错误');
+        $data = ItemService::editItem($request->param());
+        return json(['code' => $data['error'], 'data' => $data['data'], 'message' => $data['message']]);
+
 
     }
 
