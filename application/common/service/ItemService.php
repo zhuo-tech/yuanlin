@@ -46,9 +46,17 @@ class ItemService {
         $model = Items::get(['id'=>$data['id']]);
 
         $data['location'] = self::getLocation($data);
-        unset($data['token']);
+        $model->name = $data['name'];
+        $model->province = $data['province'];
+        $model->city = $data['city'];
+        $model->area = $data['area'];
+        $model->location = $data['location'];
+        $model->build_time = $data['build_time'];
+        $model->designer_team = $data['designer_team'];
+        $model->study_team = $data['study_team'];
+        $model->introduction = $data['introduction'];
 
-        $result = $model->save($data);
+        $result = $model->save();
 
         if ($result) {
             return ['error' => 0, 'message' => '修改成功', 'data' => ['id' => $model->id]];
