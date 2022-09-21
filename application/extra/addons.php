@@ -17,6 +17,7 @@ return [
         ],
         'config_init' => [
             'simditor',
+            'summernote',
         ],
     ],
     'route' => [],
