@@ -128,7 +128,7 @@ class ItemService {
             }
         }
 
-        $where['status'] = 1;
+        $where['status'] =['>',0];
         if ($search['keyword']) {
             $where['name'] = ['like', "%{$search['keyword']}%"];
         }
