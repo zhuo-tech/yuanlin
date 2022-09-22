@@ -11,7 +11,7 @@ define(['jquery', 'bootstrap', 'backend', 'table', 'form'], function ($, undefin
                     index_url: 'factor_detail/index' + location.search,
                     add_url: 'factor_detail/add',
                     edit_url: 'factor_detail/edit',
-                    del_url: 'factor_detail/del',
+                    // del_url: 'factor_detail/del',
                     multi_url: 'factor_detail/multi',
                     import_url: 'factor_detail/import',
                     table: 'factor_detail',

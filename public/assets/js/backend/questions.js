@@ -12,7 +12,7 @@ define(['jquery', 'bootstrap', 'backend', 'table', 'form'], function ($, undefin
                     index_url: 'questions/index' + location.search,
                     add_url: 'questions/add',
                     edit_url: 'questions/edit',
-                    del_url: 'questions/del',
+                    // del_url: 'questions/del',
                     multi_url: 'questions/multi',
                     import_url: 'questions/import',
                     table: 'questions',

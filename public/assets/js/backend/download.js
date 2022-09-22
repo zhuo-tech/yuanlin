@@ -12,7 +12,7 @@ define(['jquery', 'bootstrap', 'backend', 'table', 'form'], function ($, undefin
                     index_url: 'download/index' + location.search,
                     add_url: 'download/add',
                     edit_url: 'download/edit',
-                    del_url: 'download/del',
+                    // del_url: 'download/del',
                     multi_url: 'download/multi',
                     import_url: 'download/import',
                     table: 'download',

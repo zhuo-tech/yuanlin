@@ -8,7 +8,7 @@ define(['jquery', 'bootstrap', 'backend', 'table', 'form'], function ($, undefin
                     index_url: 'download_cate/index' + location.search,
                     add_url: 'download_cate/add',
                     edit_url: 'download_cate/edit',
-                    del_url: 'download_cate/del',
+                    // del_url: 'download_cate/del',
                     multi_url: 'download_cate/multi',
                     import_url: 'download_cate/import',
                     table: 'download_cate',

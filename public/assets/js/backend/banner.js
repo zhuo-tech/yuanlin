@@ -8,7 +8,7 @@ define(['jquery', 'bootstrap', 'backend', 'table', 'form'], function ($, undefin
                     index_url: 'banner/index' + location.search,
                     add_url: 'banner/add',
                     edit_url: 'banner/edit',
-                    del_url: 'banner/del',
+                    // del_url: 'banner/del',
                     multi_url: 'banner/multi',
                     import_url: 'banner/import',
                     table: 'banner',
