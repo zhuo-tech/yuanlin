@@ -62,10 +62,12 @@ class ItemService {
 
         $result = $model->save();
 
-        if ($result) {
-            return ['error' => 0, 'message' => '修改成功', 'data' => ['id' => $model->id]];
-        }
-        return ['error' => 1, 'message' => '修改失败', 'data' => []];
+        return ['error' => 0, 'message' => '修改成功', 'data' => ['id' => $model->id]];
+
+//        if ($result) {
+//            return ['error' => 0, 'message' => '修改成功', 'data' => ['id' => $model->id]];
+//        }
+//        return ['error' => 1, 'message' => '修改失败', 'data' => []];
 
     }
 
