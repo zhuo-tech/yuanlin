@@ -183,7 +183,7 @@ class FactorService {
         $list = FactorModel::where(['show_index' => 1, 'status' => 1])->field(['id', 'name', 'image'])->paginate($size, false, ['page' => $page])->toArray();
         if (isset($list['data'])) {
             foreach ($list['data'] as &$v) {
-                $v['image'] = Env::get('app.baseurl', 'http://ies-admin.zhuo-zhuo.com') . $v['image'];
+                $v['image'] =  ImagesService::getBaseUrl() . $v['image'];
             }
         }
 

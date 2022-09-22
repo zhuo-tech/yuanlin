@@ -53,7 +53,7 @@ class DownloadService {
         $list          = DownloadModel::where($where)->field($fields)->paginate($limit, false, ['page' => $page])->toArray();
         if (isset($list['data'])) {
             foreach ($list['data'] as &$v) {
-                $v['image'] = Env::get('app.baseurl', 'http://ies-admin.zhuo-zhuo.com') . $v['image'];
+                $v['image'] =  ImagesService::getBaseUrl() . $v['image'];
                 $v['document'] = $v['document']?json_decode($v['document']):[];
             }
         }

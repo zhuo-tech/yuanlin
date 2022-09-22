@@ -56,13 +56,16 @@ class ItemService {
         $model->study_team = $data['study_team'];
         $model->introduction = $data['introduction'];
 
+        $images = ImagesService::handleInput($data['images']);
+
+        $model->images = $images;
+
         $result = $model->save();
 
         if ($result) {
             return ['error' => 0, 'message' => '修改成功', 'data' => ['id' => $model->id]];
         }
         return ['error' => 1, 'message' => '修改失败', 'data' => []];
-
 
     }
 
@@ -147,7 +150,7 @@ class ItemService {
         if (isset($list['data'])) {
             foreach ($list['data'] as &$v) {
                 $images = explode(',',$v['images']);
-                $v['images']      = Env::get('app.baseurl', 'http://ies-admin.zhuo-zhuo.com') . $images[0];
+                $v['images']      =  ImagesService::getBaseUrl() . $images[0];
                 $v['create_date'] = date("Y-m-d", $v['update_time']);
                 $v['keyword']     = explode(',', $v['keyword']);
             }
@@ -191,9 +194,8 @@ class ItemService {
 
         if (isset($list['data'])) {
             foreach ($list['data'] as &$v) {
-                //$v['images']      = Env::get('app.baseurl', 'http://ies-admin.zhuo-zhuo.com') . $v['images'];
                 $images = explode(',',$v['images']);
-                $v['images']      = Env::get('app.baseurl', 'http://ies-admin.zhuo-zhuo.com') . $images[0];
+                $v['images']      =  ImagesService::getBaseUrl() . $images[0];
                 $v['create_date'] = date("Y-m-d", $v['update_time']);
                 $v['keyword']     = explode(',', $v['keyword']);
             }

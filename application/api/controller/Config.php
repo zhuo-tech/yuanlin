@@ -4,6 +4,7 @@ namespace app\api\controller;
 
 use app\common\controller\Api;
 use app\common\model\Config as ConfigModel;
+use app\common\service\ImagesService;
 use think\Env;
 use think\Request;
 
@@ -24,7 +25,7 @@ class Config extends Api {
         // 配置数据
         $config['name']    = $dbConfig['name'];
         $config['icp']     = $dbConfig['beian'];
-        $config['cdn_url'] = Env::get('app.baseurl', 'http://ies-admin.zhuo-zhuo.com');
+        $config['cdn_url'] =  ImagesService::getBaseUrl();
         $config['site']    = json_decode($dbConfig['siteConfig'], true);
         return json(['code' => 0, 'data' => $config, 'message' => 'OK']);
     }

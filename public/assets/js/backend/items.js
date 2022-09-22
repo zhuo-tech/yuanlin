@@ -43,6 +43,7 @@ define(['jquery', 'bootstrap', 'backend', 'table', 'form'], function ($, undefin
                         {field: 'areas', searchable:false,title: __('Areas'), operate: 'LIKE'},
                         {field: 'item_cate_id',  visible:false,searchable:false, title: __('Item_cate_id')},
                         {field: 'item_cate_name', title: "项目类型"},
+                        {field: 'status', title: __('Status'),searchList: {"0": "删除", "1": "创建","2": "已选取指标","3": "已填写指标 ","4": "已生成报告","5": "申请案例","6": "申请成功","7":"申请失败"}},
                         {field: 'images', title: __('Images'),visible:false, searchable:false,operate: false, events: Table.api.events.image, formatter: Table.api.formatter.images},
                         {field: 'introduction',searchable:false, title: __('Introduction'), operate: 'LIKE'},
                         {field: 'specific',searchable:false, title: __('Specific'), operate: 'LIKE'},

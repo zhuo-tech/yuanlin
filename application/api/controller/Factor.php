@@ -4,6 +4,7 @@ namespace app\api\controller;
 
 use app\common\controller\Api;
 use app\common\service\FactorService;
+use app\common\service\ImagesService;
 use app\common\service\ItemFactorService;
 use think\Db;
 use think\Env;
@@ -189,7 +190,7 @@ class Factor extends Api {
             ->limit(3)->select()->toArray();
 
         foreach ($item as &$v) {
-            $v['images'] = Env::get('app.baseurl', 'http://ies-admin.zhuo-zhuo.com') . $v['images'];
+            $v['images'] =  ImagesService::getBaseUrl() . $v['images'];
         }
 
         $factor['items'] = $item;
@@ -299,7 +300,7 @@ class Factor extends Api {
             ->limit(3)->select()->toArray();
 
         foreach ($item as &$v) {
-            $v['images'] = Env::get('app.baseurl', 'http://ies-admin.zhuo-zhuo.com') . $v['images'];
+            $v['images'] =  ImagesService::getBaseUrl() . $v['images'];
         }
 
         $factor['items'] = $item;

@@ -6,6 +6,7 @@ use app\admin\model\News as NewsModel;
 use app\common\controller\Api;
 use app\admin\model\Banner as BannerModel;
 use app\admin\model\Factor as FactorModel;
+use app\common\service\ImagesService;
 use think\Env;
 
 /**
@@ -22,13 +23,13 @@ class Banner extends Api {
         $banners = BannerModel::where(['status' => 1])->field(['id', 'name', 'image', 'type', 'link','content'])
             ->order('sort', 'asc')->select()->toArray();
         foreach ($banners as &$banner){
-            $banner['image'] = Env::get('app.baseurl', 'http://ies-admin.zhuo-zhuo.com').$banner['image'];
+            $banner['image'] = ImagesService::getBaseUrl().$banner['image'];
         }
         $news= NewsModel::field(['id', 'name', 'image', 'type', 'link','create_time'])
             ->order('sorts', 'asc')->select()->toArray();
 
         foreach ($news as &$new){
-            $new['image'] = Env::get('app.baseurl', 'http://ies-admin.zhuo-zhuo.com').$new['image'];
+            $new['image'] = ImagesService::getBaseUrl().$new['image'];
             $new['create_date'] = date("Y-m-d",$new['create_time']);
         }
         $total = FactorModel::where(['status'=>1])->count();

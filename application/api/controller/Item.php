@@ -7,6 +7,7 @@ use app\admin\model\Items as ItemsModel;
 use app\admin\model\ItemsFactor;
 use app\common\controller\Api;
 use app\common\service\FactorService;
+use app\common\service\ImagesService;
 use app\common\service\ItemService;
 use think\Env;
 use think\Request;
@@ -93,7 +94,7 @@ class Item extends Api {
      */
     public function updateItem(Request $request){
         $itemId = $request->param('id', 0);
-        if(!$itemId) $this->error('参数错误');
+        if(!$itemId) $this->error('项目参数错误');
         $item = ItemsModel::get(['user_id'=>$this->auth->id,'id'=>$itemId]);
         if(!$item)$this->error('参数错误');
         $data = ItemService::editItem($request->param());
@@ -116,7 +117,7 @@ class Item extends Api {
         $imgs = [];
 
         foreach ($images as $i){
-            array_push($imgs,Env::get('app.baseurl', 'http://ies-admin.zhuo-zhuo.com') . $i);
+            array_push($imgs, ImagesService::getBaseUrl() . $i);
         }
 
         $res['images'] = $imgs;

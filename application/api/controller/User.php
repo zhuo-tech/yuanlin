@@ -6,6 +6,7 @@ use app\admin\model\City as cityModel;
 use app\common\controller\Api;
 use app\common\library\Ems;
 use app\common\library\Sms;
+use app\common\service\ImagesService;
 use fast\Random;
 use think\Config;
 use think\Cookie;
@@ -57,7 +58,7 @@ class User extends Api {
             $city        = cityModel::get(['area_code' => $user['city']])->toArray();
             $user['province_name'] = $province['area_name'];
             $user['city_name'] = $city['area_name'];
-            $user['avatar'] = Env::get('app.baseurl', 'http://ies-admin.zhuo-zhuo.com') . $user['avatar'];
+            $user['avatar'] =  ImagesService::getBaseUrl() . $user['avatar'];
             $data           = ['userinfo' => $user];
             return json(['code' => 0, 'data' => $data, 'message' => 'OK']);
         } else {
@@ -99,7 +100,7 @@ class User extends Api {
             Sms::flush($mobile, 'mobilelogin');
 
             $user           = $this->auth->getUserinfo();
-            $user['avatar'] = Env::get('app.baseurl', 'http://ies-admin.zhuo-zhuo.com') . $user['avatar'];
+            $user['avatar'] =  ImagesService::getBaseUrl() . $user['avatar'];
             $data           = ['userinfo' => $user];
             $this->success(__('Logged in successful'), $data);
         } else {
@@ -139,7 +140,7 @@ class User extends Api {
         $ret = $this->auth->register($username, $password, $email, $mobile, []);
         if ($ret) {
             $user           = $this->auth->getUserinfo();
-            $user['avatar'] = Env::get('app.baseurl', 'http://ies-admin.zhuo-zhuo.com') . $user['avatar'];
+            $user['avatar'] =  ImagesService::getBaseUrl() . $user['avatar'];
             $data           = ['userinfo' => $user];
             $this->success(__('Sign up successful'), $data);
         } else {
@@ -180,7 +181,7 @@ class User extends Api {
         $ret = $this->auth->register($mobile, $password, '', $mobile, []);
         if ($ret) {
             $user           = $this->auth->getUserinfo();
-            $user['avatar'] = Env::get('app.baseurl', 'http://ies-admin.zhuo-zhuo.com') . $user['avatar'];
+            $user['avatar'] =  ImagesService::getBaseUrl() . $user['avatar'];
             $data           = ['userinfo' => $user];
             $this->success(__('Sign up successful'), $data);
         } else {
@@ -216,7 +217,7 @@ class User extends Api {
         $ret = $this->auth->register($email, $password, $email, '', []);
         if ($ret) {
             $user = $this->auth->getUserinfo();
-            $user['avatar'] = Env::get('app.baseurl', 'http://ies-admin.zhuo-zhuo.com') . $user['avatar'];
+            $user['avatar'] =  ImagesService::getBaseUrl() . $user['avatar'];
             $data = ['userinfo' => $user];
             $this->success(__('Sign up successful'), $data);
         } else {
@@ -283,7 +284,7 @@ class User extends Api {
         $user->save();
 
         $data           = $this->auth->getUser();
-        $data['avatar'] = Env::get('app.baseurl', 'http://ies-admin.zhuo-zhuo.com') . $data['avatar'];
+        $data['avatar'] = ImagesService::getBaseUrl() . $data['avatar'];
         $this->success('OK', $data, 0);
     }
 
@@ -304,7 +305,7 @@ class User extends Api {
         $user->save();
 
         $data           = $this->auth->getUser();
-        $data['avatar'] = Env::get('app.baseurl', 'http://ies-admin.zhuo-zhuo.com') . $data['avatar'];
+        $data['avatar'] =  ImagesService::getBaseUrl() . $data['avatar'];
         $this->success('OK', $data, 0);
     }
 
