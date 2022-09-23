@@ -8,6 +8,7 @@ use app\admin\model\Factor as FactorModel;
 use app\admin\model\FactorDetail as FactorDetailModel;
 use app\admin\model\Items;
 use app\admin\model\ItemsFactor;
+use app\admin\model\ItemsFactor as ItemFactorModel;
 use app\admin\model\Questions;
 use think\Env;
 use think\exception\DbException;
@@ -117,8 +118,26 @@ class FactorService {
                 }
                 $value['option'] = $questionOptions;
             }
+
+            $value['items'] = self::handleItem($value['id']);
         }
         return $data;
+    }
+
+    public static function handleItem($factorId){
+
+        $item = ItemFactorModel::alias('if')
+            ->join('fa_items i', 'i.id=if.item_id', 'left')
+            ->field('i.name,i.images')
+            ->where(['if.factor_id' => $factorId])
+            ->limit(3)->select()->toArray();
+
+        foreach ($item as &$v) {
+            $v['images'] =  ImagesService::getBaseUrl() . $v['images'];
+        }
+
+        return $item;
+
     }
 
     /**
