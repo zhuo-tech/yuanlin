@@ -159,7 +159,7 @@ class ItemService {
         }
         $data['list'] = $list['data'] ?? [];
 
-        $data['total'] = (int)ceil($list['total'] / $limit);
+        $data['total'] = $list['total'];
         return $data;
     }
 
