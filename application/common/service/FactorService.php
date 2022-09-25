@@ -185,7 +185,10 @@ class FactorService {
     public static function selected($page = 1, $size = 10) {
         $page = ($page >= 1) ? $page : 1;
 
-        $list = FactorModel::where(['show_index' => 1, 'status' => 1])->field(['id', 'name', 'image'])->paginate($size, false, ['page' => $page])->toArray();
+        $list = FactorModel::alias('f')
+            ->join('factor_detail fd','f.id=fd.factor_id','left')
+            ->where(['show_index' => 1, 'f.status' => 1])->field(['f.id', 'f.name', 'f.image','fd.meaning'])
+            ->paginate($size, false, ['page' => $page])->toArray();
         if (isset($list['data'])) {
             foreach ($list['data'] as &$v) {
                 $v['image'] =  ImagesService::getBaseUrl() . $v['image'];
