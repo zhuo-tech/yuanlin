@@ -60,7 +60,97 @@ class Factor extends Api {
     public function simpleTree(Request $request) {
         $itemId = $request->param('item_id', 0);
         $data   = FactorService::simpleTree($itemId);
-        return json(['code' => 0, 'data' => $data, 'message' => 'OK']);
+        $cid = $request->param('cid', 0);
+        $n = 0;
+        foreach ($data as $key=>&$vs){
+            if($cid){
+                if($cid==$vs['id']){
+                    foreach ($vs['child'] as $k=> &$v){
+                        if($v['selected']==1){
+                            $detail = FactorDetailModel::get(['factor_id'=>$v['id']])->toArray();
+                            if($detail['option']){
+                                $v['option'] = json_decode($detail['option']);
+                            }else{
+                                $v['option'] = [];
+                            }
+                            $n = $n+1;
+                            $v['id'] =$n;
+
+                        }else{
+                            unset($vs['child'][$k]);
+                        }
+                    }
+                }
+                else{
+                    unset($data[$key]);
+                }
+            }
+            else{
+                foreach ($vs['child'] as $k=> &$v){
+                    if($v['selected']==1){
+                        $detail = FactorDetailModel::get(['factor_id'=>$v['id']])->toArray();
+                        if($detail['option']){
+                            $v['option'] = json_decode($detail['option']);
+                        }else{
+                            $v['option'] = [];
+                        }
+                        $n = $n+1;
+                        $v['id'] =$n;
+
+                    }else{
+                        unset($vs['child'][$k]);
+                    }
+                }
+
+            }
+        }
+
+        $data = $this->handleSimpleData($data);
+
+
+        $first = FactorModel::where(['status' => 1, 'pid' => 0])->field("id,name")->select()->toArray();
+
+        array_unshift($first,['name'=>'全部','id'=>0]);
+
+        return json(['code' => 0, 'first'=>$first,'data' => $data, 'message' => 'OK']);
+    }
+
+    public function handleSimpleData($data){
+
+        $record = [];
+        if(count($data)==1){
+            foreach ($data as $ds){
+                array_push($record,$ds);
+
+            }
+        }else{
+            return $data;
+        }
+
+        return $record;
+    }
+
+    public function handleSelectFactor($vs,$n){
+
+
+        foreach ($vs['child'] as $k=> &$v){
+            if($v['selected']==1){
+                $detail = FactorDetailModel::get(['factor_id'=>$v['id']])->toArray();
+                if($detail['option']){
+                    $v['option'] = json_decode($detail['option']);
+                }else{
+                    $v['option'] = [];
+                }
+                $n = $n+1;
+                $v['id'] =$n;
+
+            }else{
+                unset($vs['child'][$k]);
+            }
+        }
+
+        return $vs;
+
     }
 
 
