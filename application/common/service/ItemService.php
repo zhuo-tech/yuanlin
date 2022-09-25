@@ -105,10 +105,10 @@ class ItemService {
                 6 => 'areas >1000',
             ],
             'contoury' => [
-                1 => 'FROM_UNIXTIME(create_time, "%Y") < 2000',
-                2 => 'FROM_UNIXTIME(create_time, "%Y") >= 2000 and FROM_UNIXTIME(create_time, "%Y") < 2010',
-                3 => 'FROM_UNIXTIME(create_time, "%Y") >= 2010 and FROM_UNIXTIME(create_time, "%Y") < 2020',
-                4 => 'FROM_UNIXTIME(create_time, "%Y") >= 2020',
+                1 => 'build_time < 2000',
+                2 => 'build_time >= 2000 and build_time < 2010',
+                3 => 'build_time >= 2010 and build_time < 2020',
+                4 => 'build_time >= 2020',
             ]
         ];
 
