@@ -3,6 +3,7 @@
 namespace app\common\service;
 
 
+use app\admin\model\ItemsFactor as ItemFactorModel;
 use app\admin\validate\Items as ItemsValidate;
 use app\admin\model\Items;
 use app\admin\model\City as cityModel;
@@ -207,5 +208,24 @@ class ItemService {
         $data['pages'] = (int)ceil($data['total'] / $size);
         $data['list']  = $list['data'];
         return $data;
+    }
+
+
+
+    public static function getItemByFactorId($factorId){
+
+        $item = ItemFactorModel::alias('if')
+            ->join('fa_items i', 'i.id=if.item_id', 'left')
+            ->field('i.name,i.images')
+            ->where(['if.factor_id' => $factorId])
+            ->where('i.status','>',0)
+            ->limit(3)->select()->toArray();
+
+        foreach ($item as &$v) {
+            $v['images'] =  ImagesService::getBaseUrl() . $v['images'];
+        }
+
+        return $item;
+
     }
 }

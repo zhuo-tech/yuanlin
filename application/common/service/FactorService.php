@@ -119,27 +119,12 @@ class FactorService {
                 $value['option'] = $questionOptions;
             }
 
-            $value['items'] = self::handleItem($value['id']);
+            $value['items'] = ItemService::getItemByFactorId($value['id']);
         }
         return $data;
     }
 
-    public static function handleItem($factorId){
 
-        $item = ItemFactorModel::alias('if')
-            ->join('fa_items i', 'i.id=if.item_id', 'left')
-            ->field('i.name,i.images')
-            ->where(['if.factor_id' => $factorId])
-            ->where('i.status','>',0)
-            ->limit(3)->select()->toArray();
-
-        foreach ($item as &$v) {
-            $v['images'] =  ImagesService::getBaseUrl() . $v['images'];
-        }
-
-        return $item;
-
-    }
 
     /**
      * 组织树
