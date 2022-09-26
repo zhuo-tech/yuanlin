@@ -17,6 +17,8 @@ class ImagesService{
                 if(stristr($v,$baseUrl)){
                     $result = str_replace($baseUrl,'',$v);
                     array_push($imgs,$result);
+                }else{
+                    array_push($imgs,$v);
                 }
             }
             $images =  implode(',',$imgs);

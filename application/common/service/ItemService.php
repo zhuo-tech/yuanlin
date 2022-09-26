@@ -34,6 +34,8 @@ class ItemService {
 
         $data['user_id'] = $uid;
         $data['location'] = self::getLocation($data);
+        $images = ImagesService::handleInput($data['images']);
+        $data['images'] = $images;
         $model  = new Items($data);
         $result = $model->allowField(true)->save();
         if ($result) {
@@ -143,7 +145,7 @@ class ItemService {
             $where['user_id'] = ['=', $search['uid']];
         }
 
-        $order = 'id asc';
+        $order = 'id desc';
         $limit = 10;
         $list  = Items::where($where);
         if ($filter) {
