@@ -115,6 +115,60 @@ class Factor extends Api {
         return json(['code' => 0, 'first'=>$first,'data' => $data, 'message' => 'OK']);
     }
 
+
+    /**
+     * @brief 已选指标结果，不包含二级
+     */
+    public function simpleTreeResult(Request $request){
+
+        $itemId = $request->param('item_id', 0);
+        $data   = FactorService::simpleTree($itemId);
+        $n = 0;
+        foreach ($data as $key=>&$vs){
+            foreach ($vs['child'] as $k=> &$v){
+                if($v['selected']==1){
+                    $detail = FactorDetailModel::get(['factor_id'=>$v['id']])->toArray();
+
+                    $itemFactor = ItemFactorModel::get(['factor_id'=>$v['id'],'item_id'=>$itemId])->toArray();
+
+                    if($itemFactor['param']){
+
+                        $param = json_decode($itemFactor['param'],1);
+                        $option = json_decode($detail['option'],1);
+
+                        $v['option'] =  $this->handleOptionParam($option,$param);
+                    }else{
+
+                        if($detail['option']){
+                            $v['option'] = json_decode($detail['option'],1);
+                        }else{
+                            $v['option'] = [];
+                        }
+                    }
+
+                    $n = $n+1;
+                    $v['id'] =$n;
+
+                }else{
+                    unset($vs['child'][$k]);
+                }
+            }
+        }
+
+        $data = $this->handleSimpleData($data);
+
+        return json(['code' => 0, 'data' => $data, 'message' => 'OK']);
+
+    }
+
+    public function handleOptionParam($options,$params){
+
+        foreach ($options as &$option){
+            $option['value'] = $params[$option['var']];
+        }
+        return $options;
+    }
+
     public function handleSimpleData($data){
 
         $record = [];
