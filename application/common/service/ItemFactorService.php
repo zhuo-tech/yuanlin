@@ -152,6 +152,8 @@ class ItemFactorService {
 
         $all = ['id'=>0,'name'=>'全部'];
 
+        // row['result'] = 0 前端类型报错
+
         foreach ($first as &$f) {
             foreach ($f['children'] as $child) {
                 foreach ($selectRows as $row) {

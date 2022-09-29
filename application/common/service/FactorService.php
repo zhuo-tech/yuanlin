@@ -187,7 +187,7 @@ class FactorService {
 
         $list = FactorModel::alias('f')
             ->join('factor_detail fd','f.id=fd.factor_id','left')
-            ->where(['show_index' => 1, 'f.status' => 1])->field(['f.id', 'f.name', 'f.image','fd.meaning'])
+            ->where(['show_index' => 1, 'f.status' => 1])->field(['f.id', 'f.name','f.danwei', 'f.image','fd.meaning'])
             ->paginate($size, false, ['page' => $page])->toArray();
         if (isset($list['data'])) {
             foreach ($list['data'] as &$v) {
