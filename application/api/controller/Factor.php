@@ -35,11 +35,11 @@ class Factor extends Api {
         // 缓存
         $cacheKey = md5($itemId . '__' . $keyword);
         $cacheVal = Cache::get($cacheKey);
-        if (0) {
+        if ($cacheVal) {
             $data = json_decode($cacheVal, true);
         } else {
             $data = FactorService::getFactorTree($itemId);
-            Cache::set($cacheKey, json_encode($data, JSON_UNESCAPED_UNICODE), 6);
+            Cache::set($cacheKey, json_encode($data, JSON_UNESCAPED_UNICODE), 3600 * 24);
         }
 
         if ($keyword) {
