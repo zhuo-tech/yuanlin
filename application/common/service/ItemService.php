@@ -224,7 +224,9 @@ class ItemService {
             ->limit(3)->select()->toArray();
 
         foreach ($item as &$v) {
-            $v['images'] =  ImagesService::getBaseUrl() . $v['images'];
+            $images = explode(',',$v['images']);
+            $v['images']      =  ImagesService::getBaseUrl() . $images[0];
+            //$v['images'] =  ImagesService::getBaseUrl() . $v['images'];
         }
 
         return $item;
