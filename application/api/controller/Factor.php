@@ -39,7 +39,7 @@ class Factor extends Api {
             $data = json_decode($cacheVal, true);
         } else {
             $data = FactorService::getFactorTree($itemId);
-            Cache::set($cacheKey, json_encode($data, JSON_UNESCAPED_UNICODE), 3600 * 24);
+            Cache::set($cacheKey, json_encode($data, JSON_UNESCAPED_UNICODE), 6);
         }
 
         if ($keyword) {
