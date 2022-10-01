@@ -183,7 +183,7 @@ class ItemService {
         if ($fid) {
             $where['fa_items_factor.factor_id'] = ['in', $fid];
         }
-        $where['i.status'] = 1;
+        $where['i.status'] =['>',0];
         if ($search['keyword']) {
             $where['name'] = ['like', "%{$search['keyword']}%"];
         }
