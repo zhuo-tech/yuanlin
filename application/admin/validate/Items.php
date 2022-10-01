@@ -19,7 +19,7 @@ class Items extends Validate {
         //'item_cate_id'  => ['require', 'regex' => '/^\+?[1-9][0-9]*$/'],
         'images'        => ['require'],
         'designer_team' => ['require'],
-        'introduction'  => ['require'],
+        //'introduction'  => ['require'],
     ];
 
     protected $message = [
@@ -39,7 +39,7 @@ class Items extends Validate {
 //        'item_cate_id.require'  => '项目分类必填',
 //        'item_cate_id.regex'    => '项目分类有误',
         'images.require'        => '图片必传',
-        'introduction.require'  => '项目描述必填',
+       // 'introduction.require'  => '项目描述必填',
         'designer_team.require' => '设计团队必填'
     ];
 
@@ -48,7 +48,7 @@ class Items extends Validate {
      * 验证场景
      */
     protected $scene = [
-        'insert' => ['name', 'item_type', 'province', 'city', 'area', 'areas', 'item_cate_id', 'images', 'designer_team', 'introduction']
+        'insert' => ['name', 'item_type', 'province', 'city', 'area', 'areas', 'item_cate_id', 'images', 'designer_team',]
     ];
 
 }
