@@ -32,8 +32,9 @@ class Factor extends Api {
     public function tree(Request $request) {
         $itemId  = $request->param('item_id', 0);
         $keyword = $request->param('keyword', '');
+        $id = $request->param('id','');
         // 缓存
-        $cacheKey = md5($itemId . '__' . $keyword);
+        $cacheKey = md5( 'factorTree');
         $cacheVal = Cache::get($cacheKey);
         if ($cacheVal) {
             $data = json_decode($cacheVal, true);
@@ -45,7 +46,27 @@ class Factor extends Api {
         if ($keyword) {
             $data = $this->search($data, $keyword);
         }
+
+        if($id)$data= $this->getById($data,$id);
         return json(['code' => 0, 'data' => $data, 'message' => 'OK']);
+    }
+
+    public function getById($data, $id){
+
+        foreach ($data as $key => &$f) {
+            foreach ($f['child'] as $key2 => &$s) {
+                foreach ($s['child'] as $key3 => $t) {
+
+                    if ($t['id']== $id) {
+                    } else {
+                        unset($s['child'][$key3]);
+                    }
+                }
+            }
+        }
+
+        return $data;
+
     }
 
     public function search($data, $keyword) {
