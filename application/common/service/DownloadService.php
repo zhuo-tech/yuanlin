@@ -56,7 +56,7 @@ class DownloadService {
         $list          = DownloadModel::where($where)
             ->field($fields)->paginate($limit, false, ['page' => $page])->toArray();
 
-        echo $model->getLastSql();die;
+        //echo $model->getLastSql();die;
         if (isset($list['data'])) {
             foreach ($list['data'] as &$v) {
                 $v['image'] =  ImagesService::getBaseUrl() . $v['image'];
