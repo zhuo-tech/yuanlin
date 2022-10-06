@@ -42,10 +42,10 @@ class DownloadService {
         $page = ($page >= 1) ? $page : 1;
         $type = $search['type'] ?? 0;
         if ($type) {
-            //$where['download_cate_id'] = $type;
-            $where[] = ['exp',Db::raw("FIND_IN_SET($type,download_cate_id)")];
+            $where['download_cate_id'] = $type;
+            //$where[] = ['exp',Db::raw("FIND_IN_SET($type,download_cate_id)")];
         }
-        //$where['status'] = 1;
+        $where['status'] = 1;
         if ($search['keyword']) {
             $where['name'] = ['like', "%{$search['keyword']}%"];
         }
