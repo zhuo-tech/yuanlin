@@ -30,9 +30,7 @@ class Download extends Api {
      * @brief 下载案例
      */
     public function cases(Request $request) {
-        header("Access-Control-Allow-Origin: *");
-        header("Access-Control-Allow-Headers: *");
-        header("Access-Control-Request-Method: GET,POST,OPTIONS");
+
         $page   = $request->param('page', 0);
         $type   = $request->param('type');
         $name   = $request->param('keyword');
