@@ -5,6 +5,7 @@ namespace app\common\service;
 
 use app\admin\model\Download as DownloadModel;
 use app\admin\model\DownloadCate;
+use think\Db;
 use think\Env;
 
 
@@ -42,7 +43,7 @@ class DownloadService {
         $type = $search['type'] ?? 0;
         if ($type) {
             //$where['download_cate_id'] = $type;
-            $where[] = ['exp',"FIND_IN_SET($type,download_cate_id)"];
+            $where[] = ['exp',Db::raw("FIND_IN_SET($type,download_cate_id)")];
         }
         $where['status'] = 1;
         if ($search['keyword']) {
