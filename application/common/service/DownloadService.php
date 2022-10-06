@@ -45,7 +45,7 @@ class DownloadService {
             //$where['download_cate_id'] = $type;
             $where[] = ['exp',Db::raw("FIND_IN_SET($type,download_cate_id)")];
         }
-        $where['status'] = 1;
+        //$where['status'] = 1;
         if ($search['keyword']) {
             $where['name'] = ['like', "%{$search['keyword']}%"];
         }
