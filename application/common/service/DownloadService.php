@@ -50,7 +50,11 @@ class DownloadService {
 
         $order         = 'id desc';
         $limit         = 10;
-        $list          = DownloadModel::where($where)->field($fields)->paginate($limit, false, ['page' => $page])->toArray();
+        $model = new DownloadModel();
+        $list          = DownloadModel::where($where)
+            ->field($fields)->paginate($limit, false, ['page' => $page])->toArray();
+
+        echo $model->getLastSql();die;
         if (isset($list['data'])) {
             foreach ($list['data'] as &$v) {
                 $v['image'] =  ImagesService::getBaseUrl() . $v['image'];
