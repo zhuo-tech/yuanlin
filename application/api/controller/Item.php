@@ -40,7 +40,7 @@ class Item extends Api {
         $uid     = $request->param('uid', 0);
         $keyword = $request->param('keyword', '');
 
-        $data = ItemService::cate(['cid' => $cid, 'uid' => $uid, 'keyword' => $keyword], $page);
+        $data = ItemService::cate(['cid' => $cid, 'uid' => $uid, 'keyword' => $keyword], $page,$size);
         return json(['code' => 0, 'message' => 'OK', 'data' => $data]);
     }
 
