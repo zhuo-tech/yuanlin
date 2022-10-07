@@ -69,9 +69,9 @@ class DownloadService {
         if($find) {
             $list = $list->where($find);
         }
-        $list = $list->field($fields)->paginate($limit, false, ['page' => $page])->toArray();
+        $list = $list->field($fields)->paginate($limit, false, ['page' => $page]);
 
-        //echo $model->getLastSql();die;
+        echo $list->getLastSql();die;
         if (isset($list['data'])) {
             foreach ($list['data'] as &$v) {
                 $v['image'] =  ImagesService::getBaseUrl() . $v['image'];
