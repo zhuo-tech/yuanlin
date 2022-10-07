@@ -41,9 +41,21 @@ class DownloadService {
     public static function search($search, $page = 1, $fields = '') {
         $page = ($page >= 1) ? $page : 1;
         $type = $search['type'] ?? 0;
+        $find = '';
         if ($type) {
-            $where['download_cate_id'] = $type;
+//            $where['download_cate_id'] = $type;
             //$where[] = ['exp',Db::raw("FIND_IN_SET($type,download_cate_id)")];
+            $typeArray = explode(',', $type);
+            if ($typeArray) {
+                $count = count($typeArray);
+                $and   = ' and ';
+                foreach ($typeArray as $key => $value) {
+                    if($key + 1 >= $count) {
+                        $and = '';
+                    }
+                    $find .= ' find_in_set(' . intval($value) .', download_cate_id)' . $and;
+                }
+            }
         }
         $where['status'] = 1;
         if ($search['keyword']) {
@@ -53,10 +65,13 @@ class DownloadService {
         $order         = 'id desc';
         $limit         = 10;
         $model = new DownloadModel();
-        $list          = DownloadModel::where($where)
-            ->field($fields)->paginate($limit, false, ['page' => $page])->toArray();
+        $list          = DownloadModel::where($where);
+        if($find) {
+            $list = $list->where($find);
+        }
+        $list = $list->field($fields)->paginate($limit, false, ['page' => $page]);
 
-        //echo $model->getLastSql();die;
+        echo $list->getLastSql();die;
         if (isset($list['data'])) {
             foreach ($list['data'] as &$v) {
                 $v['image'] =  ImagesService::getBaseUrl() . $v['image'];
