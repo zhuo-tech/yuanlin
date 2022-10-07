@@ -35,11 +35,12 @@ class Item extends Api {
      */
     public function query(Request $request) {
         $page    = $request->param('page', 0);
+        $size    = $request->param('size', 0);
         $cid     = $request->param('cid', 0);
         $uid     = $request->param('uid', 0);
         $keyword = $request->param('keyword', '');
 
-        $data = ItemService::cate(['cid' => $cid, 'uid' => $uid, 'keyword' => $keyword], $page);
+        $data = ItemService::cate(['cid' => $cid, 'uid' => $uid, 'keyword' => $keyword], $page,$size);
         return json(['code' => 0, 'message' => 'OK', 'data' => $data]);
     }
 

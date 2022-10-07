@@ -95,7 +95,7 @@ class ItemService {
      * @param $fields
      * @return array
      */
-    public static function cate($search, $page = 1, $fields = '*') {
+    public static function cate($search, $page = 1,$size=10, $fields = '*') {
         $page   = ($page >= 1) ? $page : 1;
         $filter = '';
         $sort   = [
@@ -146,7 +146,7 @@ class ItemService {
         }
 
         $order = 'id desc';
-        $limit = 10;
+        $limit = $size;
         $list  = Items::where($where);
         if ($filter) {
             $list = $list->where($filter);
@@ -163,6 +163,8 @@ class ItemService {
         $data['list'] = $list['data'] ?? [];
 
         $data['total'] = $list['total'];
+        $data['page'] = ceil($list['total']/$size);
+
         return $data;
     }
 
