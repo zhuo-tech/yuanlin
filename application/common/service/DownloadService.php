@@ -64,7 +64,6 @@ class DownloadService {
 
         $order = 'id desc';
         $limit = 10;
-        $model = new DownloadModel();
         $list  = DownloadModel::where($where);
         if ($find) {
             $list = $list->where($find);
