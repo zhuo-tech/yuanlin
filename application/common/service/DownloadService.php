@@ -53,7 +53,10 @@ class DownloadService {
                     if ($key + 1 >= $count) {
                         $and = '';
                     }
-                    $find .= ' find_in_set(' . intval($value) . ', download_cate_id)' . $and;
+                    $value = intval($value);
+                    if ($value) {
+                        $find .= ' find_in_set(' . intval($value) . ', download_cate_id)' . $and;
+                    }
                 }
             }
         }
