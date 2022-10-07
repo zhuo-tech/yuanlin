@@ -459,6 +459,12 @@ class Factor extends Api {
                       ->where(['fd.factor_id' => $factorId])->field('fd.*,f.name')->select()->toArray()[0];
 
         $factor['option']   = json_decode($factor['option']);
+
+        $itemFactor = ItemFactorModel::get(['factor_id' => $factorId, 'item_id' => $itemId])->toArray();
+        if($itemFactor &&$itemFactor['param']){
+            $param = json_decode($itemFactor['param'],1);
+            $factor['option'] = $this->handleOptionParam($factor['option'],$param);
+        }
         $factor['document'] = json_decode($factor['document']);
 
         $question = QuestionsModel::field("*")->whereIn('id', $factor['questions_id'])->select()->toArray();
