@@ -163,7 +163,7 @@ class ItemService {
         $data['list'] = $list['data'] ?? [];
 
         $data['total'] = $list['total'];
-        $data['page'] = ceil($list['total']/$size);
+        //$data['pages'] = ceil($list['total']/$size);
 
         return $data;
     }
