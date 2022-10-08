@@ -26,6 +26,16 @@ class Factor extends Api {
     protected $noNeedLogin = ['*'];
     protected $noNeedRight = ['*'];
 
+    public function hotFactor(){
+
+        $data = FactorModel::where(['status'=>1])
+            ->field('id,name')
+            ->order('numbers','desc')
+            ->limit(8)
+            ->select()->toArray();
+        $this->success($data);
+
+    }
     /**
      * @brief 指标树
      */
