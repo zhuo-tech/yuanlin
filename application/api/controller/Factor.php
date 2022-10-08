@@ -33,7 +33,7 @@ class Factor extends Api {
             ->order('numbers','desc')
             ->limit(8)
             ->select()->toArray();
-        $this->success($data);
+        $this->success('请求成功',$data);
 
     }
     /**
