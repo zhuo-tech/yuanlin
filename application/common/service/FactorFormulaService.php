@@ -334,6 +334,11 @@ class FactorFormulaService {
         return $b * 0.3 + $c * 0.2 + $d * 0.25 - $e * 0.15 + $f * 0.1;
     }
 
+    /**
+     * @brief  教育项目类型（种）
+     * @factor
+     */
+
     public static function statisticsTeachNumber(){
 
         extract(static::$param);
@@ -342,13 +347,56 @@ class FactorFormulaService {
         if($a>3){
             $number =5;
         }
-        elseif ($a>1&&$a<3){
+        elseif ($a==2||$a==3){
             $number=3;
         }else{
             $number=1;
         }
 
         return $number;
+    }
+
+
+    /**
+     * @brief  访客量（人次/月）
+     * @factor
+     */
+
+    public static function statisticsVictors(){
+
+        extract(static::$param);
+
+        if($a>=100){
+            $number1 =5;
+        }
+        elseif ($a>50&&$a<100){
+            $number1=3;
+        }else{
+            $number1=1;
+        }
+
+
+        if($b>=500){
+            $number2 =5;
+        }
+        elseif ($b>200&&$b<500){
+            $number2=3;
+        }else{
+            $number2=1;
+        }
+
+
+        if($c>=1000){
+            $number3 =5;
+        }
+        elseif ($c>500&&$c<1000){
+            $number3=3;
+        }else{
+            $number3=1;
+        }
+
+        return ($number1+$number2+$number3)/3;
+
     }
 
     // 不进行格式化操作
