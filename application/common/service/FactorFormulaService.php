@@ -399,6 +399,28 @@ class FactorFormulaService {
 
     }
 
+
+    /**
+     * @brief  访客量（人次/月）
+     * @factor
+     */
+    public static function statisticsOldTree(){
+
+        extract(static::$param);
+
+        if($a>=30){
+            $number =5;
+        }
+        elseif ($a>10&&$a<30){
+            $number=3;
+        }else{
+            $number=1;
+        }
+
+        return $number;
+
+    }
+
     // 不进行格式化操作
     private static function format($number) {
         return $number;
