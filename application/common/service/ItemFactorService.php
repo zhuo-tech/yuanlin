@@ -94,7 +94,7 @@ class ItemFactorService {
             ItemsFactorModel::startTrans();
             foreach ($factors as $key => $factor) {
                 $param = json_encode($factor['param'],1);
-                if(empty($param)){
+                if(count($param)==0){
                     return ['error' => 1, 'message' => 'param参数不能为空', 'data' => []];
                 }
                 $type  = strtoupper($data[$factor['id']]);
