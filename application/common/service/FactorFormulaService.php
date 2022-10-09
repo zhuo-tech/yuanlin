@@ -37,6 +37,7 @@ class FactorFormulaService {
 
             return static::$function();
         } catch (\Exception $exception) {
+            var_dump($exception->getMessage());
             return [];
         }
     }
@@ -48,7 +49,6 @@ class FactorFormulaService {
     public static function disturbanceDegreeEcosystem(): string {
         extract(static::$param);
         $coefficient = static::$coefficient;
-
         $data = (abs($b1 - $b2) + abs($c1 - $c2) + abs($d1 - $d2) + abs($e1 - $e2)) / ($coefficient[0] * ($b1 + $c1 + $d1 + $e1));
         $data = $data * $coefficient[1];
 
@@ -271,8 +271,7 @@ class FactorFormulaService {
     public static function humanComfort() {
         extract(static::$param);
         $ii = static::$coefficient;
-
-        return ($ii[0] * $b + $ii[1])($ii[2] + $ii[3] * $c) + ($b - $ii[4]) / ($ii[5] - $b) - $ii[6] * $d + $ii[7];
+        return ($ii[0] * $b + $ii[1])*($ii[2] + $ii[3] * $c) + ($b - $ii[4]) / ($ii[5] - $b) - $ii[6] * $d + $ii[7];
     }
 
     /**
@@ -333,6 +332,23 @@ class FactorFormulaService {
     public static function geologicalHazardSusceptibility() {
         extract(static::$param);
         return $b * 0.3 + $c * 0.2 + $d * 0.25 - $e * 0.15 + $f * 0.1;
+    }
+
+    public function statisticsTeachNumber(){
+
+        extract(static::$param);
+
+        $number = 0;
+        if($a>3){
+            $number =5;
+        }
+        elseif ($a>1&&$a<3){
+            $number=3;
+        }else{
+            $number=1;
+        }
+
+        return $number;
     }
 
     // 不进行格式化操作

@@ -3,6 +3,7 @@
 namespace app\api\controller;
 
 use app\common\controller\Api;
+use app\common\service\FactorFormulaService;
 use app\common\service\FactorService;
 use app\common\service\ImagesService;
 use app\common\service\ItemFactorService;
@@ -530,6 +531,45 @@ class Factor extends Api {
         $factors = $request->param('factors/a', []);
         $data    = ItemFactorService::executeFactors((int)$itemId, $factors);
         return json(['code' => $data['error'], 'data' => [], 'message' => $data['message']]);
+    }
+
+
+    public function testExecute(Request $request){
+
+        $itemId  = $request->param('item_id', 0);
+
+        $factorId  = $request->param('factor_id', 0);
+
+        $factor = FactorDetailModel::get(['factor_id'=>$factorId])->toArray();
+
+        $itemFactor = ItemFactorModel::get(['item_id'=>$itemId,'factor_id'=>$factorId])->toArray();
+
+        $type = $factor['input_mode'];
+
+        var_dump($type);
+
+        var_dump($itemFactor['param']);
+
+
+        if ($type == 'A') {
+            $result = FactorFormulaService::handle($itemId, $factorId, json_decode($itemFactor['param'],1));
+            var_dump($result);die;
+        } else if ($type == 'D') {
+            $result = $factor['param'];
+        } else if ($type == 'C') {
+            // 类型C是将所有的问题按照选择的选项的占比乘以分值再除以问题个数
+            $sum = 0;
+            foreach ($factor['param'] as $_param) {
+                $sum += ($_param['score'] * $_param['value'] / 100);
+            }
+            $result = $sum / count($factor['param']);
+        } else {
+            $result = 0;
+        }
+
+        var_dump($result);die;
+
+
     }
 
 
