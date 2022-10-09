@@ -93,7 +93,10 @@ class ItemFactorService {
             $data = FactorDetailModel::where('factor_id', 'in', array_column($factors, 'id'))->column('input_mode', 'factor_id');
             ItemsFactorModel::startTrans();
             foreach ($factors as $key => $factor) {
-                $param = json_encode($factor['param']);
+                $param = json_encode($factor['param'],1);
+                if(empty($param)){
+                    return ['error' => 1, 'message' => 'param参数不能为空', 'data' => []];
+                }
                 $type  = strtoupper($data[$factor['id']]);
                 if ($type == 'A') {
                     $result = FactorFormulaService::handle($itemId, $factor['id'], $factor['param']);

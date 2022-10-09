@@ -37,7 +37,7 @@ class FactorFormulaService {
 
             return static::$function();
         } catch (\Exception $exception) {
-            var_dump($exception->getMessage());
+            //var_dump($exception->getMessage());
             return [];
         }
     }
