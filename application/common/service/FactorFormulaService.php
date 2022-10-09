@@ -334,7 +334,7 @@ class FactorFormulaService {
         return $b * 0.3 + $c * 0.2 + $d * 0.25 - $e * 0.15 + $f * 0.1;
     }
 
-    public function statisticsTeachNumber(){
+    public static function statisticsTeachNumber(){
 
         extract(static::$param);
 
