@@ -331,11 +331,22 @@ class Factor extends Api {
     }
 
     public function factorTree() {
-        $first = FactorModel::where(['status' => 1, 'pid' => 0])->field("id,name")->select()->toArray();
-        foreach ($first as &$v) {
-            $v['children'] = $this->getChildren($v);
+
+        $cacheKey = md5( 'factorTree2');
+        $cacheVal = Cache::get($cacheKey);
+        if($cacheVal){
+
+            $data = json_decode($cacheVal, true);
+        }else{
+            $first = FactorModel::where(['status' => 1, 'pid' => 0])->field("id,name")->select()->toArray();
+            foreach ($first as &$v) {
+                $v['children'] = $this->getChildren($v);
+            }
+            $data = $first;
+            Cache::set($cacheKey, json_encode($data, JSON_UNESCAPED_UNICODE), 3600 * 24);
         }
-        return json(['code' => 0, 'data' => $first, 'message' => 'OK']);
+
+        return json(['code' => 0, 'data' => $data, 'message' => 'OK']);
     }
 
 
