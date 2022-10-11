@@ -54,18 +54,7 @@ class User extends Api {
 
         if ($ret) {
             $user           = $this->auth->getUserinfo();
-            if($user['province']){
-                $province        = cityModel::get(['area_code' => $user['province']])->toArray();
-                $user['province_name'] = $province['area_name'];
-            }else{
-                $user['province_name'] ='';
-            }
-            if($user['city']){
-                $city        = cityModel::get(['area_code' => $user['city']])->toArray();
-                $user['city_name'] = $city['area_name'];
-            }else{
-                $user['city_name'] = '';
-            }
+
             if(strlen($user['avatar'])>100) {
                 $user['avatar'] = '';
             }else{
@@ -300,7 +289,7 @@ class User extends Api {
         $user->avatar              = $avatar;
         $user->save();
 
-        $data           = $this->auth->getUser();
+        $data           = $this->auth->getUserinfo();
         if(strlen($data['avatar'])>100) {
             $data['avatar'] = '';
         }else{
