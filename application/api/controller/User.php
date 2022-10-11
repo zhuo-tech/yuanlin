@@ -66,7 +66,11 @@ class User extends Api {
             }else{
                 $user['city_name'] = '';
             }
-            if($user['avatar']) ImagesService::getBaseUrl() . $user['avatar'];
+            if(strlen($user['avatar'])>100) {
+                $user['avatar'] = '';
+            }else{
+                $user['avatar'] = ImagesService::getAvatar($user['avatar']);
+            }
             $data           = ['userinfo' => $user];
             return json(['code' => 0, 'data' => $data, 'message' => 'OK']);
         } else {
@@ -108,7 +112,12 @@ class User extends Api {
             Sms::flush($mobile, 'mobilelogin');
 
             $user           = $this->auth->getUserinfo();
-            $user['avatar'] =  ImagesService::getBaseUrl() . $user['avatar'];
+
+            if(strlen($user['avatar'])>100) {
+                $user['avatar'] = '';
+            }else{
+                $user['avatar'] = ImagesService::getAvatar($user['avatar']);
+            }
             $data           = ['userinfo' => $user];
             $this->success(__('Logged in successful'), $data);
         } else {
