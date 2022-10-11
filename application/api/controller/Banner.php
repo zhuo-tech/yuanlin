@@ -42,4 +42,21 @@ class Banner extends Api {
 
         return json(['code' => 0, 'message' => 'OK', 'banner' => $banners,'news'=>$news,'module'=>$first,'second'=>$second,'third'=>$third]);
     }
+
+
+    public function zhiye(){
+
+        $profession = ['科研院所','高等学校','规划设计院','其他'];
+        $detail = [
+            ['研究员','副研究员','助理研究员','研究实习员'],
+            ['教授','副教授','讲师','研究生','本科生'],
+            ['正高级工程师','副高级工程师','项目负责人','设计师','设计师助理'],
+            ['其他']
+            ];
+
+        return json(['code' => 0, 'message' => 'OK', 'first'=>$profession,'detail'=>$detail]);
+
+
+
+    }
 }
