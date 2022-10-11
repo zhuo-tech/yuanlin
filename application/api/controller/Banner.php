@@ -65,6 +65,7 @@ class Banner extends Api {
                 ->select()->toArray();
         }else{
             $data =Db::table('fa_profession')
+                ->where(['pid'=>0])
                 ->field("*")
                 ->select()->toArray();
         }
