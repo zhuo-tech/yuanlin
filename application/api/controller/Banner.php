@@ -7,7 +7,9 @@ use app\common\controller\Api;
 use app\admin\model\Banner as BannerModel;
 use app\admin\model\Factor as FactorModel;
 use app\common\service\ImagesService;
+use think\Db;
 use think\Env;
+use think\Request;
 
 /**
  * Banner接口
@@ -44,7 +46,9 @@ class Banner extends Api {
     }
 
 
-    public function zhiye(){
+    public function zhiye(Request $request){
+
+        $id = $request->param('id','');
 
         $profession = ['科研院所','高等学校','规划设计院','其他'];
         $detail = [
@@ -54,7 +58,20 @@ class Banner extends Api {
             ['其他']
             ];
 
-        return json(['code' => 0, 'message' => 'OK', 'first'=>$profession,'detail'=>$detail]);
+        if($id){
+            $data =Db::table('fa_profession')
+                ->where(['pid'=>$id])
+                ->field("*")
+                ->select()->toArray();
+        }else{
+            $data =Db::table('fa_profession')
+                ->field("*")
+                ->select()->toArray();
+        }
+
+
+
+        return json(['code' => 0, 'message' => 'OK', 'data'=>$data]);
 
 
 
