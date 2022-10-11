@@ -54,11 +54,19 @@ class User extends Api {
 
         if ($ret) {
             $user           = $this->auth->getUserinfo();
-            $province        = cityModel::get(['area_code' => $user['province']])->toArray();
-            $city        = cityModel::get(['area_code' => $user['city']])->toArray();
-            $user['province_name'] = $province['area_name'];
-            $user['city_name'] = $city['area_name'];
-            $user['avatar'] =  ImagesService::getBaseUrl() . $user['avatar'];
+            if($user['province']){
+                $province        = cityModel::get(['area_code' => $user['province']])->toArray();
+                $user['province_name'] = $province['area_name'];
+            }else{
+                $user['province_name'] ='';
+            }
+            if($user['city']){
+                $city        = cityModel::get(['area_code' => $user['city']])->toArray();
+                $user['city_name'] = $city['area_name'];
+            }else{
+                $user['city_name'] = '';
+            }
+            if($user['avatar']) ImagesService::getBaseUrl() . $user['avatar'];
             $data           = ['userinfo' => $user];
             return json(['code' => 0, 'data' => $data, 'message' => 'OK']);
         } else {
