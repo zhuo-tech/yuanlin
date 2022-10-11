@@ -140,7 +140,7 @@ class User extends Api {
         $ret = $this->auth->register($username, $password, $email, $mobile, []);
         if ($ret) {
             $user           = $this->auth->getUserinfo();
-            $user['avatar'] =  ImagesService::getBaseUrl() . $user['avatar'];
+            $user['avatar'] =  ImagesService::getBaseUrl() . $ret['avatar'];
             $data           = ['userinfo' => $user];
             $this->success(__('Sign up successful'), $data);
         } else {
@@ -181,7 +181,7 @@ class User extends Api {
         $ret = $this->auth->register($mobile, $password, '', $mobile, []);
         if ($ret) {
             $user           = $this->auth->getUserinfo();
-            $user['avatar'] =  ImagesService::getBaseUrl() . $user['avatar'];
+            $user['avatar'] =  $ret['avatar'];
             $data           = ['userinfo' => $user];
             $this->success(__('Sign up successful'), $data);
         } else {
@@ -217,7 +217,7 @@ class User extends Api {
         $ret = $this->auth->register($email, $password, $email, '', []);
         if ($ret) {
             $user = $this->auth->getUserinfo();
-            $user['avatar'] =  ImagesService::getBaseUrl() . $user['avatar'];
+            $user['avatar'] = $ret['avatar'];
             $data = ['userinfo' => $user];
             $this->success(__('Sign up successful'), $data);
         } else {
