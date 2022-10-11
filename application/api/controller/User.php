@@ -301,10 +301,10 @@ class User extends Api {
         $user->save();
 
         $data           = $this->auth->getUser();
-        if(strlen($user['avatar'])>100) {
-            $user['avatar'] = '';
+        if(strlen($data['avatar'])>100) {
+            $data['avatar'] = '';
         }else{
-            $user['avatar'] = ImagesService::getAvatar($user['avatar']);
+            $data['avatar'] = ImagesService::getAvatar($data['avatar']);
         }
         $this->success('OK', $data, 0);
     }
