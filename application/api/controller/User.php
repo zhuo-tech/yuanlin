@@ -83,7 +83,7 @@ class User extends Api {
         if (!Validate::regex($mobile, "^1\d{10}$")) {
             $this->error(__('Mobile is incorrect'));
         }
-        if (!Sms::check($mobile, $captcha, 'mobilelogin')) {
+        if (!Sms::check($mobile, $captcha, 'login')) {
             $this->error(__('Captcha is incorrect'));
         }
         $user = \app\common\model\User::getByMobile($mobile);
