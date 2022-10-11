@@ -301,7 +301,11 @@ class User extends Api {
         $user->save();
 
         $data           = $this->auth->getUser();
-        $data['avatar'] = ImagesService::getBaseUrl() . $data['avatar'];
+        if(strlen($user['avatar'])>100) {
+            $user['avatar'] = '';
+        }else{
+            $user['avatar'] = ImagesService::getAvatar($user['avatar']);
+        }
         $this->success('OK', $data, 0);
     }
 
