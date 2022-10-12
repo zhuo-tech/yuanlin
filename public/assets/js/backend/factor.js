@@ -26,6 +26,7 @@ define(['jquery', 'bootstrap', 'backend', 'table', 'form'], function ($, undefin
                     [
                         {checkbox: true},
                         {field: 'id', title: __('Id'),searchable:false},
+                        {field: 'sorts', title: __('sort'),searchable:false},
                         {field: 'name', title: __('Name'), align: 'left', formatter:function (value, row, index) {
                                 return value.toString().replace(/(&|&amp;)nbsp;/g, '&nbsp;');
                             }

@@ -27,8 +27,10 @@ class ItemFactorService {
             if (empty($item)) {
                 return ['error' => 1, 'message' => '项目不存在', 'data' => []];
             }
-
-            $re = $item->save(['status'=>2]);
+            if(empty($factors))  return ['error' => 1, 'message' => '指标不能为空', 'data' => []];
+            $factors = self::getFactorIdBySorts($factors);
+            $item->save(['status'=>2,'factors'=>json_encode($factors)]);
+            ItemsFactorModel::where(['item_id' => $itemId])->update(['status'=>-1]);
 
             $data = [];
             foreach ($factors as $key => $factor) {
@@ -41,6 +43,9 @@ class ItemFactorService {
                     $data[$key]['invest_time'] = $factor['invest_time'] ?? 0;
                     $data[$key]['status']      = 0;
                     $data[$key]['create_time'] = time();
+                }else{
+                  ItemsFactorModel::where(['item_id' => $itemId, 'factor_id' => $factor])->update(['status'=>0]);
+
                 }
             }
             if (empty($data) || (ItemsFactorModel::insertAll($data))) {
@@ -48,10 +53,19 @@ class ItemFactorService {
             }
             return ['error' => 1, 'message' => '保存失败', 'data' => []];
         } catch (\Exception $exception) {
+            throw $exception;
             return ['error' => 1, 'message' => $exception->getMessage(), 'data' => []];
         }
     }
 
+    public static function getFactorIdBySorts($factors){
+
+        $result = FactorModel::field('id,sorts')
+            ->whereIn('id',$factors)
+            ->order('sorts','asc')->select()->toArray();
+        return array_column($result,'id');
+
+    }
 
     /**
      * @brief 确认指标
