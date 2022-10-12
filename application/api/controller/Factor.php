@@ -26,6 +26,7 @@ use think\response\Json;
 class Factor extends Api {
     protected $noNeedLogin = ['*'];
     protected $noNeedRight = ['*'];
+    protected $searchedFactor = [];
 
     public function hotFactor(){
 
@@ -59,7 +60,7 @@ class Factor extends Api {
         }
 
         if($id)$data= $this->getById($data,$id);
-        return json(['code' => 0, 'data' => $data, 'message' => 'OK']);
+        return json(['code' => 0, 'data' => $data, 'searched'=>$this->searchedFactor,'message' => 'OK']);
     }
 
     public function getById($data, $id){
@@ -85,8 +86,8 @@ class Factor extends Api {
         foreach ($data as $key => &$f) {
             foreach ($f['child'] as $key2 => &$s) {
                 foreach ($s['child'] as $key3 => $t) {
-
                     if (stristr($t['name'], $keyword)) {
+                        array_push($this->searchedFactor,$t['id']);
                     } else {
                         unset($s['child'][$key3]);
                     }
@@ -520,6 +521,8 @@ class Factor extends Api {
     public function saveFactors(Request $request) {
         $itemId  = $request->param('item_id');
         $factors = $request->param('factors/a');
+
+        //return json(['code' => 1, 'data' => [], 'message' => 1]);
 
         $data = ItemFactorService::saveFactors((int)$itemId, $factors);
         return json(['code' => $data['error'], 'data' => [], 'message' => $data['message']]);
