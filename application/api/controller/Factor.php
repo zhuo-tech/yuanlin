@@ -414,67 +414,80 @@ class Factor extends Api {
 
         if ($factorId == -1) {
             //$this->error('已经是最后一项');
-
             return json_encode(['code' => 1, 'message' => '最后一项']);
         }
 
-        if ($factorId) {
-
-            $current = ItemFactorModel::field("id")
-                           ->where(['item_id' => $itemId])
-                           ->where(['factor_id' => $factorId])
-                           ->select()->toArray()[0];
-
-            $pre = ItemFactorModel::field("id,factor_id")
-                ->where(['item_id' => $itemId])
-                ->where('id', '<', $current['id'])
-                ->order('id', 'desc')
-                ->limit(1)
-                ->select()->toArray();
-            if ($pre) {
-                $preFactorId = $pre[0]['factor_id'];
-            }
-
-            $next = ItemFactorModel::field("id,factor_id")
-                ->where(['item_id' => $itemId])
-                ->where('id', '>', $current['id'])
-                ->order('id', 'asc')
-                ->limit(1)
-                ->select()->toArray();
-
-            if ($next) {
-                $nextFactorId = $next[0]['factor_id'];
-            } else {
-                $nextFactorId = -1;
-            }
-
-        } else {
-
-            $current = ItemFactorModel::field("id,factor_id")
-                ->where(['item_id' => $itemId])
-                ->order('id', 'asc')
-                ->limit(1)
-                ->select()->toArray();
-
-            if ($current) {
-
-                $factorId = $current[0]['factor_id'];
-
-            }
-
-            $next = ItemFactorModel::field("id,factor_id")
-                ->where(['item_id' => $itemId])
-                ->where('id', '>', $current[0]['id'])
-                ->order('id', 'asc')
-                ->limit(1)
-                ->select()->toArray();
-            if ($next) {
-                $nextFactorId = $next[0]['factor_id'];
-            } else {
-                $nextFactorId = -1;
-            }
-
+        $item = ItemsModel::get($itemId);
+        if(!$item){
+            return json_encode(['code' => 1, 'message' => '项目不存在']);
         }
+
+        $item = $item->toArray();
+        $factors = json_decode($item['factors'],1);
+
+        $curNextPre = $this->getCurNextPre($factorId,$factors);
+
+        $factorId = $curNextPre['current'];
+
+
+//        if ($factorId) {
+//
+//            $current = ItemFactorModel::field("id")
+//                           ->where(['item_id' => $itemId])
+//                           ->where(['factor_id' => $factorId])
+//                           ->select()->toArray()[0];
+//
+//            $pre = ItemFactorModel::field("id,factor_id")
+//                ->where(['item_id' => $itemId])
+//                ->where('id', '<', $current['id'])
+//                ->order('id', 'desc')
+//                ->limit(1)
+//                ->select()->toArray();
+//            if ($pre) {
+//                $preFactorId = $pre[0]['factor_id'];
+//            }
+//
+//            $next = ItemFactorModel::field("id,factor_id")
+//                ->where(['item_id' => $itemId])
+//                ->where('id', '>', $current['id'])
+//                ->order('id', 'asc')
+//                ->limit(1)
+//                ->select()->toArray();
+//
+//            if ($next) {
+//                $nextFactorId = $next[0]['factor_id'];
+//            } else {
+//                $nextFactorId = -1;
+//            }
+//
+//        }
+//        else {
+//
+//            $current = ItemFactorModel::field("id,factor_id")
+//                ->where(['item_id' => $itemId])
+//                ->order('id', 'asc')
+//                ->limit(1)
+//                ->select()->toArray();
+//
+//            if ($current) {
+//
+//                $factorId = $current[0]['factor_id'];
+//
+//            }
+//
+//            $next = ItemFactorModel::field("id,factor_id")
+//                ->where(['item_id' => $itemId])
+//                ->where('id', '>', $current[0]['id'])
+//                ->order('id', 'asc')
+//                ->limit(1)
+//                ->select()->toArray();
+//            if ($next) {
+//                $nextFactorId = $next[0]['factor_id'];
+//            } else {
+//                $nextFactorId = -1;
+//            }
+//
+//        }
 
 
         $factor = FactorDetailModel::alias('fd')
@@ -497,21 +510,64 @@ class Factor extends Api {
 
         $factor['questions'] = $question;
 
-        $item = ItemFactorModel::alias('if')
-            ->join('fa_items i', 'i.id=if.item_id', 'left')
-            ->field('i.name,i.images')
-            ->where(['if.factor_id' => $factorId])
-            ->limit(3)->select()->toArray();
+//        $item = ItemFactorModel::alias('if')
+//            ->join('fa_items i', 'i.id=if.item_id', 'left')
+//            ->field('i.name,i.images')
+//            ->where(['if.factor_id' => $factorId])
+//            ->limit(3)->select()->toArray();
+//
+//        foreach ($item as &$v) {
+//            $v['images'] = ImagesService::getBaseUrl() . $v['images'];
+//        }
+//
+//        $factor['items'] = $item;
 
-        foreach ($item as &$v) {
-            $v['images'] = ImagesService::getBaseUrl() . $v['images'];
+        return json(['code' => 0, 'message' => 'OK', 'current' => $factor['factor_id'], 'pre' => $curNextPre['pre'], 'next' => $curNextPre['next'], 'data' => $factor]);
+
+
+    }
+
+    public function getCurNextPre($factorId,$factors){
+        $arr = [];
+
+        $length = count($factors) ;
+
+        if(!$factorId){
+
+            $arr['current'] =$factors[0];
+            if($factors[1]){
+                $arr['next'] =$factors[1];
+            }else{
+                $arr['next'] =-1;
+            }
+            $arr['pre'] =0;
+
+        }else{
+            $arr['current'] =$factorId;
+            foreach ($factors as $key=>$v){
+                if($v==$factorId){
+                    if($key==0){
+                        $arr['pre'] =0;
+                        if($factors[1]){
+                            $arr['next'] =$factors[1];
+                        }else{
+                            $arr['next'] =-1;
+                        }
+
+                    }else if($key=$length-1){
+
+                        $arr['pre'] =$factors[$key-1];
+                        $arr['next'] =-1;
+                    }else{
+
+                        $arr['pre'] =$factors[$key-1];
+                        $arr['next'] =$factors[$key+1];
+                    }
+                }
+            }
         }
 
-        $factor['items'] = $item;
-
-        return json(['code' => 0, 'message' => 'OK', 'current' => $factor['factor_id'], 'pre' => $preFactorId, 'next' => $nextFactorId, 'data' => $factor]);
-
-
+        return $arr;
     }
 
     /**
