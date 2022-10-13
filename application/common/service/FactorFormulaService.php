@@ -362,6 +362,27 @@ class FactorFormulaService {
      * @factor
      */
 
+    public static function handleFenbei(){
+
+        extract(static::$param);
+
+        if($a>60){
+            $number =1;
+        }
+        elseif ($a>=40&&$a<=60){
+            $number=3;
+        }else{
+            $number=5;
+        }
+        return $number;
+
+    }
+
+    /**
+     * @brief  访客量（人次/月）
+     * @factor
+     */
+
     public static function statisticsVictors(){
 
         extract(static::$param);
