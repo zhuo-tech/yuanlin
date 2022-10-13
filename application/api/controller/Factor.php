@@ -530,7 +530,9 @@ class Factor extends Api {
     public function getCurNextPre($factorId,$factors){
         $arr = [];
 
-        $length = count($factors) ;
+        $length = count($factors);
+
+        $index = 0;
 
         if(!$factorId){
 
@@ -546,24 +548,22 @@ class Factor extends Api {
             $arr['current'] =$factorId;
             foreach ($factors as $key=>$v){
                 if($v==$factorId){
-                    if($key==0){
-                        $arr['pre'] =0;
-                        if($factors[1]){
-                            $arr['next'] =$factors[1];
-                        }else{
-                            $arr['next'] =-1;
-                        }
-
-                    }else if($key=$length-1){
-
-                        $arr['pre'] =$factors[$key-1];
-                        $arr['next'] =-1;
-                    }else{
-
-                        $arr['pre'] =$factors[$key-1];
-                        $arr['next'] =$factors[$key+1];
-                    }
+                    $index =$key;
                 }
+            }
+            if($index==0){
+                $arr['pre'] =0;
+                if($length==1){
+                    $arr['next'] =-1;
+                }else{
+                    $arr['next'] =$factors[$index+1];
+                }
+            }elseif($index==$length-1){
+                $arr['pre'] = $factors[$index-1];
+                $arr['next'] =-1;
+            }else{
+                $arr['pre'] = $factors[$index-1];
+                $arr['next'] =$factors[$index+1];
             }
         }
 
