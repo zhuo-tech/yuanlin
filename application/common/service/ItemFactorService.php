@@ -95,6 +95,17 @@ class ItemFactorService {
      * @param $factors array 指标ID和参数
      * @return array
      */
+
+    public static function checkParam($param){
+        if(empty($param)) return false;
+        foreach ($param as $v){
+            if(!$v){
+               return false;
+            }
+        }
+
+        return true;
+    }
     public static function executeFactors(int $itemId, array $factors): array {
         try {
             $item = ItemsModel::get($itemId);
@@ -107,6 +118,9 @@ class ItemFactorService {
             $data = FactorDetailModel::where('factor_id', 'in', array_column($factors, 'id'))->column('input_mode', 'factor_id');
             ItemsFactorModel::startTrans();
             foreach ($factors as $key => $factor) {
+                if(!self::checkParam($factor['param'])){
+                    return ['error' => 1, 'message' => '参数有误', 'data' => []];
+                }
                 $param = json_encode($factor['param']);
                 $type  = strtoupper($data[$factor['id']]);
                 if ($type == 'A') {
