@@ -515,7 +515,7 @@ class Factor extends Api {
 
         $factor['questions'] = $question;
 
-        $factor['questions_link'] = ImagesService::getBaseUrl().$factor['questions_link'];
+        //$factor['questions_link'] = ImagesService::getBaseUrl().$factor['questions_link'];
 
 //        $item = ItemFactorModel::alias('if')
 //            ->join('fa_items i', 'i.id=if.item_id', 'left')
