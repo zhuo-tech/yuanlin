@@ -207,7 +207,12 @@ class Factor extends Api {
     public function handleOptionParam($options, $params) {
 
         foreach ($options as &$option) {
-            $option['value'] = $params[$option['var']];
+            if(isset($params[$option['var']])){
+                $option['value'] = $params[$option['var']];
+            }else{
+                $option['value'] = '';
+            }
+
         }
         return $options;
     }
