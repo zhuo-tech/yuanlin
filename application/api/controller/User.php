@@ -105,7 +105,8 @@ class User extends Api {
             //如果已经有账号则直接登录
             $ret = $this->auth->direct($user->id);
         } else {
-            $ret = $this->auth->register($mobile, Random::alnum(), '', $mobile, []);
+            //$ret = $this->auth->register($mobile, Random::alnum(), '', $mobile, []);
+            $this->error(__('need register'));
         }
         if ($ret) {
             Sms::flush($mobile, 'mobilelogin');
@@ -354,9 +355,9 @@ class User extends Api {
             $this->error(__('Email already exists'));
         }
         $result = Ems::check($email, $captcha, 'changeemail');
-        if (!$result) {
-            $this->error(__('Captcha is incorrect'));
-        }
+//        if (!$result) {
+//            $this->error(__('Captcha is incorrect'));
+//        }
         $verification        = $user->verification;
         $verification->email = 1;
         $user->verification  = $verification;
