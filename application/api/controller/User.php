@@ -34,7 +34,17 @@ class User extends Api {
      * 会员中心
      */
     public function index() {
-        $this->success('', ['welcome' => $this->auth->nickname]);
+        //$this->success('', ['welcome' => $this->auth->nickname]);
+
+        $user           = $this->auth->getUserinfo();
+
+        if(strlen($user['avatar'])>100) {
+            $user['avatar'] = '';
+        }else{
+            $user['avatar'] = ImagesService::getAvatar($user['avatar']);
+        }
+        $data           = ['userinfo' => $user];
+        return json(['code' => 0, 'data' => $data, 'message' => 'OK']);
     }
 
     /**
