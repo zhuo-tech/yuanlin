@@ -354,9 +354,9 @@ class User extends Api {
             $this->error(__('Email already exists'));
         }
         $result = Ems::check($email, $captcha, 'changeemail');
-        if (!$result) {
-            $this->error(__('Captcha is incorrect'));
-        }
+//        if (!$result) {
+//            $this->error(__('Captcha is incorrect'));
+//        }
         $verification        = $user->verification;
         $verification->email = 1;
         $user->verification  = $verification;
