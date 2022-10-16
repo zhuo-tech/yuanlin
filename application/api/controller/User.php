@@ -18,7 +18,7 @@ use think\Validate;
  * 会员接口
  */
 class User extends Api {
-    protected $noNeedLogin = ['login', 'mobilelogin', 'register', 'emailRegister', 'mobileRegister', 'resetpwd', 'changeemail', 'changemobile', 'third'];
+    protected $noNeedLogin = ['login', 'index','mobilelogin', 'register', 'emailRegister', 'mobileRegister', 'resetpwd', 'changeemail', 'changemobile', 'third'];
     protected $noNeedRight = '*';
 
     public function _initialize() {
@@ -34,7 +34,17 @@ class User extends Api {
      * 会员中心
      */
     public function index() {
-        $this->success('', ['welcome' => $this->auth->nickname]);
+        //$this->success('', ['welcome' => $this->auth->nickname]);
+
+        $user           = $this->auth->getUserinfo();
+
+        if(strlen($user['avatar'])>100) {
+            $user['avatar'] = '';
+        }else{
+            $user['avatar'] = ImagesService::getAvatar($user['avatar']);
+        }
+        $data           = ['userinfo' => $user];
+        return json(['code' => 0, 'data' => $data, 'message' => 'OK']);
     }
 
     /**
@@ -54,11 +64,12 @@ class User extends Api {
 
         if ($ret) {
             $user           = $this->auth->getUserinfo();
-            $province        = cityModel::get(['area_code' => $user['province']])->toArray();
-            $city        = cityModel::get(['area_code' => $user['city']])->toArray();
-            $user['province_name'] = $province['area_name'];
-            $user['city_name'] = $city['area_name'];
-            $user['avatar'] =  ImagesService::getBaseUrl() . $user['avatar'];
+
+            if(strlen($user['avatar'])>100) {
+                $user['avatar'] = '';
+            }else{
+                $user['avatar'] = ImagesService::getAvatar($user['avatar']);
+            }
             $data           = ['userinfo' => $user];
             return json(['code' => 0, 'data' => $data, 'message' => 'OK']);
         } else {
@@ -83,9 +94,9 @@ class User extends Api {
         if (!Validate::regex($mobile, "^1\d{10}$")) {
             $this->error(__('Mobile is incorrect'));
         }
-        //        if (!Sms::check($mobile, $captcha, 'mobilelogin')) {
-        //            $this->error(__('Captcha is incorrect'));
-        //        }
+        if (!Sms::check($mobile, $captcha, 'login')) {
+            $this->error(__('Captcha is incorrect'));
+        }
         $user = \app\common\model\User::getByMobile($mobile);
         if ($user) {
             if ($user->status != 'normal') {
@@ -100,7 +111,12 @@ class User extends Api {
             Sms::flush($mobile, 'mobilelogin');
 
             $user           = $this->auth->getUserinfo();
-            $user['avatar'] =  ImagesService::getBaseUrl() . $user['avatar'];
+
+            if(strlen($user['avatar'])>100) {
+                $user['avatar'] = '';
+            }else{
+                $user['avatar'] = ImagesService::getAvatar($user['avatar']);
+            }
             $data           = ['userinfo' => $user];
             $this->success(__('Logged in successful'), $data);
         } else {
@@ -140,7 +156,7 @@ class User extends Api {
         $ret = $this->auth->register($username, $password, $email, $mobile, []);
         if ($ret) {
             $user           = $this->auth->getUserinfo();
-            $user['avatar'] =  ImagesService::getBaseUrl() . $user['avatar'];
+            $user['avatar'] =  ImagesService::getBaseUrl() . $ret['avatar'];
             $data           = ['userinfo' => $user];
             $this->success(__('Sign up successful'), $data);
         } else {
@@ -181,7 +197,7 @@ class User extends Api {
         $ret = $this->auth->register($mobile, $password, '', $mobile, []);
         if ($ret) {
             $user           = $this->auth->getUserinfo();
-            $user['avatar'] =  ImagesService::getBaseUrl() . $user['avatar'];
+            $user['avatar'] =  $ret['avatar'];
             $data           = ['userinfo' => $user];
             $this->success(__('Sign up successful'), $data);
         } else {
@@ -217,7 +233,7 @@ class User extends Api {
         $ret = $this->auth->register($email, $password, $email, '', []);
         if ($ret) {
             $user = $this->auth->getUserinfo();
-            $user['avatar'] =  ImagesService::getBaseUrl() . $user['avatar'];
+            $user['avatar'] = $ret['avatar'];
             $data = ['userinfo' => $user];
             $this->success(__('Sign up successful'), $data);
         } else {
@@ -283,8 +299,12 @@ class User extends Api {
         $user->avatar              = $avatar;
         $user->save();
 
-        $data           = $this->auth->getUser();
-        $data['avatar'] = ImagesService::getBaseUrl() . $data['avatar'];
+        $data           = $this->auth->getUserinfo();
+        if(strlen($data['avatar'])>100) {
+            $data['avatar'] = '';
+        }else{
+            $data['avatar'] = ImagesService::getAvatar($data['avatar']);
+        }
         $this->success('OK', $data, 0);
     }
 
@@ -304,8 +324,12 @@ class User extends Api {
         $user->avatar = $avatar;
         $user->save();
 
-        $data           = $this->auth->getUser();
-        $data['avatar'] =  ImagesService::getBaseUrl() . $data['avatar'];
+        $data           = $this->auth->getUserinfo();
+        if(strlen($data['avatar'])>100) {
+            $data['avatar'] = '';
+        }else{
+            $data['avatar'] = ImagesService::getAvatar($data['avatar']);
+        }
         $this->success('OK', $data, 0);
     }
 

@@ -37,6 +37,7 @@ class FactorFormulaService {
 
             return static::$function();
         } catch (\Exception $exception) {
+            //var_dump($exception->getMessage());
             return [];
         }
     }
@@ -48,7 +49,6 @@ class FactorFormulaService {
     public static function disturbanceDegreeEcosystem(): string {
         extract(static::$param);
         $coefficient = static::$coefficient;
-
         $data = (abs($b1 - $b2) + abs($c1 - $c2) + abs($d1 - $d2) + abs($e1 - $e2)) / ($coefficient[0] * ($b1 + $c1 + $d1 + $e1));
         $data = $data * $coefficient[1];
 
@@ -271,8 +271,7 @@ class FactorFormulaService {
     public static function humanComfort() {
         extract(static::$param);
         $ii = static::$coefficient;
-
-        return ($ii[0] * $b + $ii[1])($ii[2] + $ii[3] * $c) + ($b - $ii[4]) / ($ii[5] - $b) - $ii[6] * $d + $ii[7];
+        return ($ii[0] * $b + $ii[1])*($ii[2] + $ii[3] * $c) + ($b - $ii[4]) / ($ii[5] - $b) - $ii[6] * $d + $ii[7];
     }
 
     /**
@@ -333,6 +332,114 @@ class FactorFormulaService {
     public static function geologicalHazardSusceptibility() {
         extract(static::$param);
         return $b * 0.3 + $c * 0.2 + $d * 0.25 - $e * 0.15 + $f * 0.1;
+    }
+
+    /**
+     * @brief  教育项目类型（种）
+     * @factor
+     */
+
+    public static function statisticsTeachNumber(){
+
+        extract(static::$param);
+
+        $number = 0;
+        if($a>3){
+            $number =5;
+        }
+        elseif ($a==2||$a==3){
+            $number=3;
+        }else{
+            $number=1;
+        }
+
+        return $number;
+    }
+
+
+    /**
+     * @brief  访客量（人次/月）
+     * @factor
+     */
+
+    public static function handleFenbei(){
+
+        extract(static::$param);
+
+        if($a>60){
+            $number =1;
+        }
+        elseif ($a>=40&&$a<=60){
+            $number=3;
+        }else{
+            $number=5;
+        }
+        return $number;
+
+    }
+
+    /**
+     * @brief  访客量（人次/月）
+     * @factor
+     */
+
+    public static function statisticsVictors(){
+
+        extract(static::$param);
+
+        if($a>=100){
+            $number1 =5;
+        }
+        elseif ($a>50&&$a<100){
+            $number1=3;
+        }else{
+            $number1=1;
+        }
+
+
+        if($b>=500){
+            $number2 =5;
+        }
+        elseif ($b>200&&$b<500){
+            $number2=3;
+        }else{
+            $number2=1;
+        }
+
+
+        if($c>=1000){
+            $number3 =5;
+        }
+        elseif ($c>500&&$c<1000){
+            $number3=3;
+        }else{
+            $number3=1;
+        }
+
+        return ($number1+$number2+$number3)/3;
+
+    }
+
+
+    /**
+     * @brief  访客量（人次/月）
+     * @factor
+     */
+    public static function statisticsOldTree(){
+
+        extract(static::$param);
+
+        if($a>=30){
+            $number =5;
+        }
+        elseif ($a>10&&$a<30){
+            $number=3;
+        }else{
+            $number=1;
+        }
+
+        return $number;
+
     }
 
     // 不进行格式化操作

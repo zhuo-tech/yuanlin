@@ -3,6 +3,7 @@
 namespace app\api\controller;
 
 use app\common\controller\Api;
+use app\common\service\FactorFormulaService;
 use app\common\service\FactorService;
 use app\common\service\ImagesService;
 use app\common\service\ItemFactorService;
@@ -25,7 +26,18 @@ use think\response\Json;
 class Factor extends Api {
     protected $noNeedLogin = ['*'];
     protected $noNeedRight = ['*'];
+    protected $searchedFactor = [];
 
+    public function hotFactor(){
+
+        $data = FactorModel::where(['status'=>1])
+            ->field('id,name')
+            ->order('numbers','desc')
+            ->limit(8)
+            ->select()->toArray();
+        $this->success('请求成功',$data);
+
+    }
     /**
      * @brief 指标树
      */
@@ -48,7 +60,7 @@ class Factor extends Api {
         }
 
         if($id)$data= $this->getById($data,$id);
-        return json(['code' => 0, 'data' => $data, 'message' => 'OK']);
+        return json(['code' => 0, 'data' => $data, 'searched'=>$this->searchedFactor,'message' => 'OK']);
     }
 
     public function getById($data, $id){
@@ -74,8 +86,8 @@ class Factor extends Api {
         foreach ($data as $key => &$f) {
             foreach ($f['child'] as $key2 => &$s) {
                 foreach ($s['child'] as $key3 => $t) {
-
                     if (stristr($t['name'], $keyword)) {
+                        array_push($this->searchedFactor,$t['id']);
                     } else {
                         unset($s['child'][$key3]);
                     }
@@ -107,7 +119,7 @@ class Factor extends Api {
                                 $v['option'] = [];
                             }
                             $n       = $n + 1;
-                            $v['id'] = $n;
+                            $v['number'] = $n;
 
                         } else {
                             unset($vs['child'][$k]);
@@ -126,7 +138,7 @@ class Factor extends Api {
                             $v['option'] = [];
                         }
                         $n       = $n + 1;
-                        $v['id'] = $n;
+                        $v['number'] = $n;
 
                     } else {
                         unset($vs['child'][$k]);
@@ -195,7 +207,12 @@ class Factor extends Api {
     public function handleOptionParam($options, $params) {
 
         foreach ($options as &$option) {
-            $option['value'] = $params[$option['var']];
+            if(isset($params[$option['var']])){
+                $option['value'] = $params[$option['var']];
+            }else{
+                $option['value'] = '';
+            }
+
         }
         return $options;
     }
@@ -320,11 +337,22 @@ class Factor extends Api {
     }
 
     public function factorTree() {
-        $first = FactorModel::where(['status' => 1, 'pid' => 0])->field("id,name")->select()->toArray();
-        foreach ($first as &$v) {
-            $v['children'] = $this->getChildren($v);
+
+        $cacheKey = md5( 'factorTree2');
+        $cacheVal = Cache::get($cacheKey);
+        if($cacheVal){
+
+            $data = json_decode($cacheVal, true);
+        }else{
+            $first = FactorModel::where(['status' => 1, 'pid' => 0])->field("id,name")->select()->toArray();
+            foreach ($first as &$v) {
+                $v['children'] = $this->getChildren($v);
+            }
+            $data = $first;
+            Cache::set($cacheKey, json_encode($data, JSON_UNESCAPED_UNICODE), 3600 * 24);
         }
-        return json(['code' => 0, 'data' => $first, 'message' => 'OK']);
+
+        return json(['code' => 0, 'data' => $data, 'message' => 'OK']);
     }
 
 
@@ -345,8 +373,8 @@ class Factor extends Api {
         $factorId = $request->param('factor_id');
 
         $factor = FactorDetailModel::alias('fd')
-                      ->join('factor f', 'fd.factor_id=f.id', 'left')
-                      ->where(['fd.factor_id' => $factorId])->field('fd.*,f.name')->select()->toArray()[0];
+            ->join('factor f', 'fd.factor_id=f.id', 'left')
+            ->where(['fd.factor_id' => $factorId])->field('fd.*,f.name')->select()->toArray()[0];
 
         $factor['option']   = json_decode($factor['option']);
         $factor['document'] = json_decode($factor['document']);
@@ -391,74 +419,93 @@ class Factor extends Api {
 
         if ($factorId == -1) {
             //$this->error('已经是最后一项');
-
             return json_encode(['code' => 1, 'message' => '最后一项']);
         }
 
-        if ($factorId) {
-
-            $current = ItemFactorModel::field("id")
-                           ->where(['item_id' => $itemId])
-                           ->where(['factor_id' => $factorId])
-                           ->select()->toArray()[0];
-
-            $pre = ItemFactorModel::field("id,factor_id")
-                ->where(['item_id' => $itemId])
-                ->where('id', '<', $current['id'])
-                ->order('id', 'desc')
-                ->limit(1)
-                ->select()->toArray();
-            if ($pre) {
-                $preFactorId = $pre[0]['factor_id'];
-            }
-
-            $next = ItemFactorModel::field("id,factor_id")
-                ->where(['item_id' => $itemId])
-                ->where('id', '>', $current['id'])
-                ->order('id', 'asc')
-                ->limit(1)
-                ->select()->toArray();
-
-            if ($next) {
-                $nextFactorId = $next[0]['factor_id'];
-            } else {
-                $nextFactorId = -1;
-            }
-
-        } else {
-
-            $current = ItemFactorModel::field("id,factor_id")
-                ->where(['item_id' => $itemId])
-                ->order('id', 'asc')
-                ->limit(1)
-                ->select()->toArray();
-
-            if ($current) {
-
-                $factorId = $current[0]['factor_id'];
-
-            }
-
-            $next = ItemFactorModel::field("id,factor_id")
-                ->where(['item_id' => $itemId])
-                ->where('id', '>', $current[0]['id'])
-                ->order('id', 'asc')
-                ->limit(1)
-                ->select()->toArray();
-            if ($next) {
-                $nextFactorId = $next[0]['factor_id'];
-            } else {
-                $nextFactorId = -1;
-            }
-
+        $item = ItemsModel::get($itemId);
+        if(!$item){
+            return json_encode(['code' => 1, 'message' => '项目不存在']);
         }
+
+        $item = $item->toArray();
+        $factors = json_decode($item['factors'],1);
+
+        $curNextPre = $this->getCurNextPre($factorId,$factors);
+
+        $factorId = $curNextPre['current'];
+
+
+//        if ($factorId) {
+//
+//            $current = ItemFactorModel::field("id")
+//                           ->where(['item_id' => $itemId])
+//                           ->where(['factor_id' => $factorId])
+//                           ->select()->toArray()[0];
+//
+//            $pre = ItemFactorModel::field("id,factor_id")
+//                ->where(['item_id' => $itemId])
+//                ->where('id', '<', $current['id'])
+//                ->order('id', 'desc')
+//                ->limit(1)
+//                ->select()->toArray();
+//            if ($pre) {
+//                $preFactorId = $pre[0]['factor_id'];
+//            }
+//
+//            $next = ItemFactorModel::field("id,factor_id")
+//                ->where(['item_id' => $itemId])
+//                ->where('id', '>', $current['id'])
+//                ->order('id', 'asc')
+//                ->limit(1)
+//                ->select()->toArray();
+//
+//            if ($next) {
+//                $nextFactorId = $next[0]['factor_id'];
+//            } else {
+//                $nextFactorId = -1;
+//            }
+//
+//        }
+//        else {
+//
+//            $current = ItemFactorModel::field("id,factor_id")
+//                ->where(['item_id' => $itemId])
+//                ->order('id', 'asc')
+//                ->limit(1)
+//                ->select()->toArray();
+//
+//            if ($current) {
+//
+//                $factorId = $current[0]['factor_id'];
+//
+//            }
+//
+//            $next = ItemFactorModel::field("id,factor_id")
+//                ->where(['item_id' => $itemId])
+//                ->where('id', '>', $current[0]['id'])
+//                ->order('id', 'asc')
+//                ->limit(1)
+//                ->select()->toArray();
+//            if ($next) {
+//                $nextFactorId = $next[0]['factor_id'];
+//            } else {
+//                $nextFactorId = -1;
+//            }
+//
+//        }
 
 
         $factor = FactorDetailModel::alias('fd')
-                      ->join('factor f', 'fd.factor_id=f.id', 'left')
-                      ->where(['fd.factor_id' => $factorId])->field('fd.*,f.name')->select()->toArray()[0];
+            ->join('factor f', 'fd.factor_id=f.id', 'left')
+            ->where(['fd.factor_id' => $factorId])->field('fd.*,f.name')->select()->toArray()[0];
 
         $factor['option']   = json_decode($factor['option'],1);
+
+        $itemFactor = ItemFactorModel::get(['factor_id' => $factorId, 'item_id' => $itemId])->toArray();
+        if($itemFactor &&$itemFactor['param']){
+            $param = json_decode($itemFactor['param'],1);
+            $factor['option'] = $this->handleOptionParam($factor['option'],$param);
+        }
         $factor['document'] = json_decode($factor['document']);
 
         $question = QuestionsModel::field("*")->whereIn('id', $factor['questions_id'])->select()->toArray();
@@ -468,29 +515,66 @@ class Factor extends Api {
 
         $factor['questions'] = $question;
 
-        $itemFactor = ItemFactorModel::get(['factor_id' =>$factorId , 'item_id' => $itemId])
-            ->toArray();
-        //var_dump($itemFactor);die;
+        $factor['question_link'] = ImagesService::getBaseUrl().$factor['question_link'];
 
-        $param  = json_decode($itemFactor['param'], 1);
+//        $item = ItemFactorModel::alias('if')
+//            ->join('fa_items i', 'i.id=if.item_id', 'left')
+//            ->field('i.name,i.images')
+//            ->where(['if.factor_id' => $factorId])
+//            ->limit(3)->select()->toArray();
+//
+//        foreach ($item as &$v) {
+//            $v['images'] = ImagesService::getBaseUrl() . $v['images'];
+//        }
+//
+//        $factor['items'] = $item;
 
-        if($itemFactor)$factor['option'] = $this->handleOptionParam($factor['option'],$param);
+        return json(['code' => 0, 'message' => 'OK', 'current' => $factor['factor_id'], 'pre' => $curNextPre['pre'], 'next' => $curNextPre['next'], 'data' => $factor]);
 
-        $item = ItemFactorModel::alias('if')
-            ->join('fa_items i', 'i.id=if.item_id', 'left')
-            ->field('i.name,i.images')
-            ->where(['if.factor_id' => $factorId])
-            ->limit(3)->select()->toArray();
 
-        foreach ($item as &$v) {
-            $v['images'] = ImagesService::getBaseUrl() . $v['images'];
+    }
+
+    public function getCurNextPre($factorId,$factors){
+        $arr = [];
+
+        $length = count($factors);
+
+        $index = 0;
+
+        if(!$factorId){
+
+            $arr['current'] =$factors[0];
+            if($factors[1]){
+                $arr['next'] =$factors[1];
+            }else{
+                $arr['next'] =-1;
+            }
+            $arr['pre'] =0;
+
+        }else{
+            $arr['current'] =$factorId;
+            foreach ($factors as $key=>$v){
+                if($v==$factorId){
+                    $index =$key;
+                }
+            }
+            if($index==0){
+                $arr['pre'] =0;
+                if($length==1){
+                    $arr['next'] =-1;
+                }else{
+                    $arr['next'] =$factors[$index+1];
+                }
+            }elseif($index==$length-1){
+                $arr['pre'] = $factors[$index-1];
+                $arr['next'] =-1;
+            }else{
+                $arr['pre'] = $factors[$index-1];
+                $arr['next'] =$factors[$index+1];
+            }
         }
 
-        $factor['items'] = $item;
-
-        return json(['code' => 0, 'message' => 'OK', 'current' => $factor['factor_id'], 'pre' => $preFactorId, 'next' => $nextFactorId, 'data' => $factor]);
-
-
+        return $arr;
     }
 
     /**
@@ -500,6 +584,8 @@ class Factor extends Api {
     public function saveFactors(Request $request) {
         $itemId  = $request->param('item_id');
         $factors = $request->param('factors/a');
+
+        //return json(['code' => 1, 'data' => [], 'message' => 1]);
 
         $data = ItemFactorService::saveFactors((int)$itemId, $factors);
         return json(['code' => $data['error'], 'data' => [], 'message' => $data['message']]);
@@ -522,6 +608,45 @@ class Factor extends Api {
         $factors = $request->param('factors/a', []);
         $data    = ItemFactorService::executeFactors((int)$itemId, $factors);
         return json(['code' => $data['error'], 'data' => [], 'message' => $data['message']]);
+    }
+
+
+    public function testExecute(Request $request){
+
+        $itemId  = $request->param('item_id', 0);
+
+        $factorId  = $request->param('factor_id', 0);
+
+        $factor = FactorDetailModel::get(['factor_id'=>$factorId])->toArray();
+
+        $itemFactor = ItemFactorModel::get(['item_id'=>$itemId,'factor_id'=>$factorId])->toArray();
+
+        $type = $factor['input_mode'];
+
+        var_dump($type);
+
+        var_dump($itemFactor['param']);
+
+
+        if ($type == 'A') {
+            $result = FactorFormulaService::handle($itemId, $factorId, json_decode($itemFactor['param'],1));
+            var_dump($result);die;
+        } else if ($type == 'D') {
+            $result = $factor['param'];
+        } else if ($type == 'C') {
+            // 类型C是将所有的问题按照选择的选项的占比乘以分值再除以问题个数
+            $sum = 0;
+            foreach ($factor['param'] as $_param) {
+                $sum += ($_param['score'] * $_param['value'] / 100);
+            }
+            $result = $sum / count($factor['param']);
+        } else {
+            $result = 0;
+        }
+
+        var_dump($result);die;
+
+
     }
 
 

@@ -9,6 +9,19 @@ class ImagesService{
        return $baseUrl;
     }
 
+    public static function getAvatar($avatar){
+
+        if(!$avatar) return '';
+        $baseUrl = ImagesService::getBaseUrl();
+
+        if(stristr($avatar,$baseUrl)){
+            return $avatar;
+        }else{
+            return  $baseUrl.$avatar;
+        }
+
+    }
+
     public static function handleInput($images){
         $baseUrl = ImagesService::getBaseUrl();
         if(is_array($images)){

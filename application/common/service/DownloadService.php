@@ -43,17 +43,20 @@ class DownloadService {
         $type = $search['type'] ?? 0;
         $find = '';
         if ($type) {
-//            $where['download_cate_id'] = $type;
+            //            $where['download_cate_id'] = $type;
             //$where[] = ['exp',Db::raw("FIND_IN_SET($type,download_cate_id)")];
             $typeArray = explode(',', $type);
             if ($typeArray) {
                 $count = count($typeArray);
                 $and   = ' and ';
                 foreach ($typeArray as $key => $value) {
-                    if($key + 1 >= $count) {
+                    if ($key + 1 >= $count) {
                         $and = '';
                     }
-                    $find .= ' find_in_set(' . intval($value) .', download_cate_id)' . $and;
+                    $value = intval($value);
+                    if ($value) {
+                        $find .= ' find_in_set(' . intval($value) . ', download_cate_id)' . $and;
+                    }
                 }
             }
         }
@@ -62,20 +65,17 @@ class DownloadService {
             $where['name'] = ['like', "%{$search['keyword']}%"];
         }
 
-        $order         = 'id desc';
-        $limit         = 10;
-        $model = new DownloadModel();
-        $list          = DownloadModel::where($where);
-        if($find) {
+        $order = 'id desc';
+        $limit = 10;
+        $list  = DownloadModel::where($where);
+        if ($find) {
             $list = $list->where($find);
         }
-        $list = $list->field($fields)->paginate($limit, false, ['page' => $page]);
-
-        echo $list->getLastSql();die;
+        $list = $list->field($fields)->paginate($limit, false, ['page' => $page])->toArray();
         if (isset($list['data'])) {
             foreach ($list['data'] as &$v) {
-                $v['image'] =  ImagesService::getBaseUrl() . $v['image'];
-                $v['document'] = $v['document']?json_decode($v['document']):[];
+                $v['image']    = ImagesService::getBaseUrl() . $v['image'];
+                $v['document'] = $v['document'] ? json_decode($v['document']) : [];
             }
         }
         $data['total'] = $list['total'];
