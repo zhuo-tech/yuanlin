@@ -345,6 +345,13 @@ class User extends Api {
         $user    = $this->auth->getUser();
         $email   = $this->request->post('email');
         $captcha = $this->request->post('captcha');
+        $password = $this->request->post('password');
+
+        if ($user->password != $this->auth->getEncryptPassword($password, $user->salt)) {
+            $this->error(__('Password is incorrect'));
+            return false;
+        }
+
         if (!$email || !$captcha) {
             $this->error(__('Invalid parameters'));
         }
@@ -355,9 +362,9 @@ class User extends Api {
             $this->error(__('Email already exists'));
         }
         $result = Ems::check($email, $captcha, 'changeemail');
-//        if (!$result) {
-//            $this->error(__('Captcha is incorrect'));
-//        }
+        if (!$result) {
+            $this->error(__('Captcha is incorrect'));
+        }
         $verification        = $user->verification;
         $verification->email = 1;
         $user->verification  = $verification;
@@ -379,6 +386,14 @@ class User extends Api {
         $user    = $this->auth->getUser();
         $mobile  = $this->request->post('mobile');
         $captcha = $this->request->post('captcha');
+
+        $password = $this->request->post('password');
+
+        if ($user->password != $this->auth->getEncryptPassword($password, $user->salt)) {
+            $this->error(__('Password is incorrect'));
+            return false;
+        }
+
         if (!$mobile || !$captcha) {
             $this->error(__('Invalid parameters'));
         }
