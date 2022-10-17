@@ -442,12 +442,16 @@ class User extends Api {
      * @param string $captcha 验证码
      */
     public function resetpwd() {
-        $type        = $this->request->post("type");
-        $mobile      = $this->request->post("mobile");
-        $email       = $this->request->post("email");
-        $newpassword = $this->request->post("newpassword");
-        $captcha     = $this->request->post("captcha");
-        if (!$newpassword || !$captcha) {
+        $type        = $this->request->param("type");
+        $mobile      = $this->request->param("mobile");
+        $email       = $this->request->param("email");
+        $newpassword = $this->request->param("newpassword");
+        $comfirmpassword = $this->request->param("comfirmpassword");
+        $captcha     = $this->request->param("captcha");
+//        if (!$newpassword || !$captcha) {
+//            $this->error(__('Invalid parameters'));
+//        }
+        if (!$newpassword ) {
             $this->error(__('Invalid parameters'));
         }
         //验证Token
@@ -462,11 +466,14 @@ class User extends Api {
             if (!$user) {
                 $this->error(__('User not found'));
             }
-            $ret = Sms::check($mobile, $captcha, 'resetpwd');
-            if (!$ret) {
-                $this->error(__('Captcha is incorrect'));
+//            $ret = Sms::check($mobile, $captcha, 'resetpwd');
+//            if (!$ret) {
+//                $this->error(__('Captcha is incorrect'));
+//            }
+//            Sms::flush($mobile, 'resetpwd');
+            if($newpassword != $comfirmpassword){
+                $this->error(__('密码不一致'));
             }
-            Sms::flush($mobile, 'resetpwd');
         } else {
             if (!Validate::is($email, "email")) {
                 $this->error(__('Email is incorrect'));
