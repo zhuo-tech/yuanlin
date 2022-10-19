@@ -26,6 +26,7 @@ class Items extends Backend
     protected $model = null;
 
     protected $itemType = null;
+    protected $itemStatus = null;
 
     protected $catelist = [];
 
@@ -55,6 +56,12 @@ class Items extends Backend
             $catedata[$v['id']] = $v['name'];
         }
         $this->view->assign('catedata', $catedata);
+
+        // 状态 0：删除 1：正常 2：已选取指标 3：已生成报告 4：申请案例 5：申请成功
+
+        $this->itemStatus = ['0'=>'删除','1'=>'创建','2'=>'已选指标','3'=>'生成报告','4'=>'申请案例','5'=>'申请失败','6'=>'申请案例成功'];
+
+        $this->view->assign('itemStatus', $this->itemStatus);
 
     }
 
