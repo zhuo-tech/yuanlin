@@ -106,7 +106,7 @@ class ItemFactorService {
 
         return true;
     }
-    public static function executeFactors(int $itemId, array $factors): array {
+    public static function executeFactors(int $itemId, array $factors,$simple_size,$invest_time): array {
         try {
             $item = ItemsModel::get($itemId);
             if (empty($item)) {
@@ -134,6 +134,8 @@ class ItemFactorService {
                         $sum += ($_param['score'] * $_param['value'] / 100);
                     }
                     $result = $sum / count($factor['param']);
+
+                    ItemsFactorModel::where(['item_id' => $itemId, 'factor_id' => $factor['id']])->update(['sample_size' => $simple_size, 'invest_time' => $invest_time]);
                 } else {
                     $result = 0;
                 }
