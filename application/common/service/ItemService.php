@@ -216,14 +216,20 @@ class ItemService {
 
 
 
-    public static function getItemByFactorId($factorId){
+    public static function getItemByFactorId($factorId,$item_ids){
 
-        $item = ItemFactorModel::alias('if')
-            ->join('fa_items i', 'i.id=if.item_id', 'left')
-            ->field('i.name,i.images')
-            ->where(['if.factor_id' => $factorId])
-            ->where('i.status','>',0)
-            ->limit(3)->select()->toArray();
+        if($item_ids){
+            $item = Items::field('name,images')
+                ->whereIn('id',$item_ids)
+                ->select()->toArray();
+        }else{
+            $item = ItemFactorModel::alias('if')
+                ->join('fa_items i', 'i.id=if.item_id', 'left')
+                ->field('i.name,i.images')
+                ->where(['if.factor_id' => $factorId])
+                ->where('i.status','>',0)
+                ->limit(3)->select()->toArray();
+        }
 
         foreach ($item as &$v) {
             $images = explode(',',$v['images']);
