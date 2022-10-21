@@ -12,14 +12,6 @@ return [
         'sms_check' => [
             'alisms',
         ],
-        'upgrade' => [
-            'simditor',
-        ],
-        'config_init' => [
-            'simditor',
-            'summernote',
-            'third',
-        ],
         'user_delete_successed' => [
             'third',
         ],
@@ -31,6 +23,10 @@ return [
         ],
         'action_begin' => [
             'third',
+        ],
+        'config_init' => [
+            'third',
+            'ueditor',
         ],
         'view_filter' => [
             'third',
