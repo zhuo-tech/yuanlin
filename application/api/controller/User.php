@@ -512,4 +512,46 @@ class User extends Api {
             $this->error($this->auth->getError());
         }
     }
+
+
+    public function bindMobile(){
+
+        $user    = $this->auth->getUser();
+        $mobile  = $this->request->param('mobile');
+        $captcha = $this->request->param('captcha');
+
+        $result = Sms::check($mobile, $captcha, 'bindmobile');
+        if (!$result) {
+            $this->error(__('Captcha is incorrect'));
+        }
+
+
+        $mobileUser = \app\common\model\User::getByMobile($mobile);
+
+
+        if($mobileUser){
+            $mobileUser->email = $user->email;
+            $mobileUser->save();
+
+            $user->status         = 'deleted';
+            $user->save();
+
+            $ret = $this->auth->direct($mobileUser->id);
+
+        }else{
+
+            $user->mobile         = $mobile;
+            $user->save();
+            $ret = $this->auth->direct($user->id);
+        }
+
+        $data           = $this->auth->getUserinfo();
+        if(strlen($data['avatar'])>100) {
+            $data['avatar'] = '';
+        }else{
+            $data['avatar'] = ImagesService::getAvatar($data['avatar']);
+        }
+        $this->success('OK', $data, 0);
+
+    }
 }
