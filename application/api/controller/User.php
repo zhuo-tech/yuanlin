@@ -520,7 +520,7 @@ class User extends Api {
         $mobile  = $this->request->param('mobile');
         $captcha = $this->request->param('captcha');
 
-        $result = Sms::check($mobile, $captcha, 'bindmobile');
+        $result = Sms::check($mobile, $captcha, 'bind');
         if (!$result) {
             $this->error(__('Captcha is incorrect'));
         }
