@@ -166,7 +166,7 @@ class Items extends Backend
     public function handle($param){
 
         $locations = explode('/',$param['location']);
-        $province = cityModel::get(['area_name'=>$locations[0]])->toArray();
+        $province = cityModel::where('area_name','like',$locations[0])->where(['level'=>1])->select()->toArray();
         $param['province'] = $province['area_code'];
 
         $city = cityModel::get(['area_name'=>$locations[1]])->toArray();
