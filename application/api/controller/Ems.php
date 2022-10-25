@@ -29,8 +29,8 @@ class Ems extends Api
      */
     public function send()
     {
-        $email = $this->request->post("email");
-        $event = $this->request->post("event");
+        $email = $this->request->param("email");
+        $event = $this->request->param("event");
         $event = $event ? $event : 'register';
 
         $last = Emslib::get($email, $event);

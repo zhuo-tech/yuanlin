@@ -59,7 +59,7 @@ class Sms extends Api
         if ($ret) {
             return json(['code' => 0, 'message' => '发送成功', 'data' => []]);
         } else {
-            return json(['code' => 1, 'message' => '发送失败', 'data' => []]);
+            return json(['code' => 1, 'message' => '发送失败!', 'data' => []]);
         }
     }
 
@@ -73,10 +73,10 @@ class Sms extends Api
      */
     public function check()
     {
-        $mobile = $this->request->post("mobile");
-        $event = $this->request->post("event");
+        $mobile = $this->request->param("mobile");
+        $event = $this->request->param("event");
         $event = $event ? $event : 'register';
-        $captcha = $this->request->post("captcha");
+        $captcha = $this->request->param("captcha");
 
         if (!$mobile || !\think\Validate::regex($mobile, "^1\d{10}$")) {
             $this->error(__('手机号不正确'));

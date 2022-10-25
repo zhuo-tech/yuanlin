@@ -25,7 +25,8 @@ class Banner extends Backend
         parent::_initialize();
         $this->model = new \app\admin\model\Banner;
 
-        $this->bannerType = ['1'=>'指标','2'=>'案例'];
+        $this->bannerType = ['1'=>'指标','2'=>'案例','3'=>'新建城市','4'=>'新建乡村'];
+
         $this->view->assign("bannerType", $this->bannerType);
     }
 

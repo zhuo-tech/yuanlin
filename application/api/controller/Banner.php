@@ -22,7 +22,9 @@ class Banner extends Api {
      * @brief Banner
      */
     public function index() {
-        $banners = BannerModel::where(['status' => 1])->field(['id', 'name', 'image', 'type', 'link','content'])
+        $banners = BannerModel::where(['status' => 1])
+            ->where('type','<','3')
+            ->field(['id', 'name', 'image', 'type', 'link','content'])
             ->order('sort', 'asc')->select()->toArray();
         foreach ($banners as &$banner){
             $banner['image'] = ImagesService::getBaseUrl().$banner['image'];
@@ -74,7 +76,21 @@ class Banner extends Api {
 
         return json(['code' => 0, 'message' => 'OK', 'data'=>$data]);
 
+    }
 
+    public function addBanner(Request $request){
+
+        $type  = $request->param('type');
+
+        $banners = BannerModel::where(['status' => 1])
+            ->where('type','>','2')
+            ->field(['id', 'name','name2', 'image', 'type', 'link','content'])
+            ->order('type', 'asc')->select()->toArray();
+        foreach ($banners as &$banner){
+            $banner['image'] = ImagesService::getBaseUrl().$banner['image'];
+        }
+
+        return json(['code' => 0, 'message' => 'OK', 'banner' => $banners]);
 
     }
 }

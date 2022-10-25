@@ -78,7 +78,7 @@ class FactorService {
      */
     public static function factorData($itemId = 0, $id = []): array {
         $where = ['f.status' => 1];
-        $field = ['name', 'f.id', 'input_mode', 'option', 'coefficient', 'pid', 'method', 'meaning', 'calc_method', 'source', 'document', 'format_type'];
+        $field = ['name', 'f.id', 'input_mode', 'option', 'coefficient', 'pid', 'method', 'meaning', 'calc_method', 'source', 'document', 'format_type','item_ids'];
         $query = FactorModel::alias('f')->where($where);
         if ($id) {
             $query = $query->whereIn('f.id', $id);
@@ -119,7 +119,7 @@ class FactorService {
                 $value['option'] = $questionOptions;
             }
 
-            $value['items'] = ItemService::getItemByFactorId($value['id']);
+            $value['items'] = ItemService::getItemByFactorId($value['id'],$value['item_ids']);
         }
         return $data;
     }

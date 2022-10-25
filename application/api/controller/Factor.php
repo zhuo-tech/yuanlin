@@ -48,7 +48,7 @@ class Factor extends Api {
         // 缓存
         $cacheKey = md5( 'factorTree');
         $cacheVal = Cache::get($cacheKey);
-        if ($cacheVal) {
+        if (0) {
             $data = json_decode($cacheVal, true);
         } else {
             $data = FactorService::getFactorTree($itemId);
@@ -217,6 +217,29 @@ class Factor extends Api {
         return $options;
     }
 
+    public function handleQuestionOptionParam($questions, $params){
+
+
+
+        foreach ($questions as &$question) {
+
+            foreach ($question['options'] as &$option){
+
+                foreach ($params as $p){
+
+                    if($p['var']==$option['var']&&$p['id']==$question['id']){
+                        $option['value'] = (int)$p['value'];
+                    }
+                }
+
+            }
+
+
+        }
+        return $questions;
+
+    }
+
     public function handleSimpleData($data) {
 
         $record = [];
@@ -373,8 +396,8 @@ class Factor extends Api {
         $factorId = $request->param('factor_id');
 
         $factor = FactorDetailModel::alias('fd')
-                      ->join('factor f', 'fd.factor_id=f.id', 'left')
-                      ->where(['fd.factor_id' => $factorId])->field('fd.*,f.name')->select()->toArray()[0];
+            ->join('factor f', 'fd.factor_id=f.id', 'left')
+            ->where(['fd.factor_id' => $factorId])->field('fd.*,f.name')->select()->toArray()[0];
 
         $factor['option']   = json_decode($factor['option']);
         $factor['document'] = json_decode($factor['document']);
@@ -496,38 +519,55 @@ class Factor extends Api {
 
 
         $factor = FactorDetailModel::alias('fd')
-                      ->join('factor f', 'fd.factor_id=f.id', 'left')
-                      ->where(['fd.factor_id' => $factorId])->field('fd.*,f.name')->select()->toArray()[0];
+            ->join('factor f', 'fd.factor_id=f.id', 'left')
+            ->where(['fd.factor_id' => $factorId])->field('fd.*,f.name')->select()->toArray()[0];
 
         $factor['option']   = json_decode($factor['option'],1);
 
-        $itemFactor = ItemFactorModel::get(['factor_id' => $factorId, 'item_id' => $itemId])->toArray();
-        if($itemFactor &&$itemFactor['param']){
-            $param = json_decode($itemFactor['param'],1);
-            $factor['option'] = $this->handleOptionParam($factor['option'],$param);
-        }
         $factor['document'] = json_decode($factor['document']);
 
         $question = QuestionsModel::field("*")->whereIn('id', $factor['questions_id'])->select()->toArray();
         foreach ($question as &$q) {
-            $q['options'] = json_decode($q['options']);
+            $q['options'] = json_decode($q['options'],1);
         }
 
         $factor['questions'] = $question;
 
         $factor['question_link'] = ImagesService::getBaseUrl().$factor['question_link'];
 
-//        $item = ItemFactorModel::alias('if')
-//            ->join('fa_items i', 'i.id=if.item_id', 'left')
-//            ->field('i.name,i.images')
-//            ->where(['if.factor_id' => $factorId])
-//            ->limit(3)->select()->toArray();
-//
-//        foreach ($item as &$v) {
-//            $v['images'] = ImagesService::getBaseUrl() . $v['images'];
-//        }
-//
-//        $factor['items'] = $item;
+
+        $itemFactor = ItemFactorModel::get(['factor_id' => $factorId, 'item_id' => $itemId])->toArray();
+        if($itemFactor &&$itemFactor['param']){
+            $param = json_decode($itemFactor['param'],1);
+            if($factor['input_mode']=="A"){
+                $factor['option'] = $this->handleOptionParam($factor['option'],$param);
+            }else{
+                $factor['questions'] = $this->handleQuestionOptionParam($factor['questions'],$param);
+
+
+            }
+        }
+
+
+        $factor['sample_size'] = $itemFactor['sample_size'];
+
+        $factor['year'] = '';
+        $factor['month'] = '';
+        $factor['day'] = '';
+
+        if($itemFactor['invest_time']) {
+            $dates = explode('-', $itemFactor['invest_time']);
+            $factor['year'] = $dates[0];
+            if (count($dates)>1){
+                $factor['month'] = $dates[1];
+            }
+
+            if (count($dates)>2){
+                $factor['day'] = $dates[2];
+            }
+        }
+
+
 
         return json(['code' => 0, 'message' => 'OK', 'current' => $factor['factor_id'], 'pre' => $curNextPre['pre'], 'next' => $curNextPre['next'], 'data' => $factor]);
 
@@ -606,7 +646,11 @@ class Factor extends Api {
     public function execute(Request $request) {
         $itemId  = $request->param('item_id', 0);
         $factors = $request->param('factors/a', []);
-        $data    = ItemFactorService::executeFactors((int)$itemId, $factors);
+
+        $simple_size  = $request->param('sample_size', 0);
+
+        $invest_time  = $request->param('invest_time', 0);
+        $data    = ItemFactorService::executeFactors((int)$itemId, $factors,$simple_size,$invest_time);
         return json(['code' => $data['error'], 'data' => [], 'message' => $data['message']]);
     }
 

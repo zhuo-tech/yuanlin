@@ -345,6 +345,13 @@ class User extends Api {
         $user    = $this->auth->getUser();
         $email   = $this->request->post('email');
         $captcha = $this->request->post('captcha');
+        $password = $this->request->post('password');
+
+        if ($user->password != $this->auth->getEncryptPassword($password, $user->salt)) {
+            $this->error(__('Password is incorrect'));
+            return false;
+        }
+
         if (!$email || !$captcha) {
             $this->error(__('Invalid parameters'));
         }
@@ -355,9 +362,9 @@ class User extends Api {
             $this->error(__('Email already exists'));
         }
         $result = Ems::check($email, $captcha, 'changeemail');
-//        if (!$result) {
-//            $this->error(__('Captcha is incorrect'));
-//        }
+        if (!$result) {
+            $this->error(__('Captcha is incorrect'));
+        }
         $verification        = $user->verification;
         $verification->email = 1;
         $user->verification  = $verification;
@@ -379,6 +386,14 @@ class User extends Api {
         $user    = $this->auth->getUser();
         $mobile  = $this->request->post('mobile');
         $captcha = $this->request->post('captcha');
+
+        $password = $this->request->post('password');
+
+        if ($user->password != $this->auth->getEncryptPassword($password, $user->salt)) {
+            $this->error(__('Password is incorrect'));
+            return false;
+        }
+
         if (!$mobile || !$captcha) {
             $this->error(__('Invalid parameters'));
         }
@@ -442,12 +457,16 @@ class User extends Api {
      * @param string $captcha 验证码
      */
     public function resetpwd() {
-        $type        = $this->request->post("type");
-        $mobile      = $this->request->post("mobile");
-        $email       = $this->request->post("email");
-        $newpassword = $this->request->post("newpassword");
-        $captcha     = $this->request->post("captcha");
-        if (!$newpassword || !$captcha) {
+        $type        = $this->request->param("type");
+        $mobile      = $this->request->param("mobile");
+        $email       = $this->request->param("email");
+        $newpassword = $this->request->param("newpassword");
+        $comfirmpassword = $this->request->param("comfirmpassword");
+        $captcha     = $this->request->param("captcha");
+//        if (!$newpassword || !$captcha) {
+//            $this->error(__('Invalid parameters'));
+//        }
+        if (!$newpassword ) {
             $this->error(__('Invalid parameters'));
         }
         //验证Token
@@ -462,11 +481,14 @@ class User extends Api {
             if (!$user) {
                 $this->error(__('User not found'));
             }
-            $ret = Sms::check($mobile, $captcha, 'resetpwd');
-            if (!$ret) {
-                $this->error(__('Captcha is incorrect'));
+//            $ret = Sms::check($mobile, $captcha, 'resetpwd');
+//            if (!$ret) {
+//                $this->error(__('Captcha is incorrect'));
+//            }
+//            Sms::flush($mobile, 'resetpwd');
+            if($newpassword != $comfirmpassword){
+                $this->error(__('密码不一致'));
             }
-            Sms::flush($mobile, 'resetpwd');
         } else {
             if (!Validate::is($email, "email")) {
                 $this->error(__('Email is incorrect'));
@@ -489,5 +511,47 @@ class User extends Api {
         } else {
             $this->error($this->auth->getError());
         }
+    }
+
+
+    public function bindMobile(){
+
+        $user    = $this->auth->getUser();
+        $mobile  = $this->request->param('mobile');
+        $captcha = $this->request->param('captcha');
+
+        $result = Sms::check($mobile, $captcha, 'bind');
+        if (!$result) {
+            $this->error(__('Captcha is incorrect'));
+        }
+
+
+        $mobileUser = \app\common\model\User::getByMobile($mobile);
+
+
+        if($mobileUser){
+            $mobileUser->email = $user->email;
+            $mobileUser->save();
+
+            $user->status         = 'deleted';
+            $user->save();
+
+            $ret = $this->auth->direct($mobileUser->id);
+
+        }else{
+
+            $user->mobile         = $mobile;
+            $user->save();
+            $ret = $this->auth->direct($user->id);
+        }
+
+        $data           = $this->auth->getUserinfo();
+        if(strlen($data['avatar'])>100) {
+            $data['avatar'] = '';
+        }else{
+            $data['avatar'] = ImagesService::getAvatar($data['avatar']);
+        }
+        $this->success('OK', $data, 0);
+
     }
 }

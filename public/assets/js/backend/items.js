@@ -10,6 +10,11 @@ define(['jquery', 'bootstrap', 'backend', 'table', 'form'], function ($, undefin
 
     var Controller = {
         index: function () {
+
+            // https://www.cnblogs.com/secsafe/p/12221178.html
+
+            $(".btn-add").data("area",["90%","90%"]);
+            $(".btn-edit").data("area",["90%","90%"]);
             // 初始化表格参数配置
             Table.api.init({
                 extend: {
@@ -56,6 +61,10 @@ define(['jquery', 'bootstrap', 'backend', 'table', 'form'], function ($, undefin
                     ]
                 ]
             });
+
+            table.on('post-body.bs.table',function(){
+                $(".btn-editone").data("area",["90%","90%"]);
+            })
 
             // 为表格绑定事件
             Table.api.bindevent(table);
