@@ -316,7 +316,7 @@ class Items extends Backend
 
         $locations = explode('/',$param['location']);
         $province = cityModel::where(['level'=>1])->where('area_name','like',$locations[0])->select()->toArray();
-        $param['province'] = $province['area_code'];
+        $param['province'] = $province[0]['area_code'];
 
         $city = cityModel::get(['area_name'=>$locations[1]])->toArray();
         $param['city'] = $city['area_code'];
