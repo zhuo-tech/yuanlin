@@ -169,6 +169,7 @@ class ItemFactorService {
         $selectRows = ItemFactorModel::alias('if')->field("if.id,f.pid,f.name,fd.max,fd.min,fd.national_stand,format_type,if.result")
             ->join("fa_factor f", 'if.factor_id=f.id', 'left')
             ->join('fa_factor_detail fd', 'fd.factor_id = f.id', 'left')
+            ->where(['if.status'=>2])
             ->where($where)->select()->toArray();
 
         $first      = FactorModel::where(['status' => 1, 'pid' => 0])
@@ -201,8 +202,13 @@ class ItemFactorService {
         $echart = [];
         foreach ($first as &$ff) {
             unset($ff['children']);
-            //$array = array_column($ff['select'],'level');
-            // array_push($echart,count($array)>0? array_sum($array)/count($array):0);
+            if(isset($ff['select'])){
+                $array = array_column($ff['select'],'level');
+                array_push($echart,count($array)>0? array_sum($array)/count($array):0);
+            }else{
+                array_push($echart,0);
+            }
+
         }
 
         array_unshift($first,$all);
