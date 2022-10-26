@@ -191,6 +191,9 @@ class ItemFactorService {
                     if ($row['pid'] == $child['id']) {
                         $result = floatval($row['result']);
                         $row['level'] = ($result - $row['min']) / ($row['max'] - $row['min']) / 2 * 10;
+                        $row['result'] = (int)$row['result'];
+                        $row['min'] = (int)$row['min'];
+                        $row['max'] = (int)$row['max'];
                         $f['select'][] = $row;
 
                         $all['select'][] =$row;
@@ -204,7 +207,8 @@ class ItemFactorService {
             unset($ff['children']);
             if(isset($ff['select'])){
                 $array = array_column($ff['select'],'level');
-                array_push($echart,count($array)>0? array_sum($array)/count($array):0);
+
+                array_push($echart,count($array)>0? round(array_sum($array)/count($array)):0);
             }else{
                 array_push($echart,0);
             }
