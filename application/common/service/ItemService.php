@@ -143,6 +143,8 @@ class ItemService {
 
         if ($search['uid']) {
             $where['user_id'] = ['=', $search['uid']];
+        }else{
+            $where['status'] =['=',6];
         }
 
         $order = 'id desc';
