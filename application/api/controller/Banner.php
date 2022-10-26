@@ -31,6 +31,8 @@ class Banner extends Api {
             $banner['image'] = ImagesService::getBaseUrl().$banner['image'];
         }
         $news= NewsModel::field(['id', 'name', 'image', 'type', 'link','create_time'])
+            ->where(['status' => 1])
+            ->limit(3)
             ->order('sorts', 'asc')->select()->toArray();
 
         foreach ($news as &$new){
