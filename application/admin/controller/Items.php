@@ -13,7 +13,7 @@ use think\response\Json;
 use app\admin\model\City as cityModel;
 
 /**
- * 
+ *
  *
  * @icon fa fa-circle-o
  */
@@ -219,7 +219,7 @@ class Items extends Backend
             $where2 = [];
             if($this->request->request("status") ==6){
 
-               $where2 = ['status'=>6];
+                $where2 = ['status'=>6];
 
             }
 
@@ -315,8 +315,8 @@ class Items extends Backend
     public function handle($param){
 
         $locations = explode('/',$param['location']);
-        $province = cityModel::get(['area_name'=>$locations[0]])->toArray();
-        $param['province'] = $province['area_code'];
+        $province = cityModel::where(['level'=>1])->where('area_name','like',"%{$locations[0]}%")->select()->toArray();
+        $param['province'] = $province[0]['area_code'];
 
         $city = cityModel::get(['area_name'=>$locations[1]])->toArray();
         $param['city'] = $city['area_code'];
