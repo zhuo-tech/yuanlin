@@ -24,6 +24,8 @@ class Banner extends Api {
     public function index() {
         $banners = BannerModel::where(['status' => 1])
             ->where('type','<','3')
+            ->where(['status'=>1])
+            ->limit(3)
             ->field(['id', 'name', 'image', 'type', 'link','content'])
             ->order('sort', 'asc')->select()->toArray();
         foreach ($banners as &$banner){
