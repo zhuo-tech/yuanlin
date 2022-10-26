@@ -139,7 +139,7 @@ class ItemFactorService {
                 } else {
                     $result = 0;
                 }
-                ItemsFactorModel::where(['item_id' => $itemId, 'factor_id' => $factor['id']])->update(['param' => $param, 'result' => $result]);
+                ItemsFactorModel::where(['item_id' => $itemId, 'factor_id' => $factor['id']])->update(['param' => $param, 'result' => $result,'status'=>2]);
             }
             ItemsFactorModel::commit();
             return ['error' => 0, 'message' => '结果计算完成', 'data' => []];
