@@ -32,7 +32,7 @@ class Banner extends Api {
         }
         $news= NewsModel::field(['id', 'name', 'image', 'type', 'link','create_time'])
             ->where(['status' => 1])
-            ->limit(3)
+            ->limit(5)
             ->order('sorts', 'asc')->select()->toArray();
 
         foreach ($news as &$new){
