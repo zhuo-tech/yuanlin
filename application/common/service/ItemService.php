@@ -230,7 +230,7 @@ class ItemService {
                 ->field('i.name,i.images')
                 ->where(['if.factor_id' => $factorId])
                 ->where('i.status','>',0)
-                ->limit(3)->select()->toArray();
+                ->limit(4)->select()->toArray();
         }
 
         foreach ($item as &$v) {
