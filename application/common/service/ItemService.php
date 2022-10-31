@@ -195,7 +195,7 @@ class ItemService {
         if ($search['uid']) {
             $where['user_id'] = ['=', $search['uid']];
         }else{
-            $where['status'] =['=',6];
+            $where['i.status'] =['=',6];
 
         }
 
