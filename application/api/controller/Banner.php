@@ -25,7 +25,7 @@ class Banner extends Api {
         $banners = BannerModel::where(['status' => 1])
             ->where('type','<','3')
             ->limit(3)
-            ->field(['id', 'name', 'image', 'type', 'link','content'])
+            ->field(['id', 'name', 'image', 'type', 'link','content','item_id'])
             ->order('sort', 'asc')->select()->toArray();
         foreach ($banners as &$banner){
             $banner['image'] = ImagesService::getBaseUrl().$banner['image'];
