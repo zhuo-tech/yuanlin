@@ -224,13 +224,13 @@ class ItemService {
     public static function getItemByFactorId($factorId,$item_ids){
 
         if($item_ids){
-            $item = Items::field('name,images')
+            $item = Items::field('name,images,id')
                 ->whereIn('id',$item_ids)
                 ->select()->toArray();
         }else{
             $item = ItemFactorModel::alias('if')
                 ->join('fa_items i', 'i.id=if.item_id', 'left')
-                ->field('i.name,i.images')
+                ->field('i.name,i.images,i.id')
                 ->where(['if.factor_id' => $factorId])
                 ->where('i.status','>',0)
                 ->limit(4)->select()->toArray();
