@@ -190,7 +190,7 @@ class ItemFactorService {
                 foreach ($selectRows as $row) {
                     if ($row['pid'] == $child['id']) {
                         $result = floatval($row['result']);
-                        $row['level'] = ($result - $row['min']) / ($row['max'] - $row['min']) / 2 * 10;
+                        $row['level'] = self::getLevel($result,$row);
                         $row['result'] = (int)$row['result'];
                         $row['min'] = (int)$row['min'];
                         $row['max'] = (int)$row['max'];
@@ -223,6 +223,22 @@ class ItemFactorService {
 
 
         return ['error' => 0, 'message' => '', 'first' => $first,'item'=>$item,'echart'=>$echart];
+
+    }
+
+    public static function getLevel($results,$rows){
+
+       $re =  ($results - $rows['min']) / ($rows['max'] - $rows['min']) / 2 * 10;
+
+       if($re<=0){
+           $re =1;
+       }elseif($re>=5){
+           $re=5;
+       }else{
+           $re = ceil($re);
+       }
+
+       return $re;
 
     }
 }

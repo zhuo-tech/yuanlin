@@ -17,7 +17,7 @@ class Items extends Validate {
         'area'          => ['require', 'regex' => '/^\d{6}$/'],
         'areas'         => ['require', 'regex' => '/^[0-9]+(.[0-9]+)?$/'],
         //'item_cate_id'  => ['require', 'regex' => '/^\+?[1-9][0-9]*$/'],
-        'images'        => ['require'],
+//        'images'        => ['require'],
         'designer_team' => ['require'],
         //'introduction'  => ['require'],
     ];
@@ -38,7 +38,7 @@ class Items extends Validate {
         'areas.regex'           => '面积必须为数字',
 //        'item_cate_id.require'  => '项目分类必填',
 //        'item_cate_id.regex'    => '项目分类有误',
-        'images.require'        => '图片必传',
+//        'images.require'        => '图片必传',
        // 'introduction.require'  => '项目描述必填',
         'designer_team.require' => '设计团队必填'
     ];
@@ -48,7 +48,7 @@ class Items extends Validate {
      * 验证场景
      */
     protected $scene = [
-        'insert' => ['name', 'item_type', 'province', 'city', 'area', 'areas', 'item_cate_id', 'images', 'designer_team',]
+        'insert' => ['name', 'item_type', 'province', 'city', 'area', 'areas', 'item_cate_id', 'designer_team',]
     ];
 
 }
