@@ -107,9 +107,13 @@ class Factor extends Api {
         $data   = FactorService::simpleTree($itemId);
         $cid    = $request->param('cid', 0);
         $n      = 0;
+
+        //var_dump($data);
         foreach ($data as $key => &$vs) {
             if ($cid) {
                 if ($cid == $vs['id']) {
+
+                    //var_dump($vs['child']);
                     foreach ($vs['child'] as $k => &$v) {
                         if ($v['selected'] == 1) {
                             $detail = FactorDetailModel::get(['factor_id' => $v['id']])->toArray();
@@ -125,6 +129,8 @@ class Factor extends Api {
                             unset($vs['child'][$k]);
                         }
                     }
+
+                    $vs['child'] =  array_values($vs['child']);
                 } else {
                     unset($data[$key]);
                 }
@@ -144,6 +150,8 @@ class Factor extends Api {
                         unset($vs['child'][$k]);
                     }
                 }
+
+                $vs['child'] =  array_values($vs['child']);
 
             }
         }
@@ -196,6 +204,7 @@ class Factor extends Api {
                     unset($vs['child'][$k]);
                 }
             }
+            $vs['child'] = array_values($vs['child']);
         }
 
         $data = $this->handleSimpleData($data);

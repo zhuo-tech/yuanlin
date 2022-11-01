@@ -60,7 +60,8 @@ class FactorService {
                         if ($son['pid'] == $sonFactor['id']) {
                             if ($selectFactors && in_array($son['id'], $selectFactors)) {
                                 $son['selected'] = 1;
-                            } else {
+                            }
+                            else {
                                 $son['selected'] = 0;
                             }
                             $topFactor['child'][] = $son;
