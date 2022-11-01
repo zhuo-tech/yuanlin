@@ -198,7 +198,7 @@ class Factor extends Api {
                     }
 
                     $n       = $n + 1;
-                    $v['id'] = $n;
+                    $v['number'] = $n;
 
                 } else {
                     unset($vs['child'][$k]);
