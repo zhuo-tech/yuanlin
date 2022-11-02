@@ -115,6 +115,19 @@ class FactorFormulaService {
         return static::format($data / ($coefficient[0] / 100));
     }
 
+
+    /**
+     * @brief 地址灾害   a=b×0.3+c×0.2+d×0.25-e×0.15+f×0.1
+     * @factor b/c×100%
+     */
+    public static function geologyDisaster(): string {
+        extract(static::$param);
+        $coefficient = static::$coefficient;
+
+        $a = $b * $coefficient[0]+$c*$coefficient[1]+$d*$coefficient[2]-$e*$coefficient[3]+$f*$coefficient[4];
+        return $a;
+    }
+
     /**
      * @brief 植被覆盖率
      * @factor b/c×100%

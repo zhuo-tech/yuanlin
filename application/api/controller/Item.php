@@ -119,7 +119,7 @@ class Item extends Api {
         $imgs = [];
 
         foreach ($images as $i){
-            array_push($imgs, ImagesService::getBaseUrl() . $i);
+            array_push($imgs, ImagesService::handleOut($i));
         }
 
         $res['images'] = $imgs;

@@ -562,7 +562,7 @@ class Factor extends Api {
         }
 
 
-        $factor['sample_size'] = $itemFactor['sample_size'];
+        $factor['sample_size'] = (string)$itemFactor['sample_size'];
 
         $factor['year'] = '';
         $factor['month'] = '';
@@ -659,6 +659,8 @@ class Factor extends Api {
     public function execute(Request $request) {
         $itemId  = $request->param('item_id', 0);
         $factors = $request->param('factors/a', []);
+
+        //return json(['code' => -1, 'data' => [], 'message' => '']);
 
         $simple_size  = $request->param('sample_size', 0);
 
