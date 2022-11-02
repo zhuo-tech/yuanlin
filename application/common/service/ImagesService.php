@@ -45,6 +45,10 @@ class ImagesService{
 
     public static function handleOut($images){
 
+        if(!$images) return '';
+        $baseUrl = ImagesService::getBaseUrl();
+
+        return  $baseUrl.$images;
     }
 
 }

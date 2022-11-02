@@ -548,13 +548,17 @@ class Factor extends Api {
         $itemFactor = ItemFactorModel::get(['factor_id' => $factorId, 'item_id' => $itemId])->toArray();
         if($itemFactor &&$itemFactor['param']){
             $param = json_decode($itemFactor['param'],1);
+
             if($factor['input_mode']=="A"){
                 $factor['option'] = $this->handleOptionParam($factor['option'],$param);
             }else{
                 $factor['questions'] = $this->handleQuestionOptionParam($factor['questions'],$param);
-
-
             }
+
+            $factor['formed']=1;
+        }
+        else{
+            $factor['formed'] =0;
         }
 
 

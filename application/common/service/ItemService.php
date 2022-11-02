@@ -157,7 +157,7 @@ class ItemService {
         if (isset($list['data'])) {
             foreach ($list['data'] as &$v) {
                 $images = explode(',',$v['images']);
-                $v['images']      =  ImagesService::getBaseUrl() . $images[0];
+                $v['images']      =  ImagesService::handleOut($images[0]);
                 $v['create_date'] = date("Y-m-d", $v['update_time']);
                 $v['keyword']     = explode(',', $v['keyword']);
             }
