@@ -208,7 +208,7 @@ class ItemFactorService {
             if(isset($ff['select'])){
                 $array = array_column($ff['select'],'level');
 
-                array_push($echart,count($array)>0? round(array_sum($array)/count($array)):0);
+                array_push($echart,count($array)>0? ceil(array_sum($array)/count($array)):0);
             }else{
                 array_push($echart,0);
             }
