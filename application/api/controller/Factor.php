@@ -597,7 +597,7 @@ class Factor extends Api {
         if(!$factorId){
 
             $arr['current'] =$factors[0];
-            if($factors[1]){
+            if(isset($factors[1])){
                 $arr['next'] =$factors[1];
             }else{
                 $arr['next'] =-1;
