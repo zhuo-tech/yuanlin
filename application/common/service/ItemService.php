@@ -238,7 +238,7 @@ class ItemService {
 
         foreach ($item as &$v) {
             $images = explode(',',$v['images']);
-            $v['images']      =  ImagesService::getBaseUrl() . $images[0];
+            $v['images']      =  ImagesService::handleOut($images[0]);
             //$v['images'] =  ImagesService::getBaseUrl() . $v['images'];
         }
 
