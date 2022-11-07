@@ -60,7 +60,7 @@ class Items extends Backend
 
         // 状态 0：删除 1：正常 2：已选取指标 3：已生成报告 4：申请案例 5：申请成功
 
-        $this->itemStatus = ['0'=>'删除','1'=>'创建','2'=>'已选指标','3'=>'生成报告','4'=>'申请案例','5'=>'申请失败','6'=>'展示案例'];
+        $this->itemStatus = ['0'=>'删除','1'=>'创建','2'=>'已选指标','3'=>'生成报告','4'=>'申请案例','5'=>'申请失败','6'=>'展示案例','7'=>'精选案例'];
 
         $this->view->assign('itemStatus', $this->itemStatus);
 
@@ -309,6 +309,43 @@ class Items extends Backend
             $this->error(__('No rows were updated'));
         }
         $this->success();
+    }
+
+
+    public function del($ids = null)
+    {
+        if (false === $this->request->isPost()) {
+            $this->error(__("Invalid parameters"));
+        }
+        $ids = $ids ?: $this->request->post("ids");
+        if (empty($ids)) {
+            $this->error(__('Parameter %s can not be empty', 'ids'));
+        }
+        $pk = $this->model->getPk();
+        $adminIds = $this->getDataLimitAdminIds();
+        if (is_array($adminIds)) {
+            $this->model->where($this->dataLimitField, 'in', $adminIds);
+        }
+        $list = $this->model->where($pk, 'in', $ids)->select();
+
+        $count = 0;
+        Db::startTrans();
+        try {
+            foreach ($list as $item) {
+
+                $item->update(['status'=>0],['id'=>$item->id]);
+            }
+            Db::commit();
+        } catch (PDOException|Exception $e) {
+            Db::rollback();
+            $this->error($e->getMessage());
+        }
+//        if ($count) {
+//            $this->success();
+//        }
+
+        $this->success();
+        $this->error(__('No rows were deleted'));
     }
 
 
