@@ -98,19 +98,31 @@ class Items extends Backend
         }
         [$where, $sort, $order, $offset, $limit] = $this->buildparams();
 
-        $query = $this->model->where($where);
-        $list = $query
-            ->order($sort, $order)
-            ->paginate($limit);
+//        $query = $this->model->where($where);
+//        $list = $query
+//            ->order($sort, $order)
+//            ->paginate($limit);
+//
+//        $total = $list->total();
+//        $rows = $list->items();
 
-        $total = $list->total();
-        $rows = $list->items();
 
-        foreach ($rows as &$row){
-            $cate = \app\admin\model\ItemsCate::where(['id'=>$row['item_cate_id']])->find();
-            $row['item_cate_name'] = $cate['name'];
-            //$row['item_type'] = $this->itemType[$row['item_type']];
+        $filter = $this->request->get("filter", '');
+
+        $filter = \GuzzleHttp\json_decode($filter,1);
+
+        if(!isset($filter['status'])){
+            $filter['status'] = ['>=',6];
         }
+
+        $total = Db::table('fa_items i')
+
+            ->where($filter)->count();
+        $rows = Db::table('fa_items i')
+            ->field("i.*")
+            ->order($sort, $order)
+            ->where($filter)
+            ->limit($offset,$limit)->select()->toArray();
 
         $result = ['total' => $total, 'rows' =>$rows];
         return json($result);
