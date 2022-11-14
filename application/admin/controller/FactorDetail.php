@@ -28,7 +28,7 @@ class FactorDetail extends Backend
         parent::_initialize();
         $this->model = new \app\admin\model\FactorDetail;
 
-        $mode = ['A'=>'根据公式','C'=>'问卷模式','D'=>'直接输入结果'];
+        $mode = ['A'=>'根据公式','B'=>'输入图像','C'=>'问卷模式','D'=>'直接输入结果'];
 
         $format_type = ['1'=>'整型','2'=>'百分比'];
 

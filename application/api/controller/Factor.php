@@ -654,6 +654,17 @@ class Factor extends Api {
     }
 
     /**
+     * @brief b 开始计算
+     */
+
+    public function saveFactor(Request $request){
+        $itemId  = $request->param('item_id', 0);
+        $factors = $request->param('factors', []);
+
+        $this->success('11');
+    }
+
+    /**
      * @brief 执行计算指标
      */
     public function execute(Request $request) {
