@@ -641,7 +641,7 @@ class Factor extends Api {
         //return json(['code' => 1, 'data' => [], 'message' => 1]);
 
         $data = ItemFactorService::saveFactors((int)$itemId, $factors);
-        return json(['code' => $data['error'], 'data' => [], 'message' => $data['message']]);
+        return json(['code' => $data['error'], 'data' => ['images'=>'http://ies-admin.zhuo-zhuo.com/uploads/20221104/de85c865d8b25e7bca360a06834d044c.png'], 'message' => $data['message']]);
     }
 
     /**
