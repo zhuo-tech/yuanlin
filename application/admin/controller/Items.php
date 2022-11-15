@@ -231,7 +231,7 @@ class Items extends Backend
             $where2 = [];
             if($this->request->request("status") ==6){
 
-                $where2 = ['status'=>6];
+                $where2['status'] = ['>=','6'];
 
             }
 
