@@ -372,6 +372,8 @@ class Items extends Backend
         $region = cityModel::get(['area_name'=>$locations[2]])->toArray();
         $param['area'] = $region['area_code'];
 
+        $param['content'] = str_replace('http://yuanladmin.com','',$param['content']);
+
         return $param;
 
     }
