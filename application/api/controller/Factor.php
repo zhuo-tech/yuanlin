@@ -658,8 +658,13 @@ class Factor extends Api {
      */
 
     public function saveFactor(Request $request){
-        $itemId  = $request->param('item_id', 0);
-        $factors = $request->param('factors', []);
+
+        $item_id  = $request->param('item_id', '');
+        $params = $request->param('params/a', []);
+
+//        var_dump($item_id);
+//        var_dump($params);die;
+
 
         $this->success('success',['image'=>'http://ies-admin.zhuo-zhuo.com/uploads/20221104/de85c865d8b25e7bca360a06834d044c.png']);
     }
