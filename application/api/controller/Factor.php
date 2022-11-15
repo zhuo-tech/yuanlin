@@ -145,6 +145,7 @@ class Factor extends Api {
                         }
                         $n       = $n + 1;
                         $v['number'] = $n;
+                        $v['input_mode']= $detail['input_mode'];
 
                     } else {
                         unset($vs['child'][$k]);
