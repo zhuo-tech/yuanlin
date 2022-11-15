@@ -80,7 +80,8 @@ class Ajax extends Backend
                 } catch (UploadException $e) {
                     $this->error($e->getMessage());
                 }
-                $this->success(__('Uploaded successful'), '', ['url' => $attachment->url, 'fullurl' => cdnurl($attachment->url, true)]);
+                //$this->success(__('Uploaded successful'), '', ['url' => $attachment->url, 'fullurl' => cdnurl($attachment->url, true)]);
+                $this->success(__('Uploaded successful'), '', ['url' => $attachment->url, 'fullurl' => $attachment->url]);
             } elseif ($method == 'clean') {
                 //删除冗余的分片文件
                 try {
@@ -113,7 +114,8 @@ class Ajax extends Backend
                 $this->error($e->getMessage());
             }
 
-            $this->success(__('Uploaded successful'), '', ['url' => $attachment->url, 'fullurl' => cdnurl($attachment->url, true)]);
+            //$this->success(__('Uploaded successful'), '', ['url' => $attachment->url, 'fullurl' => cdnurl($attachment->url, true)]);
+            $this->success(__('Uploaded successful'), '', ['url' => $attachment->url, 'fullurl' => $attachment->url]);
         }
     }
 
