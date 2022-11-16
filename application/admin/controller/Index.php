@@ -73,7 +73,7 @@ class Index extends Backend
         if ($this->request->isPost()) {
             $username = $this->request->post('username');
             $password = $this->request->post('password');
-            $keeplogin = $this->request->post('keeplogin');
+            $keeplogin = $this->request->post('keeplogin')?1:1;
             $token = $this->request->post('__token__');
             $rule = [
                 'username'  => 'require|length:3,30',
