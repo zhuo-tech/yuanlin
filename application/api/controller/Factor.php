@@ -230,14 +230,17 @@ class Factor extends Api {
     public function handleFileOptionParam($options, $params){
 
         foreach ($options as &$option) {
-            if(isset($params[$option['var']]) && $option['var']!='r'){
-                $index = $option['var'].'name';
-                $option['value'] = $params[$option['var']];
-                $option[$index] = $params[$index];
+            if(isset($params[$option['var']]) ){
+                if($option['var']=='r'){
+                    $option['value'] = $params[$option['var']];
+                }else{
+                    $index = $option['var'].'name';
+                    $option['value'] = $params[$option['var']];
+                    $option[$index] = $params[$index];
+                }
             }else{
                 $option['value'] = '';
             }
-
         }
         return $options;
 
