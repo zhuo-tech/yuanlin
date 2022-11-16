@@ -232,7 +232,8 @@ class Factor extends Api {
         foreach ($options as &$option) {
             if(isset($params[$option['var']]) && $option['var']!='r'){
                 $index = $option['var'].'name';
-                $option['value'] = $params[$index];
+                $option['value'] = $params[$option['var']];
+                $option[$index] = $params[$index];
             }else{
                 $option['value'] = '';
             }
