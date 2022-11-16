@@ -227,9 +227,22 @@ class Factor extends Api {
         return $options;
     }
 
+    public function handleFileOptionParam($options, $params){
+
+        foreach ($options as &$option) {
+            if(isset($params[$option['var']]) && $option['var']!='r'){
+                $index = $option['var'].'name';
+                $option['value'] = $params[$index];
+            }else{
+                $option['value'] = '';
+            }
+
+        }
+        return $options;
+
+    }
+
     public function handleQuestionOptionParam($questions, $params){
-
-
 
         foreach ($questions as &$question) {
 
@@ -552,8 +565,10 @@ class Factor extends Api {
 
             if($factor['input_mode']=="A"){
                 $factor['option'] = $this->handleOptionParam($factor['option'],$param);
-            }else{
+            }elseif($factor['input_mode']=="C"){
                 $factor['questions'] = $this->handleQuestionOptionParam($factor['questions'],$param);
+            }elseif ($factor['input_mode']=="B"){
+                $factor['option'] = $this->handleFileOptionParam($factor['option'],$param);
             }
 
             $factor['formed']=1;
