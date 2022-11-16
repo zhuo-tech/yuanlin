@@ -188,7 +188,7 @@ class Factor extends Api {
                         $param  = json_decode($itemFactor['param'], 1);
                         $detail['option'] = json_decode($detail['option'], 1);
 
-                        $v['option'] = $this->getOptionParam($detail, $param);
+                        $v['option'] = $this->getOptionParam($detail, $param,2);
                     } else {
 
                         if ($detail['option']) {
@@ -215,14 +215,14 @@ class Factor extends Api {
 
     }
 
-    public function getOptionParam($factor,$param){
+    public function getOptionParam($factor,$param,$position=1){
 
         if($factor['input_mode']=="A"){
             $factor['option'] = $this->handleOptionParam($factor['option'],$param);
         }elseif($factor['input_mode']=="C"){
             $factor['questions'] = $this->handleQuestionOptionParam($factor['questions'],$param);
         }elseif ($factor['input_mode']=="B"){
-            $factor['option'] = $this->handleFileOptionParam($factor['option'],$param);
+            $factor['option'] = $this->handleFileOptionParam($factor['option'],$param,$position);
         }
 
         return $factor['option'];
@@ -242,7 +242,7 @@ class Factor extends Api {
         return $options;
     }
 
-    public function handleFileOptionParam($options, $params){
+    public function handleFileOptionParam($options, $params,$position=1){
 
         foreach ($options as &$option) {
             if(isset($params[$option['var']]) ){
@@ -250,7 +250,12 @@ class Factor extends Api {
                     $option['value'] = $params[$option['var']];
                 }else{
                     $index = $option['var'].'name';
-                    $option['value'] = $params[$option['var']];
+                    if($position==2){
+                        $option['value'] = isset($params[$index])?$params[$index]:'';
+                    }else{
+                        $option['value'] = $params[$option['var']];
+                    }
+
                     $option[$index] = isset($params[$index])?$params[$index]:'';
                 }
             }else{
