@@ -186,9 +186,9 @@ class Factor extends Api {
                     if ($itemFactor['param']) {
 
                         $param  = json_decode($itemFactor['param'], 1);
-                        $option = json_decode($detail['option'], 1);
+                        $detail['option'] = json_decode($detail['option'], 1);
 
-                        $v['option'] = $this->handleOptionParam($option, $param);
+                        $v['option'] = $this->getOptionParam($detail, $param);
                     } else {
 
                         if ($detail['option']) {
@@ -200,6 +200,7 @@ class Factor extends Api {
 
                     $n       = $n + 1;
                     $v['number'] = $n;
+                    $v['input_mode'] = $detail['input_mode'];
 
                 } else {
                     unset($vs['child'][$k]);
@@ -211,6 +212,20 @@ class Factor extends Api {
         $data = $this->handleSimpleData($data);
 
         return json(['code' => 0, 'data' => $data, 'message' => 'OK']);
+
+    }
+
+    public function getOptionParam($factor,$param){
+
+        if($factor['input_mode']=="A"){
+            $factor['option'] = $this->handleOptionParam($factor['option'],$param);
+        }elseif($factor['input_mode']=="C"){
+            $factor['questions'] = $this->handleQuestionOptionParam($factor['questions'],$param);
+        }elseif ($factor['input_mode']=="B"){
+            $factor['option'] = $this->handleFileOptionParam($factor['option'],$param);
+        }
+
+        return $factor['option'];
 
     }
 
@@ -236,7 +251,7 @@ class Factor extends Api {
                 }else{
                     $index = $option['var'].'name';
                     $option['value'] = $params[$option['var']];
-                    $option[$index] = $params[$index];
+                    $option[$index] = isset($params[$index])?$params[$index]:'';
                 }
             }else{
                 $option['value'] = '';
@@ -549,7 +564,6 @@ class Factor extends Api {
             ->join('factor f', 'fd.factor_id=f.id', 'left')
             ->where(['fd.factor_id' => $factorId])->field('fd.*,f.name')->select()->toArray()[0];
 
-        $factor['option']   = json_decode($factor['option'],1);
 
         $factor['document'] = json_decode($factor['document']);
 
@@ -562,18 +576,15 @@ class Factor extends Api {
 
         $factor['question_link'] = ImagesService::getBaseUrl().$factor['question_link'];
 
-
         $itemFactor = ItemFactorModel::get(['factor_id' => $factorId, 'item_id' => $itemId])->toArray();
+
+        $factor['option']   = json_decode($factor['option'],1);
         if($itemFactor &&$itemFactor['param']){
             $param = json_decode($itemFactor['param'],1);
 
-            if($factor['input_mode']=="A"){
-                $factor['option'] = $this->handleOptionParam($factor['option'],$param);
-            }elseif($factor['input_mode']=="C"){
-                $factor['questions'] = $this->handleQuestionOptionParam($factor['questions'],$param);
-            }elseif ($factor['input_mode']=="B"){
-                $factor['option'] = $this->handleFileOptionParam($factor['option'],$param);
-            }
+            $factor['option'] = $this->getOptionParam($factor,$param);
+
+
 
             $factor['formed']=1;
         }
