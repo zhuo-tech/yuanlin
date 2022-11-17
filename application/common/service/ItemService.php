@@ -232,20 +232,16 @@ class ItemService {
             $item = Items::field('name,images,id')
                 ->whereIn('id',$item_ids)
                 ->select()->toArray();
+            foreach ($item as &$v) {
+                $images = explode(',',$v['images']);
+                $v['images']      =  ImagesService::handleOut($images[0]);
+                //$v['images'] =  ImagesService::getBaseUrl() . $v['images'];
+            }
         }else{
-            $item = ItemFactorModel::alias('if')
-                ->join('fa_items i', 'i.id=if.item_id', 'left')
-                ->field('i.name,i.images,i.id')
-                ->where(['if.factor_id' => $factorId])
-                ->where('i.status','>',0)
-                ->limit(4)->select()->toArray();
+            $item = [];
         }
 
-        foreach ($item as &$v) {
-            $images = explode(',',$v['images']);
-            $v['images']      =  ImagesService::handleOut($images[0]);
-            //$v['images'] =  ImagesService::getBaseUrl() . $v['images'];
-        }
+
 
         return $item;
 
