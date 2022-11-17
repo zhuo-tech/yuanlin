@@ -275,7 +275,7 @@ class Factor extends Api {
                 foreach ($params as $p){
 
                     if($p['var']==$option['var']&&$p['id']==$question['id']){
-                        $option['value'] = (int)$p['value'];
+                        $option['value'] = isset($p['value'])?(int)$p['value']:0;
                     }
                 }
 

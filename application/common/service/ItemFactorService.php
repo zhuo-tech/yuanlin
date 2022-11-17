@@ -131,7 +131,12 @@ class ItemFactorService {
                     // 类型C是将所有的问题按照选择的选项的占比乘以分值再除以问题个数
                     $sum = 0;
                     foreach ($factor['param'] as $_param) {
-                        $sum += ($_param['score'] * $_param['value'] / 100);
+                        if(isset($_param['value'])){
+                            $sum += ($_param['score'] * $_param['value'] / 100);
+                        }else{
+                            $sum += ($_param['score'] * 0 / 100);
+                        }
+
                     }
                     $result = $sum / count($factor['param']);
 
