@@ -188,7 +188,9 @@ class Factor extends Api {
                         $param  = json_decode($itemFactor['param'], 1);
                         $detail['option'] = json_decode($detail['option'], 1);
 
-                        $v['option'] = $this->getOptionParam($detail, $param,2);
+                        $detailss = $this->getOptionParam($detail, $param,2);
+
+                        $v['option'] =$detailss['option'];
                     } else {
 
                         if ($detail['option']) {
@@ -220,12 +222,14 @@ class Factor extends Api {
         if($factor['input_mode']=="A"){
             $factor['option'] = $this->handleOptionParam($factor['option'],$param);
         }elseif($factor['input_mode']=="C"){
+            if($position==2)$factor['questions'] = [];
             $factor['questions'] = $this->handleQuestionOptionParam($factor['questions'],$param);
+            $factor['option'] = [];
         }elseif ($factor['input_mode']=="B"){
             $factor['option'] = $this->handleFileOptionParam($factor['option'],$param,$position);
         }
 
-        return $factor['option'];
+        return $factor;
 
     }
 
@@ -246,9 +250,12 @@ class Factor extends Api {
 
         foreach ($options as &$option) {
             if(isset($params[$option['var']]) ){
-                if($option['var']=='r'){
+                if($option['tip']=='3'){
                     $option['value'] = $params[$option['var']];
-                }else{
+                }elseif ($option['tip']=='2'){
+                    $option['value'] = $params[$option['var']];
+                }
+                else{
                     $index = $option['var'].'name';
                     if($position==2){
                         $option['value'] = isset($params[$index])?$params[$index]:'';
@@ -268,14 +275,16 @@ class Factor extends Api {
 
     public function handleQuestionOptionParam($questions, $params){
 
-        foreach ($questions as &$question) {
+        foreach ($questions as $km=>&$question) {
 
-            foreach ($question['options'] as &$option){
+            foreach ($questions[$km]['options'] as $kn=>&$option){
 
                 foreach ($params as $p){
 
-                    if($p['var']==$option['var']&&$p['id']==$question['id']){
-                        $option['value'] = isset($p['value'])?(int)$p['value']:0;
+                    if($p['var']==$questions[$km]['options'][$kn]['var']&&$p['id']==$question['id']){
+
+                        $questions[$km]['options'][$kn]['value'] = isset($p['value'])?(int)$p['value']:0;
+
                     }
                 }
 
@@ -587,7 +596,7 @@ class Factor extends Api {
         if($itemFactor &&$itemFactor['param']){
             $param = json_decode($itemFactor['param'],1);
 
-            $factor['option'] = $this->getOptionParam($factor,$param);
+            $factor = $this->getOptionParam($factor,$param);
 
 
 
