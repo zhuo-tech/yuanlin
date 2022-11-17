@@ -175,6 +175,7 @@ class ItemFactorService {
             ->join("fa_factor f", 'if.factor_id=f.id', 'left')
             ->join('fa_factor_detail fd', 'fd.factor_id = f.id', 'left')
             ->where(['if.status'=>2])
+            ->where('fd.input_mode','<>','B') //类型b 的过滤
             ->where($where)->select()->toArray();
 
         $first      = FactorModel::where(['status' => 1, 'pid' => 0])
