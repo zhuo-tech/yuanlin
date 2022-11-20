@@ -18,6 +18,8 @@ class Banner extends Api {
     protected $noNeedLogin = ['*'];
     protected $noNeedRight = ['*'];
 
+    protected $data = [];
+
     /**
      * @brief Banner
      */
@@ -48,6 +50,67 @@ class Banner extends Api {
         $third = $total-$first-$second;
 
         return json(['code' => 0, 'message' => 'OK', 'banner' => $banners,'news'=>$news,'module'=>$first,'second'=>$second,'third'=>$third]);
+    }
+
+    public function test(){
+
+        $array = [
+            [
+                'id' => 134,
+                'breakId' => 0
+            ],
+            [
+                'id' => 135,
+                'breakId' => 0
+            ],
+            [
+                'id' => 136,
+                'breakId' => 0
+            ],
+            [
+                'id' => 137,
+                'breakId' => 135
+            ],
+            [
+                'id' => 138,
+                'breakId' => 137
+            ],
+
+        ];
+
+        $index = array_column($array, 'id');
+        foreach ($array as $key => &$val) {
+            foreach ($array as $k=>$v){
+                if($v['breakId']==$val['id']){
+                    $val['child'][]= $v;
+                }
+            }
+        }
+        foreach ($array as $n=>&$m){
+            $this->pushData($m);
+            if(isset($m['child'])){
+                $m['child'] =$this->getChild($m['child'],$array,$index);
+            }
+        }
+        dump($array);
+        dump($this->data);
+    }
+
+    public function getChild($node,$total,$indexs){
+        $this->pushData($node[0]);
+        $ind= array_search($node[0]['id'],$indexs);
+        if(isset($total[$ind]['child'])){
+            $node[0]['child'] = $this->getChild($total[$ind]['child'],$total,$indexs);
+        }
+        return $node;
+    }
+    public function pushData($data){
+
+        $indexs = array_column($this->data, 'id');
+
+        if(!array_search($data['id'],$indexs)){
+            array_push($this->data,['id'=>$data['id']]);
+        };
     }
 
 
