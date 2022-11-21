@@ -371,6 +371,8 @@ class Items extends Backend
         $param['city'] = $city['area_code'];
         $region = cityModel::get(['area_name'=>$locations[2]])->toArray();
         $param['area'] = $region['area_code'];
+
+        $param['content'] = str_replace('http://ies-admin.zhuo-zhuo.com','',$param['content']);
         return $param;
 
     }
