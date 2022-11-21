@@ -711,7 +711,7 @@ class Factor extends Api {
 //        var_dump($params);die;
 
 
-        $this->success('success',['image'=>'http://ies-admin.zhuo-zhuo.com/uploads/20221104/de85c865d8b25e7bca360a06834d044c.png']);
+        $this->success('success',['image'=>'http://www.lpes.com.cn//uploads/20221021/036e8dc74d4403fcd1aed57e3194a31d.jpg']);
     }
 
     /**
