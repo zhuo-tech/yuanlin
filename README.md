@@ -9,6 +9,9 @@ copy .env.test 内容到.env
 2 安装lnmp
 3 配置mysql 访问授权
 4 安装git (拉取代码)
-4 配置网站 nginx (.user.ini)
-5 配置php权限函数 
-4 安装fastadmin插件
+5 配置网站 nginx (.user.ini)
+6 配置php权限函数(登录验证码先注释掉) 
+7 安装fastadmin插件
+
+8 图片压缩 然后上传解压缩
+9 attament.sql文件
