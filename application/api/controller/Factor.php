@@ -160,7 +160,7 @@ class Factor extends Api {
         $data = $this->handleSimpleData($data);
 
 
-        $first = FactorModel::where(['status' => 1, 'pid' => 0])->field("id,name")->select()->toArray();
+        $first = FactorModel::where(['status' => 1, 'pid' => 0])->field("id,name,en_name")->select()->toArray();
 
         array_unshift($first, ['name' => '全部', 'id' => 0]);
 
@@ -423,7 +423,7 @@ class Factor extends Api {
 
             $data = json_decode($cacheVal, true);
         }else{
-            $first = FactorModel::where(['status' => 1, 'pid' => 0])->field("id,name")->select()->toArray();
+            $first = FactorModel::where(['status' => 1, 'pid' => 0])->field("id,name,en_name")->select()->toArray();
             foreach ($first as &$v) {
                 $v['children'] = $this->getChildren($v);
             }

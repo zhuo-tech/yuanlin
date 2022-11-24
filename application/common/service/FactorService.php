@@ -42,7 +42,7 @@ class FactorService {
         }
 
         // 查询所有的指标
-        $fields     = ['id', 'pid', 'name'];
+        $fields     = ['id', 'pid', 'name','en_name'];
         $factorRows = FactorModel::where(['status' => 1])->field($fields)->select()->toArray();
         $topFactors = [];
         $sonFactors = [];
@@ -79,7 +79,7 @@ class FactorService {
      */
     public static function factorData($itemId = 0, $id = []): array {
         $where = ['f.status' => 1];
-        $field = ['name', 'f.id', 'input_mode', 'option', 'coefficient', 'pid', 'method', 'meaning', 'calc_method', 'source', 'document', 'format_type','item_ids'];
+        $field = ['name', 'en_name','f.id', 'input_mode', 'option', 'coefficient', 'pid', 'method', 'meaning', 'calc_method', 'source', 'document', 'format_type','item_ids'];
         $query = FactorModel::alias('f')->where($where);
         if ($id) {
             $query = $query->whereIn('f.id', $id);
