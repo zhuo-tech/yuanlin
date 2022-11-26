@@ -162,7 +162,7 @@ class Factor extends Api {
 
         $first = FactorModel::where(['status' => 1, 'pid' => 0])->field("id,name,en_name")->select()->toArray();
 
-        array_unshift($first, ['name' => '全部', 'id' => 0]);
+        array_unshift($first, ['name' => '全部','en_name'=>'all', 'id' => 0]);
 
         return json(['code' => 0, 'first' => $first, 'data' => $data, 'message' => 'OK']);
     }
@@ -399,7 +399,7 @@ class Factor extends Api {
 
         $first = FactorModel::where(['status' => 1, 'pid' => 0])->field("id,name")->select()->toArray();
 
-        array_unshift($first, ['name' => '全部', 'id' => 0]);
+        array_unshift($first, ['name' => '全部','en_name'=>'all', 'id' => 0]);
 
         return json(['code' => 0, 'first' => $first, 'data' => $data, 'message' => 'OK']);
 
