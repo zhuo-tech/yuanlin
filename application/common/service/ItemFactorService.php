@@ -179,7 +179,7 @@ class ItemFactorService {
             ->where($where)->select()->toArray();
 
         $first      = FactorModel::where(['status' => 1, 'pid' => 0])
-            ->field("id,name")->select()->toArray();
+            ->field("id,name,en_name")->select()->toArray();
         foreach ($first as &$v) {
             $v['children'] = FactorModel::where(['status' => 1, 'pid' => $v['id']])
                 ->field("id,name")->select()->toArray();
