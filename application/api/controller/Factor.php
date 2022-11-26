@@ -419,7 +419,7 @@ class Factor extends Api {
 
         $cacheKey = md5( 'factorTree2');
         $cacheVal = Cache::get($cacheKey);
-        if($cacheVal){
+        if(0){
 
             $data = json_decode($cacheVal, true);
         }else{
@@ -436,7 +436,7 @@ class Factor extends Api {
 
 
     private function getChildren($factor) {
-        $child = FactorModel::where(['status' => 1, 'pid' => $factor['id']])->field("id,name")->select()->toArray();
+        $child = FactorModel::where(['status' => 1, 'pid' => $factor['id']])->field("id,name,en_name")->select()->toArray();
         if ($child) {
             $factor['children'] = $child;
             foreach ($child as &$v) {
