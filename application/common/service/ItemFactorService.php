@@ -187,7 +187,7 @@ class ItemFactorService {
         // 查询
 
 
-        $all = ['id'=>0,'name'=>'全部'];
+        $all = ['id'=>0,'name'=>'全部','en_name'=>'All'];
 
         // row['result'] = 0 前端类型报错
 
