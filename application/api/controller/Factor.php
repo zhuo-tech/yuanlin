@@ -57,6 +57,8 @@ class Factor extends Api {
 
         if ($keyword) {
             $data = $this->search($data, $keyword);
+        }else{
+            $this->searchedFactor=['21'];
         }
 
         if($id)$data= $this->getById($data,$id);
