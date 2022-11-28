@@ -26,6 +26,14 @@ class Item extends Api {
         if (empty($this->auth->mobile)) {
             return json(['code' => 1, 'data' => [], 'message' => '请先绑定手机号再创建项目']);
         }
+
+        if($this->auth->id !=1){
+            $count = ItemsModel::where(['user_id'=>$this->auth->id])->select()->count();
+            if($count>=3){
+                return json(['code' => 1, 'data' => '创建项目过多', 'message' => '创建项目过多']);
+            }
+        }
+
         $data = ItemService::saveItem($request->param(), $this->auth->id);
         return json(['code' => $data['error'], 'data' => $data['data'], 'message' => $data['message']]);
     }
