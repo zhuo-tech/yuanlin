@@ -70,6 +70,7 @@ class Factor extends Api {
                 foreach ($s['child'] as $key3 => $t) {
 
                     if ($t['id']== $id) {
+                        $this->searchedFactor= [$id];
                     } else {
                         unset($s['child'][$key3]);
                     }
