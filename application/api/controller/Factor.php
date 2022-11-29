@@ -48,7 +48,7 @@ class Factor extends Api {
         // 缓存
         $cacheKey = md5( 'factorTree');
         $cacheVal = Cache::get($cacheKey);
-        if (0) {
+        if ($cacheKey) {
             $data = json_decode($cacheVal, true);
         } else {
             $data = FactorService::getFactorTree($itemId);
@@ -422,7 +422,7 @@ class Factor extends Api {
 
         $cacheKey = md5( 'factorTree2');
         $cacheVal = Cache::get($cacheKey);
-        if(0){
+        if($cacheVal){
 
             $data = json_decode($cacheVal, true);
         }else{
