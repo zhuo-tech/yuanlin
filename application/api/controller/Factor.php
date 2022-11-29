@@ -422,7 +422,7 @@ class Factor extends Api {
 
         $cacheKey = md5( 'factorTree2');
         $cacheVal = Cache::get($cacheKey);
-        if($cacheVal){
+        if(0){
 
             $data = json_decode($cacheVal, true);
         }else{
