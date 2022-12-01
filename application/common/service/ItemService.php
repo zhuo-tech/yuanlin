@@ -129,11 +129,15 @@ class ItemService {
                         $filter = $sort[$key][$type] ?? '';
                     }
                 } else {
-                    $where['item_cate_id'] = ['in', $cid];
+                    //$where['item_cate_id'] = ['in', $cid];
+                    $wherecate = ' find_in_set(' . intval($cid) . ', item_cate_id)';
                 }
             } else {
-                $where['item_cate_id'] = ['in', $cid];
+                //$where['item_cate_id'] = ['in', $cid];
+                $wherecate = ' find_in_set(' . intval($cid) . ', item_cate_id)';
             }
+        }else{
+            $wherecate = '';
         }
 
         $where['status'] =['>',0];
@@ -154,7 +158,7 @@ class ItemService {
 
         $order = 'id desc';
         $limit = $size;
-        $list  = Items::where($where);
+        $list  = Items::where($where)->where($wherecate);
         if ($filter) {
             $list = $list->where($filter);
         }
