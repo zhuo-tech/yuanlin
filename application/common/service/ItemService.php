@@ -119,6 +119,7 @@ class ItemService {
         $cid    = array_column($cidRow, 'id');
         $keys   = array_column($cidRow, 'type');
         $key    = current($keys);
+        $wherecate = '';
         if ($cid) {
             if ($key) {
                 // 获取过滤条件
