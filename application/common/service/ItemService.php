@@ -131,11 +131,11 @@ class ItemService {
                     }
                 } else {
                     //$where['item_cate_id'] = ['in', $cid];
-                    $wherecate = ' find_in_set(' . intval($cid) . ', item_cate_id)';
+                    $wherecate = 'find_in_set(' . intval($search['cid']) . ', item_cate_id)';
                 }
             } else {
                 //$where['item_cate_id'] = ['in', $cid];
-                $wherecate = ' find_in_set(' . intval($cid) . ', item_cate_id)';
+                $wherecate = 'find_in_set(' . intval($search['cid']) . ', item_cate_id)';
             }
         }else{
             $wherecate = '';
