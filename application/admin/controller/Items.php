@@ -294,10 +294,12 @@ class Items extends Backend
             return $this->view->fetch();
         }
         $params = $this->request->post('row/a');
+        $string = urldecode(file_get_contents("php://input"));
         if (empty($params)) {
             $this->error(__('Parameter %s can not be empty', ''));
         }
         $params = $this->preExcludeFields($params);
+
         $result = false;
         Db::startTrans();
         try {
@@ -308,7 +310,7 @@ class Items extends Backend
                 $row->validateFailException()->validate($validate);
             }
 
-            $params = $this->handle($params);
+            $params = $this->handle($params,$string);
 
 
             $result = $row->allowField(true)->save($params);
@@ -361,7 +363,17 @@ class Items extends Backend
     }
 
 
-    public function handle($param){
+    public function handle($param,$string){
+
+        $arrays = explode('&',$string);
+        $cate = [];
+        foreach ($arrays as $array){
+            $a = explode('=',$array);
+            if($a[0]=='row[item_cate_id]'){
+                array_push($cate,$a[1]);
+            }
+        }
+        $param['item_cate_id'] = $cate;
 
         $locations = explode('/',$param['location']);
         $province = cityModel::where(['level'=>1])->where('area_name','like',"%{$locations[0]}%")->select()->toArray();
