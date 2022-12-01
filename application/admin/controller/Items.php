@@ -373,7 +373,7 @@ class Items extends Backend
                 array_push($cate,$a[1]);
             }
         }
-        $param['item_cate_id'] = $cate;
+        $param['item_cate_id'] = implode(',',$cate);;
 
         $locations = explode('/',$param['location']);
         $province = cityModel::where(['level'=>1])->where('area_name','like',"%{$locations[0]}%")->select()->toArray();
