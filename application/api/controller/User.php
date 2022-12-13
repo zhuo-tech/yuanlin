@@ -519,7 +519,7 @@ class User extends Api {
         $user     = $this->auth->getUser();
         $mobile   = $this->request->param('mobile');
         $captcha  = $this->request->param('captcha');
-        $platform = $this->request->param('platform');
+        $platform = $this->request->param('platform', 'email');
 
         $result = Sms::check($mobile, $captcha, 'bind');
         if (!$result){
