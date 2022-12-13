@@ -551,6 +551,7 @@ class User extends Api {
                     break;
                 case 'wechat':
                     Third::update(['user_id' => $mobileUser['id']], ['user_id' => $user['id']]);
+                    $ret = $this->auth->direct($mobileUser->id);
                     break;
             }
         } else {
