@@ -550,6 +550,8 @@ class User extends Api {
                     $ret = $this->auth->direct($mobileUser->id);
                     break;
                 case 'wechat':
+                    $user->status = 'deleted';
+                    $user->save();
                     Third::update(['user_id' => $mobileUser['id']], ['user_id' => $user['id']]);
                     $ret = $this->auth->direct($mobileUser->id);
                     break;
